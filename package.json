@@ -1,0 +1,61 @@
+{
+  "name": "nope-validator",
+  "version": "0.2.0",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "license": "MIT",
+  "description": "Fast and simple JS validator",
+  "scripts": {
+    "format": "prettier --write",
+    "lint": "tslint -p tsconfig.json",
+    "test": "jest --env=node --colors src/**/*.spec.ts",
+    "build": "tsc",
+    "precommit": "lint-staged",
+    "prepublishOnly": "yarn test && yarn lint",
+    "preversion": "npm run lint",
+    "version": "yarn format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "author": {
+    "name": "Bruno Vego",
+    "email": "bruno.vego@gmail.com"
+  },
+  "repository": {
+    "url": "git@github.com:bvego/nope-validator.git",
+    "type": "git"
+  },
+  "lint-staged": {
+    "*.{ts}": [
+      "prettier --write",
+      "tslint -p tsconfig.json",
+      "git add"
+    ]
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/types": "^7.4.4",
+    "@types/jest": "^24.0.15",
+    "@types/node": "^12.0.10",
+    "husky": "^2.5.0",
+    "jest": "^24.8.0",
+    "lint-staged": "^8.2.1",
+    "nodemon": "^1.19.1",
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.5.2"
+  },
+  "keywords": [
+    "nope",
+    "js",
+    "object",
+    "validation",
+    "validator",
+    "scheme"
+  ]
+}

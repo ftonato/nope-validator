@@ -1,0 +1,23 @@
+0.2.0
+Added
+- Primitives (string, number, date, boolean)
+  - oneOf
+  - required
+  - validate
+- String
+  - url
+  - email
+  - min
+  - max
+- Number
+  - min
+  - max
+  - positive
+  - negative
+- Date
+  - before
+  - after
+- Boolean
+  - true
+  - false
+  
