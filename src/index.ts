@@ -1,7 +1,7 @@
 import NopeObject from './NopeObject';
 import NopeString from './NopeString';
 import NopeNumber from './NopeNumber';
-import NopeBoolean from './NopeBooolean';
+import NopeBoolean from './NopeBoolean';
 import NopeDate from './NopeDate';
 import NopeReference from './NopeReference';
 
