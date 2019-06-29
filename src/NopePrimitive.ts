@@ -17,16 +17,16 @@ abstract class NopePrimitive<T> implements IValidatable<T> {
   }
 
   public oneOf(options: Array<T | NopeReference | Nil>, message = 'Invalid option') {
+    const resolveNopeRef = (option: T | NopeReference | Nil, context?: { [key: string]: any }) => {
+      if (option instanceof NopeReference && context) {
+        return context[option.key];
+      }
+
+      return option;
+    };
+
     const rule: Rule<T> = (entry, context) => {
-      const resolver = (option: T | NopeReference | Nil) => {
-        if (option instanceof NopeReference && context) {
-          return context[option.key];
-        }
-
-        return option;
-      };
-
-      const resolvedOptions = options.map(resolver);
+      const resolvedOptions = options.map(option => resolveNopeRef(option, context));
 
       if (resolvedOptions.indexOf(entry) === -1) {
         return message;
