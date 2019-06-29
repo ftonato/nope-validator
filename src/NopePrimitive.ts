@@ -5,29 +5,35 @@ abstract class NopePrimitive<T> implements IValidatable<T> {
   protected validationRules: Array<Rule<T>> = [];
 
   public required(message = 'This field is required') {
-    this.validationRules.push(entry => {
+    const rule: Rule<T> = entry => {
       if (entry === undefined || entry === null) {
         return message;
       }
-    });
+    };
+
+    this.validationRules.push(rule);
 
     return this;
   }
 
   public oneOf(options: Array<T | NopeReference | Nil>, message = 'Invalid option') {
-    this.validationRules.push((entry, context) => {
-      const resolvedOptions = options.map(option => {
-        if (option instanceof NopeReference && context) {
-          return context[option.key];
-        }
+    const resolveNopeRef = (option: T | NopeReference | Nil, context?: { [key: string]: any }) => {
+      if (option instanceof NopeReference && context) {
+        return context[option.key];
+      }
 
-        return option;
-      });
+      return option;
+    };
+
+    const rule: Rule<T> = (entry, context) => {
+      const resolvedOptions = options.map(option => resolveNopeRef(option, context));
 
       if (resolvedOptions.indexOf(entry) === -1) {
         return message;
       }
-    });
+    };
+
+    this.validationRules.push(rule);
 
     return this;
   }

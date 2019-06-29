@@ -3,13 +3,13 @@ import { Rule } from './types';
 import { urlRegex, emailRegex } from './consts';
 
 class NopeString extends NopePrimitive<string> {
-  public url(message = 'Input is not a valid url') {
+  public regex(regex: RegExp, message = 'Doesn\'t satisfy the rule') {
     const rule: Rule<string> = entry => {
       if (entry === undefined || entry === null) {
         return;
       }
 
-      if (!urlRegex.test(entry)) {
+      if (!regex.test(entry)) {
         return message;
       }
     };
@@ -19,20 +19,12 @@ class NopeString extends NopePrimitive<string> {
     return this;
   }
 
+  public url(message = 'Input is not a valid url') {
+    return this.regex(urlRegex, message);
+  }
+
   public email(message = 'Input is not a valid email') {
-    const rule: Rule<string> = entry => {
-      if (entry === undefined || entry === null) {
-        return;
-      }
-
-      if (!emailRegex.test(entry)) {
-        return message;
-      }
-    };
-
-    this.validationRules.push(rule);
-
-    return this;
+    return this.regex(emailRegex, message);
   }
 
   public min(length: number, message = 'Input is too short') {

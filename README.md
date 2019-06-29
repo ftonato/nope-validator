@@ -1,5 +1,6 @@
 # Nope 🙅
 
+[![codebeat badge](https://codebeat.co/badges/ee202bf2-693c-4318-9425-e2c0f1a48a1f)](https://codebeat.co/projects/github-com-bvego-nope-validator-master)
 [![CircleCI](https://circleci.com/gh/bvego/nope-validator.svg?style=svg)](https://circleci.com/gh/bvego/nope-validator)
 [![Fast](https://badgen.now.sh/badge/speed/really%20fast/green)](https://npm.im/nope-validator)
 [![Version](https://img.shields.io/npm/v/nope-validator.svg)](https://npm.im/nope-validator)
