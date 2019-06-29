@@ -1,6 +1,32 @@
 import Nope from '..';
 
 describe('#NopeString', () => {
+  describe('#regex', () => {
+    it('should return undefined for an empty entry', () => {
+      expect(
+        Nope.string()
+          .regex(/abc/i, 'urlErrorMessage')
+          .validate(undefined),
+      ).toBe(undefined);
+    });
+
+    it('should return an error message for an invalid entry', () => {
+      expect(
+        Nope.string()
+          .regex(/abc/i, 'errorMessage')
+          .validate('http:google.com'),
+      ).toBe('errorMessage');
+    });
+
+    it('should return undefined for an valid entry', () => {
+      expect(
+        Nope.string()
+          .regex(/abc/i)
+          .validate('abc'),
+      ).toBe(undefined);
+    });
+  });
+
   describe('#url', () => {
     it('should return undefined for an empty entry', () => {
       expect(
