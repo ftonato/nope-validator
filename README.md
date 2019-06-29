@@ -15,7 +15,7 @@ Typescript definitions included. 🚀
 
 - [Usage](#usage)
 - [API](#api)
-- [Usage with formik](#usage-with-formik)
+- [Usage with Formik](#usage-with-formik)
 
 ## Usage
 
@@ -34,7 +34,7 @@ npm install -S nope-validator
 ```js
 // const Nope = require('nope-validator'); // or
 // const { Nope } = require('nope-validator'); // or
-import Nope from 'nope-validator');
+import Nope from 'nope-validator';
 ```
 
 ```js
@@ -365,6 +365,32 @@ UserSchema.validate({
     });
 
     console.log(errors); // { email: 'Please provide a valid email', }
+    ```
+
+  - `extend(Base: NopeObject)` - Extends the schema of an already defined NopeObject
+
+  - ```js
+    const baseSchema = Nope.object().shape({
+      password: Nope.string()
+        .min(5),
+      confirmPassword: Nope.string()
+        .oneOf([Nope.ref('password')], 'Passwords don\'t match')
+        .required(),
+    });
+
+    const userSchema = Nope.object()
+      .extend(baseSchema)
+      .shape({
+        name: Nope.string()
+          .min(4)
+          .required(),
+      });
+
+    userSchema.validate({
+      name: 'Jonathan',
+      password: 'birdybird',
+      confirmPassworod: 'burdyburd',
+    }); // returns { confirmPassword: 'Passwords don\'t match' }
     ```
 
   - `validate(entry: object)` - Runs the rule chain against an entry
