@@ -1,3 +1,13 @@
+0.5.2
+Complexity fixes
+Fixed email regex taking too long on certain entries
+Added
+- String
+  - regex
+
+0.5.1
+Added CircleCI
+
 0.5.0
 Added
 - Object

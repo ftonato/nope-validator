@@ -7,7 +7,6 @@
 [![size](https://img.shields.io/bundlephobia/min/nope-validator.svg)](https://bundlephobia.com/result?p=nope-validator)
 [![gzip](https://img.shields.io/bundlephobia/minzip/nope-validator.svg)](https://bundlephobia.com/result?p=nope-validator)
 
-
 A small, simple and fast JS validator. Like, wow thats fast. 🚀
 
 Nope is heavily inspired by [Yup](https://github.com/jquense/yup) but attempts to be smaller and faster. To achieve this Nope only allows for synchronous data validation which should cover most of the use cases.
@@ -70,6 +69,17 @@ UserSchema.validate({
 ## API
 
 - `String`
+
+  - `regex(regex: RegExp, message: string)` - Asserts if the entry matches the pattern
+  - ```js
+    Nope.string()
+      .regex(/abc/i)
+      .validate('abc'); // returns undefined
+
+    Nope.string()
+      .regex(/abc/i)
+      .validate('123'); // returns the error message
+    ```
 
   - `url(message: string)` - Asserts if the entry is a valid URL
   - ```js
@@ -374,10 +384,9 @@ UserSchema.validate({
 
   - ```js
     const baseSchema = Nope.object().shape({
-      password: Nope.string()
-        .min(5),
+      password: Nope.string().min(5),
       confirmPassword: Nope.string()
-        .oneOf([Nope.ref('password')], 'Passwords don\'t match')
+        .oneOf([Nope.ref('password')], "Passwords don't match")
         .required(),
     });
 
