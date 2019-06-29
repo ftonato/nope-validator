@@ -5,14 +5,20 @@ interface ObjectShape {
 }
 
 class NopeObject {
-  private objectShape: ObjectShape | null = null;
+  private objectShape: ObjectShape;
 
   constructor(objectShape?: ObjectShape) {
-    this.objectShape = objectShape || null;
+    this.objectShape = objectShape || {};
   }
 
   public shape(shape: ObjectShape) {
-    this.objectShape = shape;
+    this.objectShape = { ...this.objectShape, ...shape };
+
+    return this;
+  }
+
+  public extend(Base: NopeObject) {
+    this.objectShape = { ...this.objectShape, ...Base.objectShape };
 
     return this;
   }
@@ -22,15 +28,13 @@ class NopeObject {
     let areErrors = false;
 
     for (const key in this.objectShape) {
-      if (this.objectShape) {
-        const rule = this.objectShape[key];
+      const rule = this.objectShape[key];
 
-        const error = rule.validate(entry[key], entry);
+      const error = rule.validate(entry[key], entry);
 
-        if (error) {
-          areErrors = true;
-          errors[key] = error;
-        }
+      if (error) {
+        areErrors = true;
+        errors[key] = error;
       }
     }
 

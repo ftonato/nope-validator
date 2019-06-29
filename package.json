@@ -1,6 +1,6 @@
 {
   "name": "nope-validator",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "license": "MIT",
@@ -9,7 +9,7 @@
     "format": "prettier --write",
     "lint": "tslint -p tsconfig.json",
     "test": "jest --env=node --colors src/**/*.spec.ts",
-    "build": "tsc",
+    "build": "rm -rf lib && tsc",
     "precommit": "lint-staged",
     "prepublishOnly": "yarn test && yarn lint",
     "preversion": "npm run lint",
