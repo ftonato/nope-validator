@@ -12,9 +12,7 @@ abstract class NopePrimitive<T> implements IValidatable<T> {
       }
     };
 
-    this.validationRules.push(rule);
-
-    return this;
+    return this.test(rule);
   }
 
   public when(
@@ -40,9 +38,7 @@ abstract class NopePrimitive<T> implements IValidatable<T> {
       return result ? conditionObject.then : conditionObject.otherwise;
     };
 
-    this.validationRules.push(rule);
-
-    return this;
+    return this.test(rule);
   }
 
   public oneOf(options: Array<T | NopeReference | Nil>, message = 'Invalid option') {
@@ -62,9 +58,7 @@ abstract class NopePrimitive<T> implements IValidatable<T> {
       }
     };
 
-    this.validationRules.push(rule);
-
-    return this;
+    return this.test(rule);
   }
 
   public test(rule: Rule<T>) {

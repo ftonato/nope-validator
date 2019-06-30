@@ -13,9 +13,7 @@ class NopeBoolean extends NopePrimitive<boolean> {
       }
     };
 
-    this.validationRules.push(rule);
-
-    return this;
+    return this.test(rule);
   }
 
   public false(message = 'Input must be false') {
@@ -29,9 +27,7 @@ class NopeBoolean extends NopePrimitive<boolean> {
       }
     };
 
-    this.validationRules.push(rule);
-
-    return this;
+    return this.test(rule);
   }
 }
 

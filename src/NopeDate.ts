@@ -19,9 +19,7 @@ class NopeDate extends NopePrimitive<T> {
       }
     };
 
-    this.validationRules.push(rule);
-
-    return this;
+    return this.test(rule);
   }
 
   public after(afterDate: T, message = `Date must be after ${afterDate}`) {
@@ -38,9 +36,7 @@ class NopeDate extends NopePrimitive<T> {
       }
     };
 
-    this.validationRules.push(rule);
-
-    return this;
+    return this.test(rule);
   }
 }
 

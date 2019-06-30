@@ -13,9 +13,7 @@ class NopeNumber extends NopePrimitive<number> {
       }
     };
 
-    this.validationRules.push(rule);
-
-    return this;
+    return this.test(rule);
   }
 
   public max(size: number, message = 'Input is too large') {
@@ -29,9 +27,7 @@ class NopeNumber extends NopePrimitive<number> {
       }
     };
 
-    this.validationRules.push(rule);
-
-    return this;
+    return this.test(rule);
   }
 
   public positive(message = 'Input must be positive') {

@@ -3,7 +3,7 @@ import { Rule } from './types';
 import { urlRegex, emailRegex } from './consts';
 
 class NopeString extends NopePrimitive<string> {
-  public regex(regex: RegExp, message = 'Doesn\'t satisfy the rule') {
+  public regex(regex: RegExp, message = "Doesn't satisfy the rule") {
     const rule: Rule<string> = entry => {
       if (entry === undefined || entry === null) {
         return;
@@ -14,9 +14,7 @@ class NopeString extends NopePrimitive<string> {
       }
     };
 
-    this.validationRules.push(rule);
-
-    return this;
+    return this.test(rule);
   }
 
   public url(message = 'Input is not a valid url') {
@@ -38,9 +36,7 @@ class NopeString extends NopePrimitive<string> {
       }
     };
 
-    this.validationRules.push(rule);
-
-    return this;
+    return this.test(rule);
   }
 
   public max(length: number, message = 'Input is too long') {
@@ -54,9 +50,7 @@ class NopeString extends NopePrimitive<string> {
       }
     };
 
-    this.validationRules.push(rule);
-
-    return this;
+    return this.test(rule);
   }
 }
 
