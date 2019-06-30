@@ -1,0 +1,11 @@
+{
+  "name": "benchmarks",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "benchmark": "^2.1.4",
+    "microtime": "^3.0.0",
+    "yup": "^0.27.0"
+  }
+}

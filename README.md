@@ -9,7 +9,7 @@
 
 A small, simple and fast JS validator. Like, wow thats fast. 🚀
 
-Nope is heavily inspired by [Yup](https://github.com/jquense/yup) but attempts to be smaller and faster. To achieve this Nope only allows for synchronous data validation which should cover most of the use cases.
+Nope is ~~heavily inspired~~ stolen from [Yup](https://github.com/jquense/yup) but Nope attempts to be much smaller and much faster. To achieve this Nope only allows for synchronous data validation which should cover most of the use cases.
 
 Note that instead of throwing errors Nope simply returns the error object and if there are no errors it returns undefined.
 
@@ -18,6 +18,7 @@ Typescript definitions included. 🚀
 - [Usage](#usage)
 - [API](#api)
 - [Usage with Formik](#usage-with-formik)
+- [Benchmark](#benchmark)
 
 ## Usage
 
@@ -71,8 +72,8 @@ UserSchema.validate({
 - `Primitives` (String, Number, Date, Boolean)
 
   - `when(key: string | string[], conditionObject: { is: boolean | ((...args: any) => boolean), then: NopeSchema, othervise: NopeSchema })` - Conditional validation of a key.
-  - The first param is the set of keys (or a single key) that the `is` predicate should run on. 
-  
+  - The first param is the set of keys (or a single key) that the `is` predicate should run on.
+
   - The `is` param can be set to simply true or false (which will run the .every method on the values and assert the against the passed `is`) or a predicate that will decide what schema will be active in that moment.
 
   - ```js
@@ -405,3 +406,14 @@ const schema = Nope.object().shape({
   )}
 </Formik>;
 ```
+
+## Benchmark
+
+```bash
+nope x 941,878 ops/sec ±0.37% (94 runs sampled)
+yup x 6,566 ops/sec ±3.24% (90 runs sampled)
+```
+
+I'll add tests against other validation libraries as well.
+
+The benchmark results can be found in the `benchmark/` folder along with the specs and the code that was used for the benchmark.
