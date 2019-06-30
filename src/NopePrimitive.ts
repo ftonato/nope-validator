@@ -1,5 +1,6 @@
 import { IValidatable, Nil, Rule } from './types';
 import NopeReference from './NopeReference';
+import { resolveNopeRefsFromKeys, every } from './utils';
 
 abstract class NopePrimitive<T> implements IValidatable<T> {
   protected validationRules: Array<Rule<T>> = [];
@@ -9,6 +10,34 @@ abstract class NopePrimitive<T> implements IValidatable<T> {
       if (entry === undefined || entry === null) {
         return message;
       }
+    };
+
+    this.validationRules.push(rule);
+
+    return this;
+  }
+
+  public when(
+    keys: string[] | string,
+    conditionObject: {
+      is: boolean | ((...args: any) => boolean);
+      then: NopePrimitive<any>;
+      otherwise: NopePrimitive<any>;
+    },
+  ) {
+    const ctxKeys = Array.isArray(keys) ? keys : [keys];
+
+    const rule: Rule<T> = (_, context) => {
+      const resolvedConditionValues = resolveNopeRefsFromKeys(ctxKeys, context);
+
+      const condIs = conditionObject.is;
+
+      const result =
+        typeof condIs === 'function'
+          ? condIs(...resolvedConditionValues)
+          : every(resolvedConditionValues, (val: any) => val === condIs);
+
+      return result ? conditionObject.then : conditionObject.otherwise;
     };
 
     this.validationRules.push(rule);
@@ -52,7 +81,9 @@ abstract class NopePrimitive<T> implements IValidatable<T> {
     for (const rule of this.validationRules) {
       const error = rule(entry, context);
 
-      if (error) {
+      if (error instanceof NopePrimitive) {
+        return error.validate(entry, context);
+      } else if (error) {
         return error;
       }
     }

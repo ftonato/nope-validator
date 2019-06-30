@@ -1,11 +1,12 @@
 // shared types
+import NopePrimitive from './NopePrimitive';
 
 export type Rule<T> = (
   entry: T | Nil,
   context?: {
     [key: string]: any;
   },
-) => string | undefined;
+) => string | undefined | NopePrimitive<T>;
 
 export interface IValidatable<T> {
   validate: Rule<T>;
