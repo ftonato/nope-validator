@@ -1,12 +1,12 @@
 {
   "name": "nope-validator",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "license": "MIT",
   "description": "Fast and simple JS validator",
   "scripts": {
-    "format": "prettier --write",
+    "format": "prettier --write src/**/*.ts",
     "lint": "tslint -p tsconfig.json",
     "test": "jest --env=node --colors src/**/*.spec.ts",
     "build": "rm -rf lib && tsc",
@@ -30,8 +30,8 @@
   },
   "lint-staged": {
     "*.{ts}": [
-      "prettier --write",
-      "tslint -p tsconfig.json",
+      "yarn format",
+      "yarn lint",
       "git add"
     ]
   },

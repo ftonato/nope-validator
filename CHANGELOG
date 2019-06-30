@@ -1,3 +1,8 @@
+0.6.0
+Added
+- Primitive
+  - When
+
 0.5.2
 Complexity fixes
 Fixed email regex taking too long on certain entries
