@@ -32,13 +32,10 @@ abstract class NopePrimitive<T> implements IValidatable<T> {
 
       const condIs = conditionObject.is;
 
-      let result;
-
-      if (typeof condIs === 'function') {
-        result = condIs(...resolvedConditionValues);
-      } else {
-        result = every(resolvedConditionValues, (val: any) => val === condIs);
-      }
+      const result =
+        typeof condIs === 'function'
+          ? condIs(...resolvedConditionValues)
+          : every(resolvedConditionValues, (val: any) => val === condIs);
 
       return result ? conditionObject.then : conditionObject.otherwise;
     };
