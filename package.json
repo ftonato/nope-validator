@@ -10,6 +10,7 @@
     "lint": "tslint -p tsconfig.json",
     "test": "jest --env=node --colors src/**/*.spec.ts",
     "build": "rm -rf lib && tsc",
+    "prepare" : "npm run build",
     "precommit": "lint-staged",
     "prepublishOnly": "yarn test && yarn lint",
     "preversion": "npm run lint",

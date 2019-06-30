@@ -32,7 +32,7 @@ class NopeObject {
 
       const error = rule.validate(entry[key], entry);
 
-      if (error) {
+      if (error && typeof error === 'string') {
         areErrors = true;
         errors[key] = error;
       }

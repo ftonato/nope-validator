@@ -98,4 +98,190 @@ describe('#NopePrimitive', () => {
       expect(validator.validate('41')).toEqual('42Error');
     });
   });
+
+  describe('#when', () => {
+    it('should work with simple boolean keys', () => {
+      const schema = Nope.object().shape({
+        small: Nope.boolean().required(),
+        test: Nope.number().when('small', {
+          is: true,
+          then: Nope.number().max(2, 'should be small'),
+          otherwise: Nope.number().min(2, 'should be big'),
+        }),
+      });
+
+      expect(
+        schema.validate({
+          small: true,
+          test: 3,
+        }),
+      ).toEqual({
+        test: 'should be small',
+      });
+
+      expect(
+        schema.validate({
+          small: false,
+          test: 1,
+        }),
+      ).toEqual({
+        test: 'should be big',
+      });
+
+      expect(
+        schema.validate({
+          small: false,
+          test: 5,
+        }),
+      ).toEqual(undefined);
+    });
+
+    it('should work with multiple boolean keys', () => {
+      const schema = Nope.object().shape({
+        small: Nope.boolean().required(),
+        positive: Nope.boolean().required(),
+        test: Nope.number().when(['small', 'positive'], {
+          is: true,
+          then: Nope.number()
+            .max(2, 'should be small')
+            .positive(),
+          otherwise: Nope.number()
+            .min(2, 'should be big')
+            .negative('should be negative'),
+        }),
+      });
+
+      expect(
+        schema.validate({
+          small: true,
+          positive: false,
+          test: 3,
+        }),
+      ).toEqual({
+        test: 'should be negative',
+      });
+
+      expect(
+        schema.validate({
+          small: false,
+          positive: true,
+          test: 3,
+        }),
+      ).toEqual({
+        test: 'should be negative',
+      });
+
+      expect(
+        schema.validate({
+          small: true,
+          positive: true,
+          test: 3,
+        }),
+      ).toEqual({
+        test: 'should be small',
+      });
+
+      expect(
+        schema.validate({
+          small: true,
+          positive: true,
+          test: 1,
+        }),
+      ).toEqual(undefined);
+    });
+
+    it('should work with a predicate', () => {
+      const schema = Nope.object().shape({
+        small: Nope.boolean().required(),
+        test: Nope.number().when(['small'], {
+          is: small => small,
+          then: Nope.number().max(2, 'should be small'),
+          otherwise: Nope.number().min(2, 'should be big'),
+        }),
+      });
+
+      expect(
+        schema.validate({
+          small: true,
+          test: 3,
+        }),
+      ).toEqual({
+        test: 'should be small',
+      });
+
+      expect(
+        schema.validate({
+          small: false,
+          test: 1,
+        }),
+      ).toEqual({
+        test: 'should be big',
+      });
+
+      expect(
+        schema.validate({
+          small: true,
+          test: 1,
+        }),
+      ).toEqual(undefined);
+    });
+
+    it('should work with a predicate and multiple conditions', () => {
+      const schema = Nope.object().shape({
+        num: Nope.number().required(),
+        num2: Nope.number().required(),
+        test: Nope.number().when(['num', 'num2'], {
+          is: (num, num2) => num === 42 || num2 === 42,
+          then: Nope.number().max(2, 'should be small'),
+          otherwise: Nope.number().min(2, 'should be big'),
+        }),
+      });
+
+      expect(
+        schema.validate({
+          num: 42,
+          num2: 43,
+          test: 3,
+        }),
+      ).toEqual({
+        test: 'should be small',
+      });
+
+      expect(
+        schema.validate({
+          num: 41,
+          num2: 42,
+          test: 3,
+        }),
+      ).toEqual({
+        test: 'should be small',
+      });
+
+      expect(
+        schema.validate({
+          num: 41,
+          num2: 41,
+          test: 3,
+        }),
+      ).toEqual(undefined);
+
+      expect(
+        schema.validate({
+          num: 41,
+          num2: 41,
+          test: 1,
+        }),
+      ).toEqual({
+        test: 'should be big',
+      });
+
+      expect(
+        schema.validate({
+          num: 42,
+          num2: 42,
+          test: 1,
+        }),
+      ).toEqual(undefined);
+    });
+  });
 });

@@ -68,6 +68,87 @@ UserSchema.validate({
 
 ## API
 
+- `Primitives` (String, Number, Date, Boolean)
+
+  - `when(key: string | string[], conditionObject: { is: boolean | ((...args: any) => boolean), then: NopeSchema, othervise: NopeSchema })` - Conditional validation of a key.
+  - The first param is the set of keys (or a single key) that the `is` predicate should run on. 
+  
+  - The `is` param can be set to simply true or false (which will run the .every method on the values and assert the against the passed `is`) or a predicate that will decide what schema will be active in that moment.
+
+  - ```js
+    const schema = Nope.object().shape({
+      check: Nope.boolean().required(),
+      test: Nope.string().when('check', {
+        is: true,
+        then: Nope.string()
+          .min(5, 'minError')
+          .required(),
+        otherwise: Nope.string()
+          .max(5)
+          .required(),
+      }),
+    });
+
+    schema.validate({
+      check: true,
+      test: 'test',
+    }); // { test: 'minError' }
+    // or as a predicate
+    const schema2 = Nope.object().shape({
+      check: Nope.boolean(),
+      check2: Nope.boolean(),
+      test: Nope.string().when(['check', 'check2'], {
+        is: (check, check2) => check && check2,
+        then: Nope.string()
+          .min(5, 'minError')
+          .required(),
+        otherwise: Nope.string()
+          .max(5)
+          .required(),
+      }),
+    });
+    schema.validate({
+      check: true,
+      check2: false,
+      test: 'testing',
+    }); // { test: 'maxError' }
+    ```
+
+  - `oneOf(options: string | ref[], message: string)` - Asserts if the entry is one of the defined options
+  - ```js
+    Nope.string()
+      .oneOf(['a', 'b', 'c'])
+      .validate('b'); // returns undefined
+
+    Nope.string()
+      .oneOf(['a', 'b', 'c'])
+      .validate('d'); // returns the error message
+    ```
+
+  - `required(message: string)` - Asserts if the entry is not nil
+  - ```js
+    Nope.string()
+      .required()
+      .validate('b'); // returns undefined
+
+    Nope.string()
+      .required()
+      .validate(); // returns the error message
+    ```
+
+  - `test(rule: (entry: string) => string | undefined)` - Add a custom rule
+  - ```js
+    Nope.string()
+      .test(a => (a === '42' ? undefined : 'Must be 42'))
+      .validate('42'); // returns undefined
+
+    Nope.string()
+      .test(a => (a === '42' ? undefined : 'Must be 42'))
+      .validate('41'); // returns the error message
+    ```
+
+  - `validate(entry: string | undefined | null)` - Runs the rule chain against an entry
+
 - `String`
 
   - `regex(regex: RegExp, message: string)` - Asserts if the entry matches the pattern
@@ -125,41 +206,6 @@ UserSchema.validate({
       .validate('http'); // returns the error message
     ```
 
-  - `oneOf(options: string | ref[], message: string)` - Asserts if the entry is one of the defined options
-  - ```js
-    Nope.string()
-      .oneOf(['a', 'b', 'c'])
-      .validate('b'); // returns undefined
-
-    Nope.string()
-      .oneOf(['a', 'b', 'c'])
-      .validate('d'); // returns the error message
-    ```
-
-  - `required(message: string)` - Asserts if the entry is not nil
-  - ```js
-    Nope.string()
-      .required()
-      .validate('b'); // returns undefined
-
-    Nope.string()
-      .required()
-      .validate(); // returns the error message
-    ```
-
-  - `test(rule: (entry: string) => string | undefined)` - Add a custom rule
-  - ```js
-    Nope.string()
-      .test(a => (a === '42' ? undefined : 'Must be 42'))
-      .validate('42'); // returns undefined
-
-    Nope.string()
-      .test(a => (a === '42' ? undefined : 'Must be 42'))
-      .validate('41'); // returns the error message
-    ```
-
-  - `validate(entry: string | undefined | null)` - Runs the rule chain against an entry
-
 - `Number`
 
   - `min(size: number, message: string)` - Asserts if the entry is smaller than a threshold
@@ -206,41 +252,6 @@ UserSchema.validate({
       .validate(42); // returns the error message
     ```
 
-  - `oneOf(options: string | ref[], message: string)` - Asserts if the entry is one of the defined options
-  - ```js
-    Nope.number()
-      .oneOf([1, 2, 3])
-      .validate(2); // returns undefined
-
-    Nope.number()
-      .oneOf([1, 2, 3])
-      .validate(4); // returns the error message
-    ```
-
-  - `required(message: string)` - Asserts if the entry is not nil
-  - ```js
-    Nope.number()
-      .required()
-      .validate(2); // returns undefined
-
-    Nope.number()
-      .required()
-      .validate(); // returns the error message
-    ```
-
-  - `test(rule: (entry: number) => string | undefined)` - Add a custom rule
-  - ```js
-    Nope.number()
-      .test(a => (a === 42 ? undefined : 'Must be 42'))
-      .validate(42); // returns undefined
-
-    Nope.number()
-      .test(a => (a === 42 ? undefined : 'Must be 42'))
-      .validate(41); // returns the error message
-    ```
-
-  - `validate(entry: number | undefined | null)` - Runs the rule chain against an entry
-
 - `Date`
 
   - `before(date: string | number | Date, message: string)` - Asserts if the entry is before a certain date
@@ -265,41 +276,6 @@ UserSchema.validate({
       .validate('2018-31-12'); // returns the error message
     ```
 
-  - `oneOf(options: string | ref[], message: string)` - Asserts if the entry is one of the defined options
-  - ```js
-    Nope.date()
-      .oneOf(['2019-01-01', '2019-01-02'])
-      .validate('2018-01-02'); // returns undefined
-
-    Nope.date()
-      .oneOf(['2019-01-01', '2019-01-02'])
-      .validate('2018-31-12'); // returns the error message
-    ```
-
-  - `required(message: string)` - Asserts if the entry is not nil
-  - ```js
-    Nope.date()
-      .required()
-      .validate('2019-01-01'); // returns undefined
-
-    Nope.date()
-      .required()
-      .validate(); // returns the error message
-    ```
-
-  - `test(rule: (entry: string | number | Date) => string | undefined` - Add a custom rule
-  - ```js
-    Nope.date()
-      .test(d => (d !== new Date('2019-01-01') ? undefined : "Can't be 2019-01-01"))
-      .validate(new Date('2019-01-02')); // returns undefined
-
-    Nope.date()
-      .test(d => (d !== new Date('2019-01-01') ? undefined : "Can't be 2019-01-01"))
-      .validate(new Date('2019-01-01')); // returns the error message
-    ```
-
-  - `validate(entry: string | number | Date | undefined | null)` - Runs the rule chain against an entry
-
 - `Boolean`
 
   - `true(message: string)` - Asserts if the entry is true
@@ -323,41 +299,6 @@ UserSchema.validate({
       .false()
       .validate(true); // returns the error message
     ```
-
-  - `oneOf(options: boolean | ref[], message: string)` - Asserts if the entry is one of the defined options
-  - ```js
-    Nope.boolean()
-      .oneOf([true])
-      .validate(true); // returns undefined
-
-    Nope.boolean()
-      .oneOf([true])
-      .validate(false); // returns the error message
-    ```
-
-  - `required(message: string)` - Asserts if the entry is not nil
-  - ```js
-    Nope.boolean()
-      .required()
-      .validate(true); // returns undefined
-
-    Nope.boolean()
-      .required()
-      .validate(); // returns the error message
-    ```
-
-  - `test(rule: (entry: boolean) => string | undefined)` - Add a custom rule
-  - ```js
-    Nope.boolean()
-      .test(a => (a === true ? undefined : 'Must be true'))
-      .validate(true); // returns undefined
-
-    Nope.boolean()
-      .test(a => (a === true ? undefined : 'Must be true'))
-      .validate(false); // returns the error message
-    ```
-
-  - `validate(entry: boolean | undefined | null)` - Runs the rule chain against an entry
 
 - `Object`
 
