@@ -73,6 +73,71 @@ describe('#NopePrimitive', () => {
     });
   });
 
+  describe('#notOneOf', () => {
+    let errorMessage: string;
+
+    beforeAll(() => {
+      errorMessage = 'shouldNotMatch';
+    });
+
+    it ('should return undefined for a non-matching entry', () => {
+      const validator = new Dummy().notOneOf(['a', 'b']);
+
+      expect(validator.validate('c')).toEqual(undefined);
+    });
+
+    it('should return an error messsage when an entry matches', () => {
+      const validator = new Dummy().notOneOf(['a', 'b'], errorMessage);
+
+      expect(validator.validate('b')).toEqual(errorMessage);
+    });
+
+    describe('reference tests', () => {
+      it('should return undefined when references do not match', () => {
+        const validator = Nope.object().shape({
+          key1: Nope.string(),
+          key2: Nope.string().notOneOf([Nope.ref('key1')])
+        });
+  
+        expect(
+          validator.validate({
+            key1: 'a',
+            key2: 'b'
+          })).toBeUndefined();
+      });
+
+      it('should return an error message when references match', () => {
+        const validator = Nope.object().shape({
+          key1: Nope.string(),
+          key2: Nope.string().notOneOf([Nope.ref('key1')], errorMessage)
+        });
+
+        expect(
+          validator.validate({
+            key1: 'a',
+            key2: 'a'
+          })).toEqual({
+            key2: errorMessage
+          });
+      });
+
+      it('should return the error message when there is a non-reference match', () => {
+        const validator = Nope.object().shape({
+          key1: Nope.string(),
+          key2: Nope.string().notOneOf([Nope.ref('key1'), 'b', 'c'], errorMessage)
+        });
+
+        expect(
+          validator.validate({
+            key1: 'a',
+            key2: 'c'
+          })).toEqual({
+            key2: errorMessage
+          });
+      });
+    });
+  });
+
   describe('#test', () => {
     it('should return undefined for a valid value', () => {
       const validator = new Dummy()
