@@ -130,4 +130,29 @@ describe('#NopeNumber', () => {
       ).toBe(undefined);
     });
   });
+  describe('#integer', () => {
+    it('should return undefined for an empty entry', () => {
+      expect(
+        Nope.number()
+          .integer()
+          .validate(),
+      ).toBe(undefined);
+    });
+
+    it('should return an error message for an entry that is not an integer', () => {
+      expect(
+        Nope.number()
+          .integer()
+          .validate(3.14),
+      ).toBe('Input must be an integer');
+    });
+
+    it('should return undefined for an entry that is an integer', () => {
+      expect(
+        Nope.number()
+          .integer('integerErrorMessage')
+          .validate(1),
+      ).toBe(undefined);
+    });
+  });
 });

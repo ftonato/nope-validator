@@ -2,6 +2,19 @@ import NopePrimitive from './NopePrimitive';
 import { Rule } from './types';
 
 class NopeNumber extends NopePrimitive<number> {
+  public integer(message = 'Input must be an integer'){
+    const rule: Rule<number> = entry => {
+      if (entry === undefined || entry === null) {
+        return;
+      }
+      if(!Number.isInteger(entry)){
+        return message;
+      }
+    }
+
+    return this.test(rule);
+  }
+
   public min(size: number, message = 'Input is too small') {
     const rule: Rule<number> = entry => {
       if (entry === undefined || entry === null) {
