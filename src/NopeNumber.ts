@@ -2,12 +2,13 @@ import NopePrimitive from './NopePrimitive';
 import { Rule } from './types';
 
 class NopeNumber extends NopePrimitive<number> {
-  public integer(message = 'Input must be an integer'){
+  public integer(message = 'Input must be an integer') {
     const rule: Rule<number> = entry => {
       if (entry === undefined || entry === null) {
         return;
       }
-      if(!Number.isInteger(entry)){
+
+      if (entry !== Math.floor(entry)) {
         return message;
       }
     }
