@@ -126,6 +126,17 @@ UserSchema.validate({
       .validate('d'); // returns the error message
     ```
 
+  - `notOneOf(options: number | ref[], message: string)` - Asserts if the entry is one of the defined options
+  - ```js
+    Nope.string()
+      .notOneOf([1, 2, 3])
+      .validate(5); // returns undefined
+
+    Nope.string()
+      .notOneOf([1, 2, 3])
+      .validate(2); // returns the error message
+    ```
+
   - `required(message: string)` - Asserts if the entry is not nil
   - ```js
     Nope.string()
@@ -208,6 +219,17 @@ UserSchema.validate({
     ```
 
 - `Number`
+
+  - `integer(message: string)` - Asserts if the entry is an integer
+  - ```js
+    Nope.number()
+      .integer('error message')
+      .validate(2); // returns undefined
+
+    Nope.number()
+      .integer('error message')
+      .validate(4.2); // returns the error message
+    ```
 
   - `min(size: number, message: string)` - Asserts if the entry is smaller than a threshold
   - ```js
