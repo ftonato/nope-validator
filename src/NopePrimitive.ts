@@ -1,6 +1,10 @@
 import { IValidatable, Nil, Rule } from './types';
 import NopeReference from './NopeReference';
-import { resolveNopeRefsFromKeys, every } from './utils';
+import {
+  resolveNopeRefsFromKeys,
+  every,
+  resolveNopeRef
+} from './utils';
 
 abstract class NopePrimitive<T> implements IValidatable<T> {
   protected validationRules: Array<Rule<T>> = [];
@@ -42,18 +46,22 @@ abstract class NopePrimitive<T> implements IValidatable<T> {
   }
 
   public oneOf(options: Array<T | NopeReference | Nil>, message = 'Invalid option') {
-    const resolveNopeRef = (option: T | NopeReference | Nil, context?: { [key: string]: any }) => {
-      if (option instanceof NopeReference && context) {
-        return context[option.key];
-      }
-
-      return option;
-    };
-
     const rule: Rule<T> = (entry, context) => {
       const resolvedOptions = options.map(option => resolveNopeRef(option, context));
 
       if (resolvedOptions.indexOf(entry) === -1) {
+        return message;
+      }
+    };
+
+    return this.test(rule);
+  }
+
+  public notOneOf(options: Array<T | NopeReference | Nil>, message = 'Invalid Option') {
+    const rule: Rule<T> = (entry, context) => {
+      const resolvedOptions = options.map(option => resolveNopeRef(option, context));
+
+      if (resolvedOptions.indexOf(entry) !== -1) {
         return message;
       }
     };
