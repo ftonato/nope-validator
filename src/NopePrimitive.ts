@@ -46,8 +46,6 @@ abstract class NopePrimitive<T> implements IValidatable<T> {
   }
 
   public oneOf(options: Array<T | NopeReference | Nil>, message = 'Invalid option') {
-    
-
     const rule: Rule<T> = (entry, context) => {
       const resolvedOptions = options.map(option => resolveNopeRef(option, context));
 
@@ -60,14 +58,6 @@ abstract class NopePrimitive<T> implements IValidatable<T> {
   }
 
   public notOneOf(options: Array<T | NopeReference | Nil>, message = 'Invalid Option') {
-    const resolveNopeRef = (option: T | NopeReference | Nil, context?: { [key: string]: any}) => {
-      if (option instanceof NopeReference && context) {
-        return context[option.key];
-      }
-
-      return option;
-    }
-
     const rule: Rule<T> = (entry, context) => {
       const resolvedOptions = options.map(option => resolveNopeRef(option, context));
 
