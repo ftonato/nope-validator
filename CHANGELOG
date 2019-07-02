@@ -1,3 +1,10 @@
+0.7.0
+Added
+- Primitive
+  - notOneOf
+- Number
+  - integer
+
 0.6.0
 Added
 - Primitive
