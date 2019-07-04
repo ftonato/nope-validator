@@ -1,4 +1,4 @@
-import { IValidatable, ShapeErrors } from './types';
+import { IValidatable, Rule, ShapeErrors } from './types';
 
 interface ObjectShape {
   [key: string]: IValidatable<any>;
@@ -6,6 +6,7 @@ interface ObjectShape {
 
 class NopeObject {
   private objectShape: ObjectShape;
+  private validationRules: Array<Rule<object>> = [];
 
   constructor(objectShape?: ObjectShape) {
     this.objectShape = objectShape || {};
@@ -23,7 +24,39 @@ class NopeObject {
     return this;
   }
 
+  public noUnknown(message = 'Input contains unknown keys') {
+    const rule: Rule<object> = entry => {
+      let objectIsDefined = false;
+      for (const _ in this.objectShape) {
+        objectIsDefined = true;
+        break;
+      }
+
+      if (!objectIsDefined) {
+        throw Error('noUnknown must be used with a schema');
+      }
+
+      for (const key in entry) {
+        if (!(key in this.objectShape)) {
+          return message;
+        }
+      }
+    };
+
+    this.validationRules.push(rule);
+
+    return this;
+  }
+
   public validate(entry: { [key: string]: any }) {
+    for (const rule of this.validationRules) {
+      const localErrors = rule(entry);
+
+      if (localErrors) {
+        return localErrors;
+      }
+    }
+
     const errors: ShapeErrors = {};
     let areErrors = false;
 
