@@ -11,7 +11,11 @@ describe('#utils', () => {
 
   describe('#resolveNopeRefsFromKeys', () => {
     it('should work', () => {
-      expect(utils.resolveNopeRefsFromKeys(['a', 'b', 'd'], { a: 2, b: 5 })).toEqual([2, 5, 'd']);
+      expect(utils.resolveNopeRefsFromKeys(['a', 'b', 'd'], { a: 2, b: 5 })).toEqual([
+        2,
+        5,
+        undefined,
+      ]);
     });
   });
 });
