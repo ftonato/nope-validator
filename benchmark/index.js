@@ -1,7 +1,7 @@
 // Make sure you build the library before running this code
 
 const Yup = require('yup');
-const Nope = require('../lib');
+const Nope = require('..');
 const bench = require('benchmark');
 
 const yupSchema = Yup.object().shape({
