@@ -24,7 +24,7 @@ class NopeObject {
     return this;
   }
 
-  public noUnknown(message = 'Input contains unknown keys') {
+  public noUnknown(message = 'Input contains invalid keys') {
     const rule: Rule<object> = entry => {
       let objectIsDefined = false;
       for (const _ in this.objectShape) {
