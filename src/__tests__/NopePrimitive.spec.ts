@@ -259,7 +259,7 @@ describe('#NopePrimitive', () => {
       const schema = Nope.object().shape({
         small: Nope.boolean().required(),
         test: Nope.number().when(['small'], {
-          is: small => small,
+          is: true,
           then: Nope.number().max(2, 'should be small'),
           otherwise: Nope.number().min(2, 'should be big'),
         }),
@@ -347,6 +347,45 @@ describe('#NopePrimitive', () => {
           test: 1,
         }),
       ).toEqual(undefined);
+    });
+
+    it('should validate circulate referencing fields', () => {
+      const schema = Nope.object().shape({
+        name: Nope.string().required(),
+        pdf: Nope.string().when('csv', {
+          is: csv => !!csv,
+          then: Nope.string(),
+          otherwise: Nope.string().required(),
+        }),
+        csv: Nope.string().when('pdf', {
+          is: pdf => !!pdf,
+          then: Nope.string(),
+          otherwise: Nope.string().required(),
+        }),
+      });
+
+      expect(
+        schema.validate({
+          name: 'a',
+        }),
+      ).toEqual({
+        csv: 'This field is required',
+        pdf: 'This field is required',
+      });
+
+      expect(
+        schema.validate({
+          name: 'a',
+          csv: 'test',
+        }),
+      ).toBeUndefined();
+
+      expect(
+        schema.validate({
+          name: 'a',
+          pdf: 'test',
+        }),
+      ).toBeUndefined();
     });
   });
 });

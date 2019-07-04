@@ -6,7 +6,7 @@ export function resolveNopeRefsFromKeys(
   context?: { [key: string]: any },
 ) {
   const resolvedOptions = options.map(option => {
-    if (context && option !== undefined && option !== null && context[option] !== undefined) {
+    if (context && option !== undefined && option !== null) {
       return context[option];
     }
 
