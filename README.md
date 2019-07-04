@@ -369,6 +369,19 @@ UserSchema.validate({
     }); // returns { confirmPassword: 'Passwords don\'t match' }
     ```
 
+  - `noUnknown(message: string)` - Return an error message if the entry contains keys that are not defined in the schema
+
+  - ```js
+    const schema = Nope.object().shape({
+      name: Nope.string().min(5),
+    }).noUnknown('no unknown keys');
+
+    schema.validate({
+      name: 'Jonathan',
+      password: 'birdybird',
+    }); // returns 'no unknown keys';
+    ```
+
   - `validate(entry: object)` - Runs the rule chain against an entry
 
 - `Reference` - allows the schema to reference other values in the provided entry

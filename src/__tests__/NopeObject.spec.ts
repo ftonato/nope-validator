@@ -108,4 +108,38 @@ describe('#NopeObject', () => {
       });
     });
   });
+
+  describe('noUnknown', () => {
+    it('should not allow unknown keys', () => {
+      const schema = Nope.object()
+        .shape({
+          a: Nope.string(),
+          b: Nope.number(),
+        })
+        .noUnknown('noUnknownError');
+
+      expect(
+        schema.validate({
+          a: 'magic',
+          b: 42,
+        }),
+      ).toBeUndefined();
+
+      expect(
+        schema.validate({
+          a: 'magic',
+          b: 42,
+          c: 5,
+        }),
+      ).toBe('noUnknownError');
+    });
+
+    it('should throw an error if used wrongly', () => {
+      const schema = Nope.object().noUnknown();
+
+      expect(() => {
+        schema.validate({ a: 42 });
+      }).toThrowError();
+    });
+  });
 });
