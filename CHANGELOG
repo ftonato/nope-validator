@@ -1,3 +1,11 @@
+0.7.3
+Support build for:
+ES2015
+ESM
+CJS
+UMD
+AMD
+
 0.7.2
 Fixed when conditional not resolving properly in some cases
 
