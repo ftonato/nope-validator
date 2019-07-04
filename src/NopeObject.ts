@@ -36,10 +36,14 @@ class NopeObject {
         throw Error('noUnknown must be used with a schema');
       }
 
+      let unknownKeys = false;
+
       for (const key in entry) {
-        if (!(key in this.objectShape)) {
-          return message;
-        }
+        unknownKeys = unknownKeys || !(key in this.objectShape);
+      }
+
+      if (unknownKeys) {
+        return message;
       }
     };
 
