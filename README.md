@@ -6,6 +6,7 @@
 [![Version](https://img.shields.io/npm/v/nope-validator.svg)](https://npm.im/nope-validator)
 [![size](https://img.shields.io/bundlephobia/min/nope-validator.svg)](https://bundlephobia.com/result?p=nope-validator)
 [![gzip](https://img.shields.io/bundlephobia/minzip/nope-validator.svg)](https://bundlephobia.com/result?p=nope-validator)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fbvego%2Fnope-validator.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fbvego%2Fnope-validator?ref=badge_shield)
 
 A small, simple and fast JS validator. Like, wow thats fast. 🚀
 
@@ -452,3 +453,7 @@ yup x 6,566 ops/sec ±3.24% (90 runs sampled)
 I'll add tests against other validation libraries as well.
 
 The benchmark results can be found in the `benchmark/` folder along with the specs and the code that was used for the benchmark.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fbvego%2Fnope-validator.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fbvego%2Fnope-validator?ref=badge_large)
