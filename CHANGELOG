@@ -1,3 +1,17 @@
+0.8.0
+Added 🚀
+- Object
+  - noUnkown
+
+Internal 🏡
+- Bumped typescript from 3.5.2 too 3.5.3
+- Bumped lint-staged from 9.0.2 to 9.1.0
+- Bumped @babel/types from 7.4.4 to 7.5.0
+- Bumped @types/node from 12.0.12 to 12.6.1
+- Added code of conduct
+- Added small PR template
+- Readme update
+
 0.7.3
 Support build for:
 ES2015
