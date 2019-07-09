@@ -142,4 +142,24 @@ describe('#NopeObject', () => {
       }).toThrowError();
     });
   });
+
+  describe('consistency', () => {
+    it('should be consistent', () => {
+      const schema = Nope.object().shape({
+        email: Nope.string().email('error'),
+        url: Nope.string().url('urlError'),
+      });
+
+      let resp = schema.validate({
+        email: 'test@test.com',
+        url: 'https://google.com',
+      });
+      expect(resp).toBeUndefined();
+      resp = schema.validate({
+        email: 'test@test.com',
+        url: 'https://google.com',
+      });
+      expect(resp).toBeUndefined();
+    });
+  });
 });
