@@ -1,6 +1,6 @@
 {
   "name": "nope-validator",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "main": "lib/umd/index.js",
   "module": "lib/es2015/index.js",
   "types": "lib/umd/index.d.ts",
