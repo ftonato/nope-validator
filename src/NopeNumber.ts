@@ -11,12 +11,26 @@ class NopeNumber extends NopePrimitive<number> {
       if (entry !== Math.floor(entry)) {
         return message;
       }
-    }
+    };
 
     return this.test(rule);
   }
 
-  public min(size: number, message = 'Input is too small') {
+  /**
+   * @deprecated alias for greaterThan()
+   */
+  public min(size: number, message?: string) {
+    return this.greaterThan(size, message);
+  }
+
+  /**
+   * @deprecated alias for lessThan()
+   */
+  public max(size: number, message?: string) {
+    return this.lessThan(size, message);
+  }
+
+  public greaterThan(size: number, message = 'Input is too small') {
     const rule: Rule<number> = entry => {
       if (entry === undefined || entry === null) {
         return;
@@ -30,7 +44,7 @@ class NopeNumber extends NopePrimitive<number> {
     return this.test(rule);
   }
 
-  public max(size: number, message = 'Input is too large') {
+  public lessThan(size: number, message = 'Input is too large') {
     const rule: Rule<number> = entry => {
       if (entry === undefined || entry === null) {
         return;
@@ -44,12 +58,40 @@ class NopeNumber extends NopePrimitive<number> {
     return this.test(rule);
   }
 
+  public atLeast(size: number, message = 'Input is too small') {
+    const rule: Rule<number> = entry => {
+      if (entry === undefined || entry === null) {
+        return;
+      }
+
+      if (entry < size) {
+        return message;
+      }
+    };
+
+    return this.test(rule);
+  }
+
+  public atMost(size: number, message = 'Input is too large') {
+    const rule: Rule<number> = entry => {
+      if (entry === undefined || entry === null) {
+        return;
+      }
+
+      if (entry > size) {
+        return message;
+      }
+    };
+
+    return this.test(rule);
+  }
+
   public positive(message = 'Input must be positive') {
-    return this.min(0, message);
+    return this.greaterThan(0, message);
   }
 
   public negative(message = 'Input must be negative') {
-    return this.max(0, message);
+    return this.lessThan(0, message);
   }
 }
 

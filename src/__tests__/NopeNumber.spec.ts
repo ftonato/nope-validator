@@ -2,15 +2,15 @@ import Nope from '..';
 
 describe('#NopeNumber', () => {
   describe('#min', () => {
-    it('should return undefined for an empty entry', () => {
+    it('(alias for greaterThan) should return undefined for an empty entry', () => {
       expect(
         Nope.number()
-          .min(5, 'minErrorMessage')
+          .min(5, 'minLengthErrorMessage')
           .validate(),
       ).toBe(undefined);
     });
 
-    it('should return an error message for an entry that is smaller or equal to the threshold', () => {
+    it('(alias for greaterThan) should return an error message for an entry smaller than the threshold', () => {
       expect(
         Nope.number()
           .min(5)
@@ -18,25 +18,33 @@ describe('#NopeNumber', () => {
       ).toBe('Input is too small');
     });
 
-    it('should return undefined for an entry greater than the threshold', () => {
+    it('(alias for greaterThan) should return an error message for an entry equal to the threshold', () => {
       expect(
         Nope.number()
-          .min(5, 'minErrorMessage')
+          .min(3)
+          .validate(3),
+      ).toBe('Input is too small');
+    });
+
+    it('(alias for greaterThan) should return undefined for an entry greater than the threshold', () => {
+      expect(
+        Nope.number()
+          .min(5, 'minLengthErrorMessage')
           .validate(6),
       ).toBe(undefined);
     });
   });
 
   describe('#max', () => {
-    it('should return undefined for an empty entry', () => {
+    it('(alias for lessThan) should return undefined for an empty entry', () => {
       expect(
         Nope.number()
-          .max(5, 'maxErrorMessage')
+          .max(5, 'maxLengthErrorMessage')
           .validate(),
       ).toBe(undefined);
     });
 
-    it('should return an error message for an entry that is greater than or equal to the max characters', () => {
+    it('(alias for lessThan) should return an error message for an entry greater than the threshold', () => {
       expect(
         Nope.number()
           .max(5)
@@ -44,36 +52,154 @@ describe('#NopeNumber', () => {
       ).toBe('Input is too large');
     });
 
-    it('should return undefined for an entry smaller than the threshold', () => {
+    it('(alias for lessThan) should return an error message for an entry equal to the threshold', () => {
       expect(
         Nope.number()
-          .max(5, 'maxErrorMessage')
+          .max(4)
+          .validate(4),
+      ).toBe('Input is too large');
+    });
+
+    it('(alias for lessThan) should return undefined for an entry smaller than the threshold', () => {
+      expect(
+        Nope.number()
+          .max(5, 'maxLengthErrorMessage')
           .validate(2),
       ).toBe(undefined);
     });
   });
 
-  describe('#max', () => {
+  describe('#greaterThan', () => {
     it('should return undefined for an empty entry', () => {
       expect(
         Nope.number()
-          .max(5, 'maxErrorMessage')
+          .greaterThan(5, 'greaterThanErrorMessage')
           .validate(),
       ).toBe(undefined);
     });
 
-    it('should return an error message for an entry that is greater than or equal to the max characters', () => {
+    it('should return an error message for an entry smaller than the threshold', () => {
       expect(
         Nope.number()
-          .max(5)
+          .greaterThan(5)
+          .validate(2),
+      ).toBe('Input is too small');
+    });
+
+    it('should return an error message for an entry equal to the threshold', () => {
+      expect(
+        Nope.number()
+          .greaterThan(3)
+          .validate(3),
+      ).toBe('Input is too small');
+    });
+
+    it('should return undefined for an entry greater than the threshold', () => {
+      expect(
+        Nope.number()
+          .greaterThan(5, 'greaterThanErrorMessage')
+          .validate(6),
+      ).toBe(undefined);
+    });
+  });
+
+  describe('#lessThan', () => {
+    it('should return undefined for an empty entry', () => {
+      expect(
+        Nope.number()
+          .lessThan(5, 'lessThanErrorMessage')
+          .validate(),
+      ).toBe(undefined);
+    });
+
+    it('should return an error message for an entry greater than the threshold', () => {
+      expect(
+        Nope.number()
+          .lessThan(5)
           .validate(7),
+      ).toBe('Input is too large');
+    });
+
+    it('should return an error message for an entry equal to the threshold', () => {
+      expect(
+        Nope.number()
+          .lessThan(4)
+          .validate(4),
       ).toBe('Input is too large');
     });
 
     it('should return undefined for an entry smaller than the threshold', () => {
       expect(
         Nope.number()
-          .max(5, 'maxErrorMessage')
+          .lessThan(5, 'lessThanErrorMessage')
+          .validate(2),
+      ).toBe(undefined);
+    });
+  });
+
+  describe('#atLeast', () => {
+    it('should return undefined for an empty entry', () => {
+      expect(
+        Nope.number()
+          .atLeast(5, 'atLeastErrorMessage')
+          .validate(),
+      ).toBe(undefined);
+    });
+
+    it('should return an error message for an entry smaller than the the threshold', () => {
+      expect(
+        Nope.number()
+          .atLeast(5)
+          .validate(2),
+      ).toBe('Input is too small');
+    });
+
+    it('should return undefined for an entry equal to the threshold', () => {
+      expect(
+        Nope.number()
+          .atLeast(3, 'atLeastErrorMessage')
+          .validate(3),
+      ).toBe(undefined);
+    });
+
+    it('should return undefined for an entry greater than the threshold', () => {
+      expect(
+        Nope.number()
+          .atLeast(5, 'atLeastErrorMessage')
+          .validate(6),
+      ).toBe(undefined);
+    });
+  });
+
+  describe('#atMost', () => {
+    it('should return undefined for an empty entry', () => {
+      expect(
+        Nope.number()
+          .atMost(5, 'atMostErrorMessage')
+          .validate(),
+      ).toBe(undefined);
+    });
+
+    it('should return an error message for an entry greater than the theshold', () => {
+      expect(
+        Nope.number()
+          .atMost(5)
+          .validate(7),
+      ).toBe('Input is too large');
+    });
+
+    it('should return undefined for an entry equal to the threshold', () => {
+      expect(
+        Nope.number()
+          .atMost(10, 'atMostErrorMessage')
+          .validate(10),
+      ).toBe(undefined);
+    });
+
+    it('should return undefined for an entry smaller than the threshold', () => {
+      expect(
+        Nope.number()
+          .atMost(5, 'atMostErrorMessage')
           .validate(2),
       ).toBe(undefined);
     });
@@ -88,7 +214,7 @@ describe('#NopeNumber', () => {
       ).toBe(undefined);
     });
 
-    it('should return an error message for an entry that is negative', () => {
+    it('should return an error message for an entry negative', () => {
       expect(
         Nope.number()
           .positive()
@@ -96,7 +222,7 @@ describe('#NopeNumber', () => {
       ).toBe('Input must be positive');
     });
 
-    it('should return undefined for an entry that is positive', () => {
+    it('should return undefined for an entry positive', () => {
       expect(
         Nope.number()
           .positive('positiveErrorMessage')
@@ -114,7 +240,7 @@ describe('#NopeNumber', () => {
       ).toBe(undefined);
     });
 
-    it('should return an error message for an entry that is negative', () => {
+    it('should return an error message for an entry negative', () => {
       expect(
         Nope.number()
           .negative()
@@ -122,7 +248,7 @@ describe('#NopeNumber', () => {
       ).toBe('Input must be negative');
     });
 
-    it('should return undefined for an entry that is negative', () => {
+    it('should return undefined for an entry negative', () => {
       expect(
         Nope.number()
           .negative('negativeErrorMessage')
@@ -130,6 +256,7 @@ describe('#NopeNumber', () => {
       ).toBe(undefined);
     });
   });
+
   describe('#integer', () => {
     it('should return undefined for an empty entry', () => {
       expect(
@@ -139,7 +266,7 @@ describe('#NopeNumber', () => {
       ).toBe(undefined);
     });
 
-    it('should return an error message for an entry that is not an integer', () => {
+    it('should return an error message for an entry not an integer', () => {
       expect(
         Nope.number()
           .integer()
@@ -147,7 +274,7 @@ describe('#NopeNumber', () => {
       ).toBe('Input must be an integer');
     });
 
-    it('should return undefined for an entry that is an integer', () => {
+    it('should return undefined for an entry an integer', () => {
       expect(
         Nope.number()
           .integer('integerErrorMessage')
