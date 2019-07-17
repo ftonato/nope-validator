@@ -1,14 +1,14 @@
-import { IValidatable, Rule, ShapeErrors } from './types';
+import { Validatable, Rule, ShapeErrors } from './types';
 
 interface ObjectShape {
-  [key: string]: IValidatable<any>;
+  [key: string]: Validatable<any>;
 }
 
 class NopeObject {
   private objectShape: ObjectShape;
-  private validationRules: Array<Rule<object>> = [];
+  private validationRules: Rule<object>[] = [];
 
-  constructor(objectShape?: ObjectShape) {
+  public constructor(objectShape?: ObjectShape) {
     this.objectShape = objectShape || {};
   }
 
@@ -27,6 +27,7 @@ class NopeObject {
   public noUnknown(message = 'Input contains invalid keys') {
     const rule: Rule<object> = entry => {
       let objectIsDefined = false;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for (const _ in this.objectShape) {
         objectIsDefined = true;
         break;

@@ -5,7 +5,7 @@ describe('#NopeNumber', () => {
     it('(alias for greaterThan) should return undefined for an empty entry', () => {
       expect(
         Nope.number()
-          .min(5, 'minLengthErrorMessage')
+          .min(3, 'minLengthErrorMessage')
           .validate(),
       ).toBe(undefined);
     });
