@@ -25,7 +25,21 @@ class NopeString extends NopePrimitive<string> {
     return this.regex(emailRegex, message);
   }
 
-  public min(length: number, message = 'Input is too short') {
+  /**
+   * @deprecated alias for greaterThan()
+   */
+  public min(length: number, message?: string) {
+    return this.greaterThan(length, message);
+  }
+
+  /**
+   * @deprecated alias for lessThan()
+   */
+  public max(length: number, message?: string) {
+    return this.lessThan(length, message);
+  }
+
+  public greaterThan(length: number, message = 'Input is too short') {
     const rule: Rule<string> = entry => {
       if (entry === undefined || entry === null) {
         return;
@@ -39,13 +53,41 @@ class NopeString extends NopePrimitive<string> {
     return this.test(rule);
   }
 
-  public max(length: number, message = 'Input is too long') {
+  public lessThan(length: number, message = 'Input is too long') {
     const rule: Rule<string> = entry => {
       if (entry === undefined || entry === null) {
         return;
       }
 
       if (entry.length >= length) {
+        return message;
+      }
+    };
+
+    return this.test(rule);
+  }
+
+  public atLeast(length: number, message = 'Input is too short') {
+    const rule: Rule<string> = entry => {
+      if (entry === undefined || entry === null) {
+        return;
+      }
+
+      if (entry.length < length) {
+        return message;
+      }
+    };
+
+    return this.test(rule);
+  }
+
+  public atMost(length: number, message = 'Input is too long') {
+    const rule: Rule<string> = entry => {
+      if (entry === undefined || entry === null) {
+        return;
+      }
+
+      if (entry.length > length) {
         return message;
       }
     };

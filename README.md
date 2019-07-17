@@ -45,8 +45,8 @@ import Nope from 'nope-validator';
 
 const UserSchema = Nope.object().shape({
   name: Nope.string()
-    .min(5, 'Please provide a longer name')
-    .max(255, 'Name is too long!'),
+    .atLeast(5, 'Please provide a longer name')
+    .atMost(255, 'Name is too long!'),
   email: Nope.string()
     .email()
     .required(),
@@ -82,10 +82,10 @@ UserSchema.validate({
       test: Nope.string().when('check', {
         is: true,
         then: Nope.string()
-          .min(5, 'minError')
+          .atLeast(5, 'minError')
           .required(),
         otherwise: Nope.string()
-          .max(5)
+          .atMost(5)
           .required(),
       }),
     });
@@ -101,10 +101,10 @@ UserSchema.validate({
       test: Nope.string().when(['check', 'check2'], {
         is: (check, check2) => check && check2,
         then: Nope.string()
-          .min(5, 'minError')
+          .atLeast(5, 'minError')
           .required(),
         otherwise: Nope.string()
-          .max(5)
+          .atMost(5)
           .required(),
       }),
     });
@@ -196,25 +196,29 @@ UserSchema.validate({
       .validate('testgmail.com'); // returns the error message
     ```
 
-  - `min(length: number, message: string)` - Asserts if the entry is smaller than a threshold
+  - `min(length: number, message: string)` - **_deprecated_**: alias for greaterThan
+
+  - `max(length: number, message: string)` - **_deprecated_**: alias for lessThan
+
+  - `greaterThan(length: number, message: string)` - Asserts if the entry is smaller than a threshold
   - ```js
     Nope.string()
-      .min(4)
+      .greaterThan(4)
       .validate('https'); // returns undefined
 
     Nope.string()
-      .min(4)
+      .greaterThan(4)
       .validate('http'); // returns the error message
     ```
 
-  - `max(length: number, message: string)` - Asserts if the entry is greater than a threshold
+  - `lessThan(length: number, message: string)` - Asserts if the entry is greater than a threshold
   - ```js
     Nope.string()
-      .max(4)
+      .lessThan(4)
       .validate('url'); // returns undefined
 
     Nope.string()
-      .max(4)
+      .lessThan(4)
       .validate('http'); // returns the error message
     ```
 
@@ -231,25 +235,29 @@ UserSchema.validate({
       .validate(4.2); // returns the error message
     ```
 
-  - `min(size: number, message: string)` - Asserts if the entry is smaller than a threshold
+  - `min(size: number, message: string)` - **_deprecated_**: alias for greaterThan
+
+  - `max(size: number, message: string)` - **_deprecated_**: alias for lessThan
+
+  - `greaterThan(size: number, message: string)` - Asserts if the entry is smaller than a threshold
   - ```js
     Nope.number()
-      .min(1, 'error message')
+      .greaterThan(1, 'error message')
       .validate(2); // returns undefined
 
     Nope.number()
-      .min(1, 'error message')
+      .greaterThan(1, 'error message')
       .validate(1); // returns the error message
     ```
 
-  - `max(size: number, message: string)` - Asserts if the entry is greater than a threshold
+  - `lessThan(size: number, message: string)` - Asserts if the entry is greater than a threshold
   - ```js
     Nope.number()
-      .max(1, 'error message')
+      .lessThan(1, 'error message')
       .validate(-1); // returns undefined
 
     Nope.number()
-      .max(1, 'error message')
+      .lessThan(1, 'error message')
       .validate(2); // returns the error message
     ```
 
@@ -329,7 +337,7 @@ UserSchema.validate({
   - ```js
     const schema = Nope.object().shape({
       name: Nope.string()
-        .max(15)
+        .atMost(15)
         .required(),
       email: Nope.string()
         .email('Please provide a valid email')
@@ -348,7 +356,7 @@ UserSchema.validate({
 
   - ```js
     const baseSchema = Nope.object().shape({
-      password: Nope.string().min(5),
+      password: Nope.string().atLeast(5),
       confirmPassword: Nope.string()
         .oneOf([Nope.ref('password')], "Passwords don't match")
         .required(),
@@ -358,7 +366,7 @@ UserSchema.validate({
       .extend(baseSchema)
       .shape({
         name: Nope.string()
-          .min(4)
+          .atLeast(4)
           .required(),
       });
 
@@ -373,7 +381,7 @@ UserSchema.validate({
 
   - ```js
     const schema = Nope.object().shape({
-      name: Nope.string().min(5),
+      name: Nope.string().atLeast(5),
     }).noUnknown('no unknown keys');
 
     schema.validate({
@@ -390,7 +398,7 @@ UserSchema.validate({
     const schema = Nope.object().shape({
       email: Nope.string()
         .email()
-        .max(255)
+        .atMost(255)
         .required(),
       confirmEmail: Nope.string().oneOf([Nope.ref('email')], 'Must match the first email'),
     });
@@ -417,11 +425,11 @@ Instead of passing it through the `validationSchema` prop, you should call Nope'
 const schema = Nope.object().shape({
   email: Nope.string()
     .email()
-    .max(255)
+    .atMost(255)
     .required(),
   password: Nope.string()
-    .min(8)
-    .max(64)
+    .atLeast(8)
+    .atMost(64)
     .required(),
 });
 
