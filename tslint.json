@@ -1,9 +1,0 @@
-{
-  "extends": ["tslint:recommended", "tslint-config-prettier"],
-  "rules": {
-    "ordered-imports": false,
-    "interface-name": false,
-    "object-literal-sort-keys": false,
-    "forin": false
-  }
-}

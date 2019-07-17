@@ -4,7 +4,7 @@ import { Rule } from './types';
 class NopeNumber extends NopePrimitive<number> {
   public integer(message = 'Input must be an integer') {
     const rule: Rule<number> = entry => {
-      if (entry === undefined || entry === null) {
+      if (entry === undefined || entry == null) {
         return;
       }
 

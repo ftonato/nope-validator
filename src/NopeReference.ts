@@ -1,7 +1,7 @@
 class NopeReference {
   public key: string;
 
-  constructor(key: string) {
+  public constructor(key: string) {
     this.key = key;
   }
 }

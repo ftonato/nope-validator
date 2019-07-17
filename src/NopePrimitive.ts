@@ -1,13 +1,9 @@
-import { IValidatable, Nil, Rule } from './types';
+import { Validatable, Nil, Rule } from './types';
 import NopeReference from './NopeReference';
-import {
-  resolveNopeRefsFromKeys,
-  every,
-  resolveNopeRef
-} from './utils';
+import { resolveNopeRefsFromKeys, every, resolveNopeRef } from './utils';
 
-abstract class NopePrimitive<T> implements IValidatable<T> {
-  protected validationRules: Array<Rule<T>> = [];
+abstract class NopePrimitive<T> implements Validatable<T> {
+  protected validationRules: Rule<T>[] = [];
 
   public required(message = 'This field is required') {
     const rule: Rule<T> = entry => {
@@ -47,7 +43,7 @@ abstract class NopePrimitive<T> implements IValidatable<T> {
     return this.test(rule);
   }
 
-  public oneOf(options: Array<T | NopeReference | Nil>, message = 'Invalid option') {
+  public oneOf(options: (T | NopeReference | Nil)[], message = 'Invalid option') {
     const rule: Rule<T> = (entry, context) => {
       const resolvedOptions = options.map(option => resolveNopeRef(option, context));
 
@@ -59,7 +55,7 @@ abstract class NopePrimitive<T> implements IValidatable<T> {
     return this.test(rule);
   }
 
-  public notOneOf(options: Array<T | NopeReference | Nil>, message = 'Invalid Option') {
+  public notOneOf(options: (T | NopeReference | Nil)[], message = 'Invalid Option') {
     const rule: Rule<T> = (entry, context) => {
       const resolvedOptions = options.map(option => resolveNopeRef(option, context));
 

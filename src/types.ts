@@ -8,7 +8,7 @@ export type Rule<T> = (
   },
 ) => string | undefined | NopePrimitive<T>;
 
-export interface IValidatable<T> {
+export interface Validatable<T> {
   validate: Rule<T>;
 }
 
