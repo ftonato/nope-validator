@@ -17,7 +17,6 @@
     "build:amd": "tsc --module amd --target es5 --outFile lib/amd/nope-validator.js",
     "build": "rm -rf lib && yarn build:es2015 && yarn build:esm && yarn build:cjs && yarn build:umd && yarn build:amd",
     "prepare": "npm run build",
-    "precommit": "lint-staged",
     "prepublishOnly": "yarn test && yarn lint",
     "preversion": "npm run lint",
     "version": "yarn format && git add -A src",
@@ -52,11 +51,11 @@
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.0",
     "husky": "^3.0.1",
-    "jest": "23.6.0",
+    "jest": "^24.8.0",
     "lint-staged": "^9.2.0",
     "nodemon": "^1.19.1",
     "prettier": "^1.18.2",
-    "ts-jest": "23.10.5",
+    "ts-jest": "^24.0.2",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   },
@@ -67,5 +66,10 @@
     "validation",
     "validator",
     "scheme"
-  ]
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
 }
