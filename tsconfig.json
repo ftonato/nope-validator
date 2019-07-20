@@ -3,7 +3,8 @@
     "lib": ["es2017", "es7", "es6", "dom"],
     "declaration": true,
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "moduleResolution": "node"
   },
   "exclude": ["node_modules", "dist", "**/__tests__/**"]
 }
