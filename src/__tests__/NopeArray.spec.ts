@@ -19,7 +19,7 @@ describe('#NopeArray', () => {
     it('should return undefined for an empty entry', () => {
       expect(
         Nope.array()
-          .type('number')
+          .type(Nope.boolean())
           .validate(undefined),
       ).toBe(undefined);
     });
@@ -27,7 +27,7 @@ describe('#NopeArray', () => {
     it('should return error message for an entry whose values are not all of the required type', () => {
       expect(
         Nope.array()
-          .type('number', 'typeError')
+          .type(Nope.number(), 'typeError')
           .validate([1, 2, '3']),
       ).toBe('typeError');
     });
@@ -35,7 +35,7 @@ describe('#NopeArray', () => {
     it('should return undefined for an entry whose values are all of the required type', () => {
       expect(
         Nope.array()
-          .type('number')
+          .type(Nope.number())
           .validate([1, 2, 3]),
       ).toBe(undefined);
     });
