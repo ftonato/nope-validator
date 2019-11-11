@@ -9,7 +9,7 @@ export type Rule<T> = (
 ) => string | undefined | NopePrimitive<T>;
 
 export interface Validatable<T> {
-  validate: Rule<T>;
+  validate: Rule<T> | Rule<T[]>;
 }
 
 export interface ShapeErrors {
