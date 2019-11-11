@@ -1,11 +1,11 @@
-import { Rule, Validatable, Nil, Type } from './types';
+import { Rule, Validatable, Nil } from './types';
 import NopePrimitive from './NopePrimitive';
 
-class NopeArray implements Validatable<any[]> {
-  public validationRules: Rule<any[]>[] = [];
+class NopeArray<T extends any> implements Validatable<T[]> {
+  public validationRules: Rule<T[]>[] = [];
 
   public required(message = 'This field is required') {
-    const rule: Rule<any[]> = entry => {
+    const rule: Rule<T[]> = entry => {
       if (entry === undefined || entry === null) {
         return message;
       }
@@ -14,13 +14,19 @@ class NopeArray implements Validatable<any[]> {
     return this.test(rule);
   }
 
-  public type(type: Type, message = 'Not all values are of required type') {
-    const rule: Rule<any[]> = entry => {
+  public of(primitive: NopePrimitive<T>, message = 'One or more elements are of invalid type') {
+    const rule: Rule<T[]> = entry => {
       if (entry === undefined || entry === null) {
         return;
       }
 
-      if (entry.some(value => typeof value !== type)) {
+      if (entry.some(value => primitive.getType() !== typeof value)) {
+        return message;
+      }
+
+      const error = entry.find(value => primitive.validate(value));
+
+      if (error) {
         return message;
       }
     };
@@ -29,7 +35,7 @@ class NopeArray implements Validatable<any[]> {
   }
 
   public minLength(length: number, message = 'Input is too short') {
-    const rule: Rule<any[]> = entry => {
+    const rule: Rule<T[]> = entry => {
       if (entry === undefined || entry === null) {
         return;
       }
@@ -43,7 +49,7 @@ class NopeArray implements Validatable<any[]> {
   }
 
   public maxLength(length: number, message = 'Input is too long') {
-    const rule: Rule<any[]> = entry => {
+    const rule: Rule<T[]> = entry => {
       if (entry === undefined || entry === null) {
         return;
       }
@@ -56,8 +62,8 @@ class NopeArray implements Validatable<any[]> {
     return this.test(rule);
   }
 
-  public mustContain(value: any, message = 'Input does not contain required value') {
-    const rule: Rule<any[]> = entry => {
+  public mustContain(value: T, message = 'Input does not contain required value') {
+    const rule: Rule<T[]> = entry => {
       if (entry === undefined || entry === null) {
         return;
       }
@@ -70,8 +76,8 @@ class NopeArray implements Validatable<any[]> {
     return this.test(rule);
   }
 
-  public hasOnly(values: any[], message = 'Input elements must correspond to value values') {
-    const rule: Rule<any[]> = entry => {
+  public hasOnly(values: T[], message = 'Input elements must correspond to value values') {
+    const rule: Rule<T[]> = entry => {
       if (entry === undefined || entry === null) {
         return;
       }
@@ -84,8 +90,8 @@ class NopeArray implements Validatable<any[]> {
     return this.test(rule);
   }
 
-  public whereEvery(callback: Function, message = 'Input does not satisfy condition') {
-    const rule: Rule<any[]> = entry => {
+  public every(callback: Function, message = 'Input does not satisfy condition') {
+    const rule: Rule<T[]> = entry => {
       if (entry === undefined || entry === null) {
         return;
       }
@@ -98,8 +104,8 @@ class NopeArray implements Validatable<any[]> {
     return this.test(rule);
   }
 
-  public whereSome(callback: Function, message = 'Input does not satisfy condition') {
-    const rule: Rule<any[]> = entry => {
+  public some(callback: Function, message = 'Input does not satisfy condition') {
+    const rule: Rule<T[]> = entry => {
       if (entry === undefined || entry === null || entry.length === 0) {
         return;
       }
@@ -112,13 +118,13 @@ class NopeArray implements Validatable<any[]> {
     return this.test(rule);
   }
 
-  public test(rule: Rule<any[]>) {
+  public test(rule: Rule<T[]>) {
     this.validationRules.push(rule);
 
     return this;
   }
 
-  public validate(entry?: any[] | Nil, context?: object | undefined): string | undefined {
+  public validate(entry?: T[] | Nil, context?: object | undefined): string | undefined {
     for (const rule of this.validationRules) {
       const error = rule(entry, context);
 

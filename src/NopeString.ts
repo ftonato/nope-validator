@@ -3,6 +3,8 @@ import { Rule } from './types';
 import { urlRegex, emailRegex } from './consts';
 
 class NopeString extends NopePrimitive<string> {
+  protected _type: string = 'string';
+
   public regex(regex: RegExp, message = "Doesn't satisfy the rule") {
     const rule: Rule<string> = entry => {
       if (entry === undefined || entry === null) {

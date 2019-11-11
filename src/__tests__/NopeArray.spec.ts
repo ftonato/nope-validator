@@ -15,27 +15,48 @@ describe('#NopeArray', () => {
     });
   });
 
-  describe('#test', () => {
+  describe('#of', () => {
     it('should return undefined for an empty entry', () => {
       expect(
         Nope.array()
-          .type('number')
+          .of(Nope.boolean())
           .validate(undefined),
       ).toBe(undefined);
     });
 
-    it('should return error message for an entry whose values are not all of the required type', () => {
+    it('should return error message for an entry whose values are not all of the required of', () => {
       expect(
         Nope.array()
-          .type('number', 'typeError')
-          .validate([1, 2, '3']),
-      ).toBe('typeError');
+          .of(Nope.number(), 'ofError')
+          .validate([1, 2, 'sda']),
+      ).toBe('ofError');
     });
 
-    it('should return undefined for an entry whose values are all of the required type', () => {
+    it('should return error message for an entry whose values do not get validated differ from primitive validation', () => {
       expect(
         Nope.array()
-          .type('number')
+          .of(Nope.number().atLeast(4), 'ofError')
+          .validate([6, 5, 3]),
+      ).toBe('ofError');
+    });
+
+    it('should return error message for an entry whose values do not get validated differ from primitive validation', () => {
+      expect(
+        Nope.array()
+          .of(
+            Nope.number()
+              .atLeast(4)
+              .atMost(9),
+            'ofError',
+          )
+          .validate([6, 5, 10]),
+      ).toBe('ofError');
+    });
+
+    it('should return undefined for an entry whose values are all of the required of', () => {
+      expect(
+        Nope.array()
+          .of(Nope.number().atMost(3))
           .validate([1, 2, 3]),
       ).toBe(undefined);
     });
@@ -177,13 +198,13 @@ describe('#NopeArray', () => {
     });
   });
 
-  describe('#whereEvery', () => {
+  describe('#every', () => {
     const isEven = (value: number) => value % 2 === 0;
 
     it('should return undefined for an empty entry', () => {
       expect(
         Nope.array()
-          .whereEvery(isEven)
+          .every(isEven)
           .validate(undefined),
       ).toBe(undefined);
     });
@@ -191,7 +212,7 @@ describe('#NopeArray', () => {
     it('should return undefined for an empty array entry', () => {
       expect(
         Nope.array()
-          .whereEvery(isEven)
+          .every(isEven)
           .validate([]),
       ).toBe(undefined);
     });
@@ -199,27 +220,27 @@ describe('#NopeArray', () => {
     it('should return error message for an entry where some hasOnly fail the callback', () => {
       expect(
         Nope.array()
-          .whereEvery(isEven, 'whereEveryError')
+          .every(isEven, 'everyError')
           .validate([2, 4, 5]),
-      ).toBe('whereEveryError');
+      ).toBe('everyError');
     });
 
     it('should return undefined for an entry where all hasOnly succeed the callback', () => {
       expect(
         Nope.array()
-          .whereEvery(isEven)
+          .every(isEven)
           .validate([2, 4, 6]),
       ).toBe(undefined);
     });
   });
 
-  describe('#whereSome', () => {
+  describe('#some', () => {
     const isEven = (value: number) => value % 2 === 0;
 
     it('should return undefined for an empty entry', () => {
       expect(
         Nope.array()
-          .whereSome(isEven)
+          .some(isEven)
           .validate(undefined),
       ).toBe(undefined);
     });
@@ -227,7 +248,7 @@ describe('#NopeArray', () => {
     it('should return undefined for an empty array entry', () => {
       expect(
         Nope.array()
-          .whereSome(isEven)
+          .some(isEven)
           .validate([]),
       ).toBe(undefined);
     });
@@ -235,7 +256,7 @@ describe('#NopeArray', () => {
     it('should return error message for an entry where all hasOnly fail the callback', () => {
       expect(
         Nope.array()
-          .whereSome(isEven, 'whereSomeError')
+          .some(isEven, 'whereSomeError')
           .validate([1, 3, 5]),
       ).toBe('whereSomeError');
     });
@@ -243,7 +264,7 @@ describe('#NopeArray', () => {
     it('should return undefined for an entry where one value succeed the callback', () => {
       expect(
         Nope.array()
-          .whereSome(isEven)
+          .some(isEven)
           .validate([1, 2, 3]),
       ).toBe(undefined);
     });
@@ -251,7 +272,7 @@ describe('#NopeArray', () => {
     it('should return undefined for an entry where all value succeed the callback', () => {
       expect(
         Nope.array()
-          .whereSome(isEven)
+          .some(isEven)
           .validate([2, 4, 6]),
       ).toBe(undefined);
     });

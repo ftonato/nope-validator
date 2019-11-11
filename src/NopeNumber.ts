@@ -2,6 +2,8 @@ import NopePrimitive from './NopePrimitive';
 import { Rule } from './types';
 
 class NopeNumber extends NopePrimitive<number> {
+  protected _type: string = 'number';
+
   public integer(message = 'Input must be an integer') {
     const rule: Rule<number> = entry => {
       if (entry === undefined || entry == null) {
