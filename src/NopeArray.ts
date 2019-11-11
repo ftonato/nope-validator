@@ -1,7 +1,7 @@
 import { Rule, Validatable, Nil } from './types';
 import NopePrimitive from './NopePrimitive';
 
-class NopeArray<T extends any> implements Validatable<T[]> {
+class NopeArray<T> implements Validatable<T[]> {
   public validationRules: Rule<T[]>[] = [];
 
   public required(message = 'This field is required') {

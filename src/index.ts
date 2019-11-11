@@ -10,7 +10,7 @@ const NopeObjectConstructor = () => new NopeObject();
 const NopeStringConstructor = () => new NopeString();
 const NopeNumberConstructor = () => new NopeNumber();
 const NopeBooleanConstructor = () => new NopeBoolean();
-const NopeArrayConstructor = () => new NopeArray();
+const NopeArrayConstructor = <T>() => new NopeArray<T>();
 const NopeDateConstructor = () => new NopeDate();
 const NopeReferenceConstructor = (key: string) => new NopeReference(key);
 
