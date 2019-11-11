@@ -3,12 +3,12 @@ import Nope from '..';
 describe('#NopeArray', () => {
   describe('#required', () => {
     it('should return undefined for a non-nil entry', () => {
-      const validator = Nope.array().required();
+      const validator = Nope.array<any>().required();
       expect(validator.validate([1, undefined, 'test'])).toEqual(undefined);
       expect(validator.validate([])).toEqual(undefined);
     });
     it('should return an error message for a nil entry', () => {
-      const validator = Nope.array().required('requiredError');
+      const validator = Nope.array<any>().required('requiredError');
 
       expect(validator.required().validate(undefined)).toEqual('requiredError');
       expect(validator.required().validate(null)).toEqual('requiredError');
@@ -18,7 +18,7 @@ describe('#NopeArray', () => {
   describe('#of', () => {
     it('should return undefined for an empty entry', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .of(Nope.boolean())
           .validate(undefined),
       ).toBe(undefined);
@@ -26,7 +26,7 @@ describe('#NopeArray', () => {
 
     it('should return error message for an entry whose values are not all of the required of', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .of(Nope.number(), 'ofError')
           .validate([1, 2, 'sda']),
       ).toBe('ofError');
@@ -34,7 +34,7 @@ describe('#NopeArray', () => {
 
     it('should return error message for an entry whose values do not get validated differ from primitive validation', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .of(Nope.number().atLeast(4), 'ofError')
           .validate([6, 5, 3]),
       ).toBe('ofError');
@@ -42,7 +42,7 @@ describe('#NopeArray', () => {
 
     it('should return error message for an entry whose values do not get validated differ from primitive validation', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .of(
             Nope.number()
               .atLeast(4)
@@ -55,7 +55,7 @@ describe('#NopeArray', () => {
 
     it('should return undefined for an entry whose values are all of the required of', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .of(Nope.number().atMost(3))
           .validate([1, 2, 3]),
       ).toBe(undefined);
@@ -65,7 +65,7 @@ describe('#NopeArray', () => {
   describe('#minLength', () => {
     it('should return undefined for an empty entry', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .minLength(5, 'minLengthErrorMessage')
           .validate(undefined),
       ).toBe(undefined);
@@ -73,7 +73,7 @@ describe('#NopeArray', () => {
 
     it('should return an error message for an entry shorter than the the threshold', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .minLength(5)
           .validate([1, 2, 3, 4]),
       ).toBe('Input is too short');
@@ -81,7 +81,7 @@ describe('#NopeArray', () => {
 
     it('should return an error message for an entry equal to the threshold', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .minLength(4)
           .validate([1, 2, 3, 4]),
       ).toBe('Input is too short');
@@ -89,7 +89,7 @@ describe('#NopeArray', () => {
 
     it('should return undefined for an entry longer to the threshold', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .minLength(4)
           .validate([1, 2, 3, 4, 5, 6]),
       ).toBe(undefined);
@@ -99,7 +99,7 @@ describe('#NopeArray', () => {
   describe('#maxLength', () => {
     it('should return undefined for an empty entry', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .maxLength(5, 'maxLengthErrorMessage')
           .validate(undefined),
       ).toBe(undefined);
@@ -107,7 +107,7 @@ describe('#NopeArray', () => {
 
     it('should return an error message for an entry longer than the the threshold', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .maxLength(5)
           .validate([1, 2, 3, 4, 5, 6]),
       ).toBe('Input is too long');
@@ -115,7 +115,7 @@ describe('#NopeArray', () => {
 
     it('should return an error message for an entry equal to the threshold', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .maxLength(4)
           .validate([1, 2, 3, 4]),
       ).toBe('Input is too long');
@@ -123,7 +123,7 @@ describe('#NopeArray', () => {
 
     it('should return undefined for an entry shorter to the threshold', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .maxLength(4)
           .validate([1, 2, 3]),
       ).toBe(undefined);
@@ -133,7 +133,7 @@ describe('#NopeArray', () => {
   describe('#mustContain', () => {
     it('should return undefined for an empty entry', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .mustContain(2)
           .validate(undefined),
       ).toBe(undefined);
@@ -141,7 +141,7 @@ describe('#NopeArray', () => {
 
     it('should return error message for an entry not containing the value passed', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .mustContain(2, 'containError')
           .validate([1, 3, 4]),
       ).toBe('containError');
@@ -149,7 +149,7 @@ describe('#NopeArray', () => {
 
     it('should return undefined for an entry containing the value passed', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .mustContain(2, 'containError')
           .validate([1, 2, 3, 4]),
       ).toBe(undefined);
@@ -157,7 +157,7 @@ describe('#NopeArray', () => {
 
     it('should return undefined for an entry containing the value passed more than once', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .mustContain(2, 'containError')
           .validate([1, 2, 3, 2, 4, 2]),
       ).toBe(undefined);
@@ -167,7 +167,7 @@ describe('#NopeArray', () => {
   describe('#hasOnly', () => {
     it('should return undefined for an empty entry', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .hasOnly([1, 2, 3])
           .validate(undefined),
       ).toBe(undefined);
@@ -175,7 +175,7 @@ describe('#NopeArray', () => {
 
     it('should return error message for an entry not containing any value passed', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .hasOnly([1, 2, 3], 'validateError')
           .validate([4, 5, 6]),
       ).toBe('validateError');
@@ -183,7 +183,7 @@ describe('#NopeArray', () => {
 
     it('should return error message for an entry having different hasOnly from hasOnly passed', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .hasOnly([1, 2, 3], 'validateError')
           .validate([1, 2, 3, 4, 5, 6]),
       ).toBe('validateError');
@@ -191,7 +191,7 @@ describe('#NopeArray', () => {
 
     it('should return undefined for an entry having only hasOnly from hasOnly passed', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .hasOnly([1, 2, 3], 'validateError')
           .validate([1, 2, 1, 1, 3, 2]),
       ).toBe(undefined);
@@ -203,7 +203,7 @@ describe('#NopeArray', () => {
 
     it('should return undefined for an empty entry', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .every(isEven)
           .validate(undefined),
       ).toBe(undefined);
@@ -211,7 +211,7 @@ describe('#NopeArray', () => {
 
     it('should return undefined for an empty array entry', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .every(isEven)
           .validate([]),
       ).toBe(undefined);
@@ -219,7 +219,7 @@ describe('#NopeArray', () => {
 
     it('should return error message for an entry where some hasOnly fail the callback', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .every(isEven, 'everyError')
           .validate([2, 4, 5]),
       ).toBe('everyError');
@@ -227,7 +227,7 @@ describe('#NopeArray', () => {
 
     it('should return undefined for an entry where all hasOnly succeed the callback', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .every(isEven)
           .validate([2, 4, 6]),
       ).toBe(undefined);
@@ -239,7 +239,7 @@ describe('#NopeArray', () => {
 
     it('should return undefined for an empty entry', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .some(isEven)
           .validate(undefined),
       ).toBe(undefined);
@@ -247,7 +247,7 @@ describe('#NopeArray', () => {
 
     it('should return undefined for an empty array entry', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .some(isEven)
           .validate([]),
       ).toBe(undefined);
@@ -255,7 +255,7 @@ describe('#NopeArray', () => {
 
     it('should return error message for an entry where all hasOnly fail the callback', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .some(isEven, 'whereSomeError')
           .validate([1, 3, 5]),
       ).toBe('whereSomeError');
@@ -263,7 +263,7 @@ describe('#NopeArray', () => {
 
     it('should return undefined for an entry where one value succeed the callback', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .some(isEven)
           .validate([1, 2, 3]),
       ).toBe(undefined);
@@ -271,7 +271,7 @@ describe('#NopeArray', () => {
 
     it('should return undefined for an entry where all value succeed the callback', () => {
       expect(
-        Nope.array()
+        Nope.array<any>()
           .some(isEven)
           .validate([2, 4, 6]),
       ).toBe(undefined);
