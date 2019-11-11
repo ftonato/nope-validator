@@ -1,6 +1,5 @@
 import { Rule, Validatable, Nil } from './types';
 import NopePrimitive from './NopePrimitive';
-import NopeObject from 'NopeObject';
 
 class NopeArray<T> implements Validatable<T[]> {
   protected _type: string = 'object';
