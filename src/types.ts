@@ -17,3 +17,13 @@ export interface ShapeErrors {
 }
 
 export type Nil = null | undefined;
+
+export type Type =
+  | 'undefined'
+  | 'object'
+  | 'boolean'
+  | 'number'
+  | 'bigInt'
+  | 'string'
+  | 'symbol'
+  | 'function';

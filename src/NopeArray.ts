@@ -1,4 +1,4 @@
-import { Rule, Validatable, Nil } from './types';
+import { Rule, Validatable, Nil, Type } from './types';
 import NopePrimitive from './NopePrimitive';
 
 class NopeArray implements Validatable<any[]> {
@@ -7,6 +7,20 @@ class NopeArray implements Validatable<any[]> {
   public required(message = 'This field is required') {
     const rule: Rule<any[]> = entry => {
       if (entry === undefined || entry === null) {
+        return message;
+      }
+    };
+
+    return this.test(rule);
+  }
+
+  public type(type: Type, message = 'Not all values are of required type') {
+    const rule: Rule<any[]> = entry => {
+      if (entry === undefined || entry === null) {
+        return;
+      }
+
+      if (entry.some(value => typeof value !== type)) {
         return message;
       }
     };

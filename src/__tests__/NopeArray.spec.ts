@@ -15,6 +15,32 @@ describe('#NopeArray', () => {
     });
   });
 
+  describe('#test', () => {
+    it('should return undefined for an empty entry', () => {
+      expect(
+        Nope.array()
+          .type('number')
+          .validate(undefined),
+      ).toBe(undefined);
+    });
+
+    it('should return error message for an entry whose values are not all of the required type', () => {
+      expect(
+        Nope.array()
+          .type('number', 'typeError')
+          .validate([1, 2, '3']),
+      ).toBe('typeError');
+    });
+
+    it('should return undefined for an entry whose values are all of the required type', () => {
+      expect(
+        Nope.array()
+          .type('number')
+          .validate([1, 2, 3]),
+      ).toBe(undefined);
+    });
+  });
+
   describe('#minLength', () => {
     it('should return undefined for an empty entry', () => {
       expect(
