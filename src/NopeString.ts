@@ -13,16 +13,6 @@ class NopeString extends NopePrimitive<string> {
     return value === undefined || value === null || `${value}`.trim().length === 0;
   }
 
-  public required(message = 'This field is required') {
-    const rule: Rule<string> = entry => {
-      if (this.isEmpty(entry)) {
-        return message;
-      }
-    };
-
-    return this.test(rule);
-  }
-
   public regex(regex: RegExp, message = "Doesn't satisfy the rule") {
     const rule: Rule<string> = entry => {
       if (this.isEmpty(entry)) {
