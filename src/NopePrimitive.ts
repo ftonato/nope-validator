@@ -5,9 +5,13 @@ import { resolveNopeRefsFromKeys, every, resolveNopeRef } from './utils';
 abstract class NopePrimitive<T> implements Validatable<T> {
   protected validationRules: Rule<T>[] = [];
 
+  protected isEmpty(entry: T | Nil) {
+    return entry === undefined || entry === null;
+  }
+
   public required(message = 'This field is required') {
     const rule: Rule<T> = entry => {
-      if (entry === undefined || entry === null) {
+      if (this.isEmpty(entry)) {
         return message;
       }
     };
