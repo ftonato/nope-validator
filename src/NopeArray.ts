@@ -1,10 +1,12 @@
 import { Rule, Validatable, Nil } from './types';
 import NopePrimitive from './NopePrimitive';
 import { deepEquals } from './utils';
+import NopeObject from './NopeObject';
 
 class NopeArray<T> implements Validatable<T[]> {
   protected _type = 'object';
   public validationRules: Rule<T[]>[] = [];
+  public ofShape: Validatable<T> | NopeObject | null = null;
 
   public getType() {
     return this._type;
@@ -20,7 +22,12 @@ class NopeArray<T> implements Validatable<T[]> {
     return this.test(rule);
   }
 
-  public of(primitive: Validatable<T>, message = 'One or more elements are of invalid type') {
+  public of(
+    primitive: Validatable<T> | NopeObject,
+    message = 'One or more elements are of invalid type',
+  ) {
+    this.ofShape = primitive;
+
     const rule: Rule<T[]> = (entry) => {
       if (entry === undefined || entry === null) {
         return;

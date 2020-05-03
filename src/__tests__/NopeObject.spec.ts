@@ -162,4 +162,35 @@ describe('#NopeObject', () => {
       expect(resp).toBeUndefined();
     });
   });
+
+  describe('#validateAt', () => {
+    it('should work', () => {
+      const schema = Nope.object().shape({
+        foo: Nope.array().of(
+          Nope.object().shape({
+            loose: Nope.boolean(),
+            bar: Nope.string().when('loose', {
+              is: true,
+              then: Nope.string().max(5, 'tooLong'),
+              otherwise: Nope.string().min(5, 'tooShort'),
+            }),
+          }),
+        ),
+      });
+
+      const rootValue = {
+        foo: [
+          { bar: '123' },
+          { bar: '123456', loose: true },
+          { bar: '123456' },
+          { bar: '123', loose: true },
+        ],
+      };
+
+      expect(schema.validateAt('foo[0].bar', rootValue)).toBe('tooShort');
+      expect(schema.validateAt('foo[1].bar', rootValue)).toBe('tooLong');
+      expect(schema.validateAt('foo[2].bar', rootValue)).toBe(undefined);
+      expect(schema.validateAt('foo[3].bar', rootValue)).toBe(undefined);
+    });
+  });
 });
