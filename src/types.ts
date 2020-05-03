@@ -10,6 +10,7 @@ export type Rule<T> = (
 
 export interface Validatable<T> {
   validate: Rule<T>;
+  getType: () => string;
 }
 
 export interface ShapeErrors {

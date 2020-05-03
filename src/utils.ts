@@ -30,3 +30,39 @@ export function resolveNopeRef<T>(
 
   return option;
 }
+
+export function deepEquals(a: any, b: any): boolean {
+  if (typeof a == 'object' && a != null && (typeof b == 'object' && b != null)) {
+    if (a === b) {
+      return true;
+    }
+
+    let aCount = 0;
+    let bCount = 0;
+
+    for (const _ in a) {
+      aCount++;
+    }
+    for (const _ in b) {
+      bCount++;
+    }
+
+    if (aCount - bCount !== 0) {
+      return false;
+    }
+
+    for (const key in a) {
+      if (!(key in b) || !deepEquals(a[key], b[key])) {
+        return false;
+      }
+    }
+    for (const key in b) {
+      if (!(key in a) || !deepEquals(b[key], a[key])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  return a === b;
+}
