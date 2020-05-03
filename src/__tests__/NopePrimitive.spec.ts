@@ -144,7 +144,7 @@ describe('#NopePrimitive', () => {
   describe('#test', () => {
     it('should return undefined for a valid value', () => {
       const validator = new Dummy()
-        .test(entry => {
+        .test((entry) => {
           if (entry !== '42') {
             return '42Error';
           }
@@ -156,7 +156,7 @@ describe('#NopePrimitive', () => {
 
     it('should return the error message for an ivalid value', () => {
       const validator = new Dummy()
-        .test(entry => {
+        .test((entry) => {
           if (entry !== '42') {
             return '42Error';
           }
@@ -210,12 +210,8 @@ describe('#NopePrimitive', () => {
         positive: Nope.boolean().required(),
         test: Nope.number().when(['small', 'positive'], {
           is: true,
-          then: Nope.number()
-            .max(2, 'should be small')
-            .positive(),
-          otherwise: Nope.number()
-            .min(2, 'should be big')
-            .negative('should be negative'),
+          then: Nope.number().max(2, 'should be small').positive(),
+          otherwise: Nope.number().min(2, 'should be big').negative('should be negative'),
         }),
       });
 
@@ -356,12 +352,12 @@ describe('#NopePrimitive', () => {
       const schema = Nope.object().shape({
         name: Nope.string().required(),
         pdf: Nope.string().when('csv', {
-          is: csv => !!csv,
+          is: (csv) => !!csv,
           then: Nope.string(),
           otherwise: Nope.string().required(),
         }),
         csv: Nope.string().when('pdf', {
-          is: pdf => !!pdf,
+          is: (pdf) => !!pdf,
           then: Nope.string(),
           otherwise: Nope.string().required(),
         }),
