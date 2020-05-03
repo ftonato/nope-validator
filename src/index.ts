@@ -2,6 +2,7 @@ import NopeObject from './NopeObject';
 import NopeString from './NopeString';
 import NopeNumber from './NopeNumber';
 import NopeBoolean from './NopeBoolean';
+import NopeArray from './NopeArray';
 import NopeDate from './NopeDate';
 import NopeReference from './NopeReference';
 
@@ -10,6 +11,8 @@ const NopeStringConstructor = () => new NopeString();
 const NopeNumberConstructor = (message?: string) => new NopeNumber(message);
 const NopeBooleanConstructor = () => new NopeBoolean();
 const NopeDateConstructor = (message?: string) => new NopeDate(message);
+const NopeArrayConstructor = <T>() => new NopeArray<T>();
+const NopeDateConstructor = () => new NopeDate();
 const NopeReferenceConstructor = (key: string) => new NopeReference(key);
 
 const Nope = {
@@ -17,6 +20,7 @@ const Nope = {
   string: NopeStringConstructor,
   number: NopeNumberConstructor,
   boolean: NopeBooleanConstructor,
+  array: NopeArrayConstructor,
   date: NopeDateConstructor,
   ref: NopeReferenceConstructor,
 };
@@ -27,6 +31,7 @@ export {
   NopeNumberConstructor as number,
   NopeStringConstructor as string,
   NopeBooleanConstructor as boolean,
+  NopeArrayConstructor as array,
   NopeDateConstructor as date,
   NopeReferenceConstructor as ref,
 };

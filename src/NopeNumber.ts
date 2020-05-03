@@ -3,6 +3,7 @@ import { Rule } from './types';
 
 class NopeNumber extends NopePrimitive<number> {
   private message = 'The field is not a number';
+  protected _type: string = 'number';
 
   public integer(message = 'Input must be an integer') {
     const rule: Rule<number> = entry => {

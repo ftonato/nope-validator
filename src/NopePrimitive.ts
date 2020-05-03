@@ -4,6 +4,11 @@ import { resolveNopeRefsFromKeys, every, resolveNopeRef } from './utils';
 
 abstract class NopePrimitive<T> implements Validatable<T> {
   protected validationRules: Rule<T>[] = [];
+  protected _type: string = 'undefined';
+
+  public getType() {
+    return this._type;
+  }
 
   protected isEmpty(entry: T | Nil) {
     return entry === undefined || entry === null;

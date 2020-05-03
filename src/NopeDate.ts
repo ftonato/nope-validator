@@ -6,6 +6,7 @@ type T = string | number | Date;
 
 class NopeDate extends NopePrimitive<T> {
   private message: string;
+  protected _type: string = 'object';
 
   public before(beforeDate: T, message = `Date must be before ${beforeDate.toString()}`) {
     const rule: Rule<T> = (entry, context) => {

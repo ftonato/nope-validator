@@ -18,4 +18,13 @@ describe('#utils', () => {
       ]);
     });
   });
+
+  describe('#deepEquals', () => {
+    it('should work', () => {
+      expect(utils.deepEquals({ a: 42 }, { b: 42 })).toEqual(false);
+      expect(utils.deepEquals({ a: [[42]] }, { a: [[42]] })).toEqual(true);
+      expect(utils.deepEquals({ a: [[2, { a: 42 }]] }, { a: [[2, { a: 42 }]] })).toEqual(true);
+      expect(utils.deepEquals({ a: [[2, { a: 42 }]] }, { a: [[2, { a: 41 }]] })).toEqual(false);
+    });
+  });
 });
