@@ -4,6 +4,7 @@
   "main": "lib/umd/index.js",
   "module": "lib/es2015/index.js",
   "types": "lib/umd/index.d.ts",
+  "sideEffects": false,
   "license": "MIT",
   "description": "Fast and simple JS validator",
   "scripts": {

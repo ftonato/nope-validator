@@ -68,3 +68,24 @@ export function deepEquals(a: any, b: any): boolean {
 
   return a === b;
 }
+
+export function pathToArray(path: string): string[] {
+  return path.split(/[,[\].]/g).filter(Boolean);
+}
+
+export function getFromPath(path: string, entry: Record<string | number, any>, dropLast = false) {
+  if (!path) {
+    return undefined;
+  }
+
+  let pathArray = pathToArray(path);
+  pathArray = dropLast ? pathArray.slice(0, -1) : pathArray;
+
+  let value: any = entry;
+
+  for (const key of pathArray) {
+    value = value[key];
+  }
+
+  return value;
+}
