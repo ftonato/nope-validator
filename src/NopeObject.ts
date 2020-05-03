@@ -5,6 +5,10 @@ interface ObjectShape {
   [key: string]: Validatable<any> | NopeObject;
 }
 
+type ValidateOptions = {
+  abortEarly: boolean;
+};
+
 class NopeObject {
   private objectShape: ObjectShape;
   private validationRules: Rule<object>[] = [];
@@ -59,7 +63,11 @@ class NopeObject {
     return this;
   }
 
-  public validate(entry: Record<string | number, any>, context?: Record<string | number, any>) {
+  public validate(
+    entry: Record<string | number, any>,
+    context?: Record<string | number, any> | undefined | null,
+    options?: ValidateOptions,
+  ) {
     for (const rule of this.validationRules) {
       const localErrors = rule(entry);
 
@@ -74,11 +82,15 @@ class NopeObject {
     for (const key in this.objectShape) {
       const rule = this.objectShape[key];
 
-      const error = rule.validate(entry[key], entry);
+      const error = rule.validate(entry[key], entry, options);
 
       if (error && typeof error === 'string') {
         areErrors = true;
         errors[key] = error;
+
+        if (options?.abortEarly) {
+          return errors;
+        }
       }
     }
 

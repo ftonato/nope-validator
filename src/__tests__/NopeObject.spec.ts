@@ -193,4 +193,27 @@ describe('#NopeObject', () => {
       expect(schema.validateAt('foo[3].bar', rootValue)).toBe(undefined);
     });
   });
+
+  describe('#options - abortEarly', () => {
+    it('should work', () => {
+      const schema = Nope.object().shape({
+        name: Nope.string().min(5, 'minNameMessage'),
+        password: Nope.string().min(4, 'minPWMessage'),
+      });
+
+      const entry1 = {
+        name: '12',
+        password: '12',
+      };
+
+      expect(schema.validate(entry1, undefined, { abortEarly: false })).toEqual({
+        name: 'minNameMessage',
+        password: 'minPWMessage',
+      });
+
+      expect(schema.validate(entry1, undefined, { abortEarly: true })).toEqual({
+        name: 'minNameMessage',
+      });
+    });
+  });
 });
