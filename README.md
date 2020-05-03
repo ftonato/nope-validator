@@ -12,14 +12,15 @@ A small, simple and fast JS validator. Like, wow thats fast. 🚀
 
 Nope's API is ~~heavily inspired~~ stolen from [Yup](https://github.com/jquense/yup) but Nope attempts to be much smaller and much faster. To achieve this Nope only allows for synchronous data validation which should cover most of the use cases.
 
-Note that instead of throwing errors Nope simply returns the error object and if there are no errors it returns undefined.
+### Note: Nope is not a plug-and-play replacement for Yup, in some cases at least.
 
-Typescript definitions included. 🚀
+Instead of throwing errors Nope simply returns the error object and if there are no errors it returns undefined.
+
+Typescript definitions included. ✨
 
 - [Usage](#usage)
 - [API](#api)
 - [Usage with Formik](#usage-with-formik)
-- [Benchmark](#benchmark)
 
 ## Usage
 
@@ -393,6 +394,27 @@ UserSchema.validate({
 
   - `validate(entry: object)` - Runs the rule chain against an entry
 
+- `Array`
+  - `required(message: string)` - Required field (non falsy)
+  - `of(primitive: Validatable<T>)` - Required the field to be of a certain schema
+  - ```js
+    const schema = Nope.object().shape({
+      names: Nope.array()
+        .of(Nope.string().min(5))
+        .required(),
+    });
+
+    schema.validate({
+      names: ['Geralt']
+    }); // returns undefined;
+    ```
+  - `minLength(length: number, message?: string)` - Minimal length of the field
+  - `maxLength(length: number, message?: string)` - Max length of the field
+  - `mustContain(value: T, message?: string)` - Must contain a certain item
+  - `hasOnly(values: T[], message?: string)` - Must only contain certain items
+  - `every(predicate: item => boolean, message?: string)` - Every item passes predicate. Alike `Array.prototype.every`
+  - `some(predicate: item => boolean, message?: string)` - Some items pass the predicate. Alike `Array.prorotype.some`
+
 - `Reference` - allows the schema to reference other values in the provided entry
 
   - ```js
@@ -450,18 +472,6 @@ const schema = Nope.object().shape({
   )}
 </Formik>;
 ```
-
-## Benchmark
-
-```bash
-nope x 941,878 ops/sec ±0.37% (94 runs sampled)
-yup x 6,566 ops/sec ±3.24% (90 runs sampled)
-```
-
-I'll add tests against other validation libraries as well.
-
-The benchmark results can be found in the `benchmark/` folder along with the specs and the code that was used for the benchmark.
-
 
 ## License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fbvego%2Fnope-validator.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fbvego%2Fnope-validator?ref=badge_large)
