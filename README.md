@@ -163,6 +163,50 @@ UserSchema.validate({
 
   - `validate(entry: string | undefined | null)` - Runs the rule chain against an entry
 
+
+- `Object`
+  - `shape(shape: object)` - Sets the shape which of the object. Use name as keys and Nope validators as values
+  - ```js
+    const schema = Nope.object().shape({
+      name: Nope.string()
+        .atMost(15)
+        .required(),
+      email: Nope.string()
+        .email('Please provide a valid email')
+        .required(),
+    });
+
+    const errors = schema.validate({
+      name: 'Test',
+      email: 'invalidemail',
+    });
+
+    console.log(errors); // { email: 'Please provide a valid email', }
+    ```
+  - `extend(Base: NopeObject)` - Extends the schema of an already defined NopeObject
+  - ```js
+    const baseSchema = Nope.object().shape({
+      password: Nope.string().atLeast(5),
+      confirmPassword: Nope.string()
+        .oneOf([Nope.ref('password')], "Passwords don't match")
+        .required(),
+    });
+
+    const userSchema = Nope.object()
+      .extend(baseSchema)
+      .shape({
+        name: Nope.string()
+          .atLeast(4)
+          .required(),
+      });
+
+    userSchema.validate({
+      name: 'Jonathan',
+      password: 'birdybird',
+      confirmPassworod: 'burdyburd',
+    }); // returns { confirmPassword: 'Passwords don\'t match' }
+    ```
+
 - `String`
 
   - `regex(regex: RegExp, message: string)` - Asserts if the entry matches the pattern
@@ -332,53 +376,7 @@ UserSchema.validate({
       .false()
       .validate(true); // returns the error message
     ```
-
-- `Object`
-
-  - `shape(shape: object)` - Sets the shape which of the object. Use name as keys and Nope validators as values
-  - ```js
-    const schema = Nope.object().shape({
-      name: Nope.string()
-        .atMost(15)
-        .required(),
-      email: Nope.string()
-        .email('Please provide a valid email')
-        .required(),
-    });
-
-    const errors = schema.validate({
-      name: 'Test',
-      email: 'invalidemail',
-    });
-
-    console.log(errors); // { email: 'Please provide a valid email', }
-    ```
-
-  - `extend(Base: NopeObject)` - Extends the schema of an already defined NopeObject
-
-  - ```js
-    const baseSchema = Nope.object().shape({
-      password: Nope.string().atLeast(5),
-      confirmPassword: Nope.string()
-        .oneOf([Nope.ref('password')], "Passwords don't match")
-        .required(),
-    });
-
-    const userSchema = Nope.object()
-      .extend(baseSchema)
-      .shape({
-        name: Nope.string()
-          .atLeast(4)
-          .required(),
-      });
-
-    userSchema.validate({
-      name: 'Jonathan',
-      password: 'birdybird',
-      confirmPassworod: 'burdyburd',
-    }); // returns { confirmPassword: 'Passwords don\'t match' }
-    ```
-
+  
   - `noUnknown(message: string)` - Return an error message if the entry contains keys that are not defined in the schema
 
   - ```js
