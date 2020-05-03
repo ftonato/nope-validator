@@ -40,9 +40,11 @@ export function deepEquals(a: any, b: any): boolean {
     let aCount = 0;
     let bCount = 0;
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const _ in a) {
       aCount++;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const _ in b) {
       bCount++;
     }
