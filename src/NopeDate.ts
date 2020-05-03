@@ -6,7 +6,7 @@ type T = string | number | Date;
 
 class NopeDate extends NopePrimitive<T> {
   private message: string;
-  protected _type: string = 'object';
+  protected _type = 'object';
 
   public before(beforeDate: T, message = `Date must be before ${beforeDate.toString()}`) {
     const rule: Rule<T> = (entry, context) => {
@@ -50,7 +50,7 @@ class NopeDate extends NopePrimitive<T> {
     } else if (!isNaN(entry)) {
       value = new Date(entry);
     } else {
-      let ms = Date.parse(entry);
+      const ms = Date.parse(entry);
 
       if (isNaN(ms)) return this.message;
 

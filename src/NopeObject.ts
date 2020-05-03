@@ -25,7 +25,7 @@ class NopeObject {
   }
 
   public noUnknown(message = 'Input contains invalid keys') {
-    const rule: Rule<object> = entry => {
+    const rule: Rule<object> = (entry) => {
       let objectIsDefined = false;
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for (const _ in this.objectShape) {
