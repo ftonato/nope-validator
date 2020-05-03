@@ -5,13 +5,23 @@ import { urlRegex, emailRegex } from './consts';
 class NopeString extends NopePrimitive<string> {
   protected _type: string = 'string';
 
+  public validate(entry?: any, context?: object | undefined): string | undefined {
+    const value = !!entry ? String(entry) : entry;
+
+    return super.validate(value, context);
+  }
+
+  protected isEmpty(value: string | null | undefined) {
+    return value === undefined || value === null || `${value}`.trim().length === 0;
+  }
+
   public regex(regex: RegExp, message = "Doesn't satisfy the rule") {
     const rule: Rule<string> = entry => {
-      if (entry === undefined || entry === null) {
+      if (this.isEmpty(entry)) {
         return;
       }
 
-      if (!regex.test(entry)) {
+      if (!regex.test(entry as string)) {
         return message;
       }
     };
@@ -43,11 +53,12 @@ class NopeString extends NopePrimitive<string> {
 
   public greaterThan(length: number, message = 'Input is too short') {
     const rule: Rule<string> = entry => {
-      if (entry === undefined || entry === null) {
+      if (this.isEmpty(entry)) {
         return;
       }
 
-      if (entry.length <= length) {
+      const value = entry as string;
+      if (value.length <= length) {
         return message;
       }
     };
@@ -57,11 +68,12 @@ class NopeString extends NopePrimitive<string> {
 
   public lessThan(length: number, message = 'Input is too long') {
     const rule: Rule<string> = entry => {
-      if (entry === undefined || entry === null) {
+      if (this.isEmpty(entry)) {
         return;
       }
 
-      if (entry.length >= length) {
+      const value = entry as string;
+      if (value.length >= length) {
         return message;
       }
     };
@@ -71,11 +83,12 @@ class NopeString extends NopePrimitive<string> {
 
   public atLeast(length: number, message = 'Input is too short') {
     const rule: Rule<string> = entry => {
-      if (entry === undefined || entry === null) {
+      if (this.isEmpty(entry)) {
         return;
       }
 
-      if (entry.length < length) {
+      const value = entry as string;
+      if (value.length < length) {
         return message;
       }
     };
@@ -85,11 +98,12 @@ class NopeString extends NopePrimitive<string> {
 
   public atMost(length: number, message = 'Input is too long') {
     const rule: Rule<string> = entry => {
-      if (entry === undefined || entry === null) {
+      if (this.isEmpty(entry)) {
         return;
       }
 
-      if (entry.length > length) {
+      const value = entry as string;
+      if (value.length > length) {
         return message;
       }
     };

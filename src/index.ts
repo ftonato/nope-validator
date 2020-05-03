@@ -8,10 +8,10 @@ import NopeReference from './NopeReference';
 
 const NopeObjectConstructor = () => new NopeObject();
 const NopeStringConstructor = () => new NopeString();
-const NopeNumberConstructor = () => new NopeNumber();
+const NopeNumberConstructor = (message?: string) => new NopeNumber(message);
 const NopeBooleanConstructor = () => new NopeBoolean();
+const NopeDateConstructor = (message?: string) => new NopeDate(message);
 const NopeArrayConstructor = <T>() => new NopeArray<T>();
-const NopeDateConstructor = () => new NopeDate();
 const NopeReferenceConstructor = (key: string) => new NopeReference(key);
 
 const Nope = {

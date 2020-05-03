@@ -282,4 +282,30 @@ describe('#NopeNumber', () => {
       ).toBe(undefined);
     });
   });
+
+  describe('#number', () => {
+    it('should return undefined for an empty entry', () => {
+      expect(
+        Nope.number('validNumberErrorMessage')
+          .integer()
+          .validate('integer'),
+      ).toBe('validNumberErrorMessage');
+    });
+
+    it('should return an error message for an entry not an integer', () => {
+      expect(
+        Nope.number()
+          .integer()
+          .validate('one'),
+      ).toBe('The field is not a valid number');
+    });
+
+    it('should return undefined for a string entry of an integer', () => {
+      expect(
+        Nope.number()
+          .integer('integerErrorMessage')
+          .validate('12'),
+      ).toBe(undefined);
+    });
+  });
 });
