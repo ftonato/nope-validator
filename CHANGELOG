@@ -1,3 +1,40 @@
+0.10.0
+
+Added 🚀
+- Array (#50)
+  - required
+  - of
+  - minLength
+  - maxLength
+  - mustContain
+  - hasOnly
+  - every
+  - some
+  - test
+
+Special thanks to @AAmanzi for adding the array type 
+
+Fixes 🔨
+- .required property (#141)
+
+Special thanks to @kuzmycz taking his time to open up an issue and a pull request to fix the .required
+
+Internal 🏡
+- Bump @babel/types to 7.96
+- Bump @types/jest to 25.2.1
+- Bump @types/node to 13.13.4
+- Bump @typescript-eslint/eslint-plugin to 2.30.0
+- Bump @typescript-eslint/parser to 2.30.0
+- Bump eslint to 6.8.0
+- Bump eslint-plugin-prettier to 3.1.3
+- Bump husky to 4.2.5
+- Bump jest to 25.5.4
+- Bump nodemon to 2.0.3
+- Bump prettier to 2.0.5
+- Bump ts-jest to 25.4.0
+- Bump ts-node 8.10.1
+- Bump typescript to 3.8.3
+
 0.9.0
 Added 🚀
 - Number
