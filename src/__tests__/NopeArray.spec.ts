@@ -196,6 +196,23 @@ describe('#NopeArray', () => {
           .validate([1, 2, 1, 1, 3, 2]),
       ).toBe(undefined);
     });
+
+    it('should return for correct object comparison', () => {
+      expect(
+        Nope.array<any>()
+          .of(Nope.array<any>().of(Nope.string()))
+          .hasOnly([['a']])
+          .validate([['a']]),
+      ).toBe(undefined);
+    });
+    it('should return an error message for invalid object comparison', () => {
+      expect(
+        Nope.array<any>()
+          .of(Nope.array<any>().of(Nope.string()))
+          .hasOnly([['a']], 'invalidEntries')
+          .validate([['b']]),
+      ).toBe('invalidEntries');
+    });
   });
 
   describe('#every', () => {

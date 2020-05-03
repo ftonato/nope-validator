@@ -1,5 +1,6 @@
 import { Rule, Validatable, Nil } from './types';
 import NopePrimitive from './NopePrimitive';
+import { deepEquals } from './utils';
 
 class NopeArray<T> implements Validatable<T[]> {
   protected _type: string = 'object';
@@ -87,7 +88,14 @@ class NopeArray<T> implements Validatable<T[]> {
         return;
       }
 
-      if (entry.some(value => values.indexOf(value) === -1)) {
+      if (
+        entry.some(value => {
+          if (typeof value === 'object') {
+            return !values.find(v => deepEquals(value, v));
+          }
+          return values.indexOf(value) === -1;
+        })
+      ) {
         return message;
       }
     };
