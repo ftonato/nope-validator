@@ -54,6 +54,10 @@ abstract class NopePrimitive<T> implements Validatable<T> {
 
   public oneOf(options: (T | NopeReference | Nil)[], message = 'Invalid option') {
     const rule: Rule<T> = (entry, context) => {
+      if (entry === undefined) {
+        return;
+      }
+
       const resolvedOptions = options.map((option) => resolveNopeRef(option, context));
 
       if (resolvedOptions.indexOf(entry) === -1) {
