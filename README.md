@@ -266,6 +266,16 @@ UserSchema.validate({
     Nope.string()
       .lessThan(4)
       .validate('http'); // returns the error message
+
+  - `exactLength(length: number, message: string)` - Asserts if the entry is of exact length
+  - ```js
+    Nope.string()
+      .exactLength(4)
+      .validate('test'); // returns undefined
+
+    Nope.string()
+      .exactLength(4)
+      .validate('testing'); // returns the error message
     ```
 
 - `Number`

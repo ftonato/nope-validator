@@ -110,6 +110,21 @@ class NopeString extends NopePrimitive<string> {
 
     return this.test(rule);
   }
+
+  public exactLength(length: number, message = `Must be at exactly of length ${length}`) {
+    const rule: Rule<string> = (entry) => {
+      if (this.isEmpty(entry)) {
+        return;
+      }
+
+      const value = entry as string;
+      if (value.length !== length) {
+        return message;
+      }
+    };
+
+    return this.test(rule);
+  }
 }
 
 export default NopeString;

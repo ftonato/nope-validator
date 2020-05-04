@@ -186,4 +186,13 @@ describe('#NopeString', () => {
       expect(Nope.string().required('requiredMessage').validate('     ')).toBe('requiredMessage');
     });
   });
+
+  describe('#exactLength', () => {
+    it('should return work', () => {
+      expect(Nope.string().exactLength(5, 'msg').validate(undefined)).toBe(undefined);
+      expect(Nope.string().exactLength(5, 'msg').validate('123')).toBe('msg');
+      expect(Nope.string().exactLength(5, 'msg').validate('123456')).toBe('msg');
+      expect(Nope.string().exactLength(5, 'msg').validate('lucky')).toBe(undefined);
+    });
+  });
 });
