@@ -1,3 +1,15 @@
+0.11.3
+
+Fixes 🔨
+- Date
+  - before (reference type argument)
+  - after (reference type argument)
+
+Internal 🏡
+- Bump ts-jest to 25.5.1
+- Bump @typescript-eslint/eslint-plugin to 2.32.0
+- Bump @typescript-eslint/parser to 2.32.0
+
 0.11.2
 
 Added 🚀
