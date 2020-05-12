@@ -8,7 +8,10 @@ class NopeDate extends NopePrimitive<T> {
   private message: string;
   protected _type = 'object';
 
-  public before(beforeDate: T, message = `Date must be before ${beforeDate.toString()}`) {
+  public before(
+    beforeDate: T | NopeReference,
+    message = `Date must be before ${beforeDate.toString()}`,
+  ) {
     const rule: Rule<T> = (entry, context) => {
       if (this.isEmpty(entry)) {
         return;
@@ -25,7 +28,7 @@ class NopeDate extends NopePrimitive<T> {
     return this.test(rule);
   }
 
-  public after(afterDate: T, message = `Date must be after ${afterDate}`) {
+  public after(afterDate: T | NopeReference, message = `Date must be after ${afterDate}`) {
     const rule: Rule<T> = (entry, context) => {
       if (this.isEmpty(entry)) {
         return;
