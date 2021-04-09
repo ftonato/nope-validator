@@ -28,6 +28,15 @@ describe('#NopeString', () => {
 
     it('should return undefined for an valid URL', () => {
       expect(Nope.string().url('urlErrorMessage').validate('https://google.com')).toBe(undefined);
+      expect(Nope.string().url('urlErrorMessage').validate('https://google.com?asd=123')).toBe(
+        undefined,
+      );
+      expect(Nope.string().url('urlErrorMessage').validate('https://google.com/123')).toBe(
+        undefined,
+      );
+      expect(Nope.string().url('urlErrorMessage').validate('https://google.com/123/456?q=42')).toBe(
+        undefined,
+      );
     });
   });
 
@@ -37,15 +46,21 @@ describe('#NopeString', () => {
     });
 
     it('should return an error message for an invalid email', () => {
-      expect(Nope.string().email().validate('bruno.vegogmail.com')).toBe(
-        'Input is not a valid email',
-      );
+      const ns = () => Nope.string();
+
+      const ERR_MSG = 'err';
+
+      expect(ns().email(ERR_MSG).validate('bruno.vegogmail.com')).toBe(ERR_MSG);
+      expect(ns().email(ERR_MSG).validate('bruno.vego.gmail.com')).toBe(ERR_MSG);
+      expect(ns().email(ERR_MSG).validate('bruno.vego@gmail.com@')).toBe(ERR_MSG);
     });
 
     it('should return undefined for an valid email', () => {
-      expect(Nope.string().email('emailErrorMessage').validate('bruno.vego@gmail.com')).toBe(
-        undefined,
-      );
+      const ns = () => Nope.string();
+
+      expect(ns().email().validate('bruno.vego@gmail.com')).toBe(undefined);
+      expect(ns().email().validate('random-guy@google.com')).toBe(undefined);
+      expect(ns().email().validate('random-guy+test@google.com')).toBe(undefined);
     });
   });
 
