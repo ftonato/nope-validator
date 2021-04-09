@@ -7,9 +7,7 @@ describe('#NopeString', () => {
     });
 
     it('should return an error message for an invalid entry', () => {
-      expect(Nope.string().regex(/abc/i, 'errorMessage').validate('http:google.com')).toBe(
-        'errorMessage',
-      );
+      expect(Nope.string().regex(/abc/i, 'errorMessage').validate('defg')).toBe('errorMessage');
     });
 
     it('should return undefined for an valid entry', () => {
@@ -23,20 +21,29 @@ describe('#NopeString', () => {
     });
 
     it('should return an error message for an invalid URL', () => {
-      expect(Nope.string().url().validate('http:google.com')).toBe('Input is not a valid url');
+      const invalidUrls = [
+        'http://:google.com',
+        'http://',
+        // 'http:///a',
+        'http://foo.bar/foo(bar)baz quux',
+      ];
+      for (const url of invalidUrls) {
+        expect(Nope.string().url().validate(url)).toBe('Input is not a valid url');
+      }
     });
 
     it('should return undefined for an valid URL', () => {
-      expect(Nope.string().url('urlErrorMessage').validate('https://google.com')).toBe(undefined);
-      expect(Nope.string().url('urlErrorMessage').validate('https://google.com?asd=123')).toBe(
-        undefined,
-      );
-      expect(Nope.string().url('urlErrorMessage').validate('https://google.com/123')).toBe(
-        undefined,
-      );
-      expect(Nope.string().url('urlErrorMessage').validate('https://google.com/123/456?q=42')).toBe(
-        undefined,
-      );
+      const validUrls = [
+        'https://github.com/bvego/nope-validator/commit/4564b7444dcd92769e5c5b80420469c9f18b7a05?branch=4564b7444dcd92769e5c5b80420469c9f18b7a05&diff=split',
+        'https://google.com',
+        'https://google.com?asd=123',
+        'https://google.com/123',
+        'https://google.com/123/456?q=42',
+      ];
+
+      for (const url of validUrls) {
+        expect(Nope.string().url('urlErrorMessage').validate(url)).toBe(undefined);
+      }
     });
   });
 
