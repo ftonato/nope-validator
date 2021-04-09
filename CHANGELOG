@@ -1,3 +1,33 @@
+0.12.0
+
+Added 🚀
+- Primitive
+  - notAllowed
+- Ref
+  - Access parent values
+
+Fixes 🔨
+- Object
+  - Deep schema validation
+
+Internal 🏡
+- Bump @babel/types to 7.13.14
+- Bump @types/jest to 26.0.22
+- Bump @types/node to 14.14.37
+- Bump @typescript-eslint/eslint-plugin to 4.21.0
+- Bump @typescript-eslint/parser to 4.21.0
+- Bump eslint to 7.23.0
+- Bump eslint-config-prettier to 8.1.0
+- Bump eslint-plugin-prettier to 3.3.1
+- Bump husky to 6.0.0
+- Bump jest to 26.6.3
+- Bump lint-staged to 10.5.4
+- Bump prettier to 2.2.1
+- Bump typescript to 4.2.4
+- Replace ts-jest with @swc/jest
+- Remove ts-node
+- Remove nodemon
+
 0.11.3
 
 Fixes 🔨
