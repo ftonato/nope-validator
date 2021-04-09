@@ -216,4 +216,120 @@ describe('#NopeObject', () => {
       });
     });
   });
+
+  describe('#nested', () => {
+    it('should work', () => {
+      const schema = Nope.object().shape({
+        user: Nope.object().shape({
+          name: Nope.string().required('req'),
+        }),
+      });
+
+      const validInput = {
+        user: {
+          name: '123',
+        },
+      };
+
+      const invalidInput = {
+        user: {
+          name: undefined,
+        },
+      };
+
+      expect(schema.validate(validInput)).toEqual(undefined);
+      expect(schema.validate(invalidInput)).toEqual({
+        user: {
+          name: 'req',
+        },
+      });
+    });
+
+    it('should work when going back to the parent', () => {
+      const schema = Nope.object().shape({
+        shouldCreateUser: Nope.boolean().required('reqbool'),
+        user: Nope.object().shape({
+          name: Nope.string().when('../shouldCreateUser', {
+            is: (str) => !!str,
+            then: Nope.string().required('required'),
+            otherwise: Nope.string().notAllowed('not allowed'),
+          }),
+        }),
+      });
+
+      const validInput1 = {
+        shouldCreateUser: true,
+        user: {
+          name: 'user name',
+        },
+      };
+      const invalidInput1 = {
+        shouldCreateUser: true,
+        user: {
+          name: undefined,
+        },
+      };
+      const invalidInput2 = {
+        shouldCreateUser: false,
+        user: {
+          name: '123',
+        },
+      };
+      const invalidInput3 = {
+        user: {
+          name: '123',
+        },
+      };
+
+      expect(schema.validate(validInput1)).toEqual(undefined);
+      expect(schema.validate(invalidInput1)).toEqual({
+        user: {
+          name: 'required',
+        },
+      });
+      expect(schema.validate(invalidInput2)).toEqual({
+        user: {
+          name: 'not allowed',
+        },
+      });
+      expect(schema.validate(invalidInput3)).toEqual({
+        shouldCreateUser: 'reqbool',
+        user: {
+          name: 'not allowed',
+        },
+      });
+      expect(schema.validate(invalidInput3, undefined, { abortEarly: true })).toEqual({
+        shouldCreateUser: 'reqbool',
+      });
+    });
+
+    it('should work with refs', () => {
+      const schema = Nope.object().shape({
+        validUsernames: Nope.array().of(Nope.string()),
+        user: Nope.object().shape({
+          name: Nope.string().oneOf(Nope.ref('../validUsernames'), 'not valid'),
+        }),
+      });
+
+      const validInput1 = {
+        validUsernames: ['megatron'],
+        user: {
+          name: 'megatron',
+        },
+      };
+      const invalidInput1 = {
+        validUsernames: ['megatron'],
+        user: {
+          name: 'ultron',
+        },
+      };
+
+      expect(schema.validate(validInput1)).toEqual(undefined);
+      expect(schema.validate(invalidInput1)).toEqual({
+        user: {
+          name: 'not valid',
+        },
+      });
+    });
+  });
 });

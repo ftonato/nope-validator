@@ -19,16 +19,10 @@ class NopeNumber extends NopePrimitive<number> {
     return this.test(rule);
   }
 
-  /**
-   * @deprecated alias for greaterThan()
-   */
   public min(size: number, message?: string) {
     return this.greaterThan(size, message);
   }
 
-  /**
-   * @deprecated alias for lessThan()
-   */
   public max(size: number, message?: string) {
     return this.lessThan(size, message);
   }

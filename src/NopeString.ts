@@ -37,16 +37,10 @@ class NopeString extends NopePrimitive<string> {
     return this.regex(emailRegex, message);
   }
 
-  /**
-   * @deprecated alias for greaterThan()
-   */
   public min(length: number, message?: string) {
     return this.greaterThan(length, message);
   }
 
-  /**
-   * @deprecated alias for lessThan()
-   */
   public max(length: number, message?: string) {
     return this.lessThan(length, message);
   }

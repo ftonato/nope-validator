@@ -74,7 +74,7 @@ UserSchema.validate({
 - `Primitives` (String, Number, Date, Boolean)
 
   - `when(key: string | string[], conditionObject: { is: boolean | ((...args: any) => boolean), then: NopeSchema, othervise: NopeSchema })` - Conditional validation of a key.
-  - The first param is the set of keys (or a single key) that the `is` predicate should run on.
+  - The first param is the set of keys (or a single key) that the `is` predicate should run on. Note that you can access the parent object(s) by using the ../ syntax as shown in the 2nd example
 
   - The `is` param can be set to simply true or false (which will run the .every method on the values and assert the against the passed `is`) or a predicate that will decide what schema will be active in that moment.
 
@@ -116,6 +116,38 @@ UserSchema.validate({
       test: 'testing',
     }); // { test: 'maxError' }
     ```
+  - ```js
+    const schema = Nope.object().shape({
+      shouldCreateUser: Nope.boolean().required('reqbool'),
+      user: Nope.object().shape({
+        name: Nope.string().when('../shouldCreateUser', {
+          is: (str) => !!str,
+          then: Nope.string().required('required'),
+          otherwise: Nope.string().notAllowed('not allowed'),
+        }),
+      }),
+    });
+
+    const validInput1 = {
+      shouldCreateUser: true,
+      user: {
+        name: 'user name',
+      },
+    };
+    const invalidInput1 = {
+      shouldCreateUser: true,
+      user: {
+        name: undefined,
+      },
+    };
+
+    expect(schema.validate(validInput1)).toEqual(undefined);
+    expect(schema.validate(invalidInput1)).toEqual({
+      user: {
+        name: 'required',
+      },
+    });
+    ```
 
   - `oneOf(options: string | ref[], message: string)` - Asserts if the entry is one of the defined options
   - ```js
@@ -148,6 +180,17 @@ UserSchema.validate({
     Nope.string()
       .required()
       .validate(); // returns the error message
+    ```
+
+  - `notAllowed(message: string)` - Asserts if the entry is nil
+  - ```
+    Nope.string()
+      .notAllowed()
+      .validate(null); // returns undefined
+
+    Nope.string()
+      .notAllowed()
+      .validate('42'); // returns the error message
     ```
 
   - `test(rule: (entry: string) => string | undefined)` - Add a custom rule
@@ -468,6 +511,27 @@ UserSchema.validate({
     });
 
     console.log(noerrors); // undefined
+    ```
+  - ```js
+      const schema = Nope.object().shape({
+        validUsernames: Nope.array().of(Nope.string()),
+        user: Nope.object().shape({
+          name: Nope.string().oneOf(Nope.ref('../validUsernames'), 'not valid'),
+        }),
+      });
+
+      const invalidInput = {
+        validUsernames: ['megatron'],
+        user: {
+          name: 'ultron',
+        },
+      };
+
+      expect(schema.validate(invalidInput1)).toEqual({
+        user: {
+          name: 'not valid',
+        },
+      });
     ```
 
 ## Usage with [Formik](https://github.com/jaredpalmer/formik)
