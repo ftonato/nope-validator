@@ -11,7 +11,7 @@ type ValidateOptions = {
 
 class NopeObject {
   private objectShape: ObjectShape;
-  private validationRules: Rule<object>[] = [];
+  private validationRules: Rule<Record<string | number, unknown>>[] = [];
   protected _type = 'object';
 
   public constructor(objectShape?: ObjectShape) {
@@ -35,7 +35,7 @@ class NopeObject {
   }
 
   public noUnknown(message = 'Input contains invalid keys') {
-    const rule: Rule<object> = (entry) => {
+    const rule: Rule<Record<string | number, unknown>> = (entry) => {
       let objectIsDefined = false;
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for (const _ in this.objectShape) {

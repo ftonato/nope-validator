@@ -91,10 +91,12 @@ class NopeNumber extends NopePrimitive<number> {
     return this.lessThan(0, message);
   }
 
-  public validate(entry?: any, context?: object | undefined): string | undefined {
+  public validate(entry?: any, context?: Record<string | number, unknown>): string | undefined {
     const value = !!entry ? Number(entry) : entry;
 
-    if (!this.isEmpty(value) && Number.isNaN(value)) return this.message;
+    if (!this.isEmpty(value) && Number.isNaN(value)) {
+      return this.message;
+    }
 
     return super.validate(value, context);
   }

@@ -5,17 +5,17 @@ import { urlRegex, emailRegex } from './consts';
 class NopeString extends NopePrimitive<string> {
   protected _type = 'string';
 
-  public validate(entry?: any, context?: object | undefined): string | undefined {
+  public validate(entry?: any, context?: Record<string, unknown>): string | undefined {
     const value = !!entry ? String(entry) : entry;
 
     return super.validate(value, context);
   }
 
-  protected isEmpty(value: string | null | undefined) {
+  protected isEmpty(value: string | null | undefined): boolean {
     return value === undefined || value === null || `${value}`.trim().length === 0;
   }
 
-  public regex(regex: RegExp, message = "Doesn't satisfy the rule") {
+  public regex(regex: RegExp, message = "Doesn't satisfy the rule"): this {
     const rule: Rule<string> = (entry) => {
       if (this.isEmpty(entry)) {
         return;
@@ -29,23 +29,23 @@ class NopeString extends NopePrimitive<string> {
     return this.test(rule);
   }
 
-  public url(message = 'Input is not a valid url') {
+  public url(message = 'Input is not a valid url'): this {
     return this.regex(urlRegex, message);
   }
 
-  public email(message = 'Input is not a valid email') {
+  public email(message = 'Input is not a valid email'): this {
     return this.regex(emailRegex, message);
   }
 
-  public min(length: number, message?: string) {
+  public min(length: number, message?: string): this {
     return this.greaterThan(length, message);
   }
 
-  public max(length: number, message?: string) {
+  public max(length: number, message?: string): this {
     return this.lessThan(length, message);
   }
 
-  public greaterThan(length: number, message = 'Input is too short') {
+  public greaterThan(length: number, message = 'Input is too short'): this {
     const rule: Rule<string> = (entry) => {
       if (this.isEmpty(entry)) {
         return;
@@ -60,7 +60,7 @@ class NopeString extends NopePrimitive<string> {
     return this.test(rule);
   }
 
-  public lessThan(length: number, message = 'Input is too long') {
+  public lessThan(length: number, message = 'Input is too long'): this {
     const rule: Rule<string> = (entry) => {
       if (this.isEmpty(entry)) {
         return;
