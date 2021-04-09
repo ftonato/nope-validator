@@ -32,7 +32,7 @@ class NopeBoolean extends NopePrimitive<boolean> {
     return this.test(rule);
   }
 
-  public validate(entry?: any, context?: object | undefined): string | undefined {
+  public validate(entry?: any, context?: Record<string | number, unknown>): string | undefined {
     const value = entry === undefined || entry === null ? entry : !!entry;
 
     return super.validate(value, context);

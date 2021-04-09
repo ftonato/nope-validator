@@ -106,7 +106,7 @@ abstract class NopePrimitive<T> implements Validatable<T> {
    * @param entry - The value to be validated
    * @param context - Used for internal reference resolving. Do not pass this.
    */
-  public validate(entry?: T | Nil, context?: object | undefined): string | undefined {
+  public validate(entry?: T | Nil, context?: Record<string | number, unknown>): string | undefined {
     for (const rule of this.validationRules) {
       const error = rule(entry, context);
 

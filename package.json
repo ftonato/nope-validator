@@ -17,7 +17,7 @@
     "build:umd": "tsc --module umd --target es5 --outDir lib/umd",
     "build:amd": "tsc --module amd --target es5 --outFile lib/amd/nope-validator.js",
     "build": "rm -rf lib && yarn build:es2015 && yarn build:esm && yarn build:cjs && yarn build:umd && yarn build:amd",
-    "prepare": "npm run build",
+    "prepare": "npm run build && husky install",
     "prepublishOnly": "yarn test && yarn lint",
     "preversion": "npm run lint",
     "version": "yarn format && git add -A src",

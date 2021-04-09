@@ -110,7 +110,7 @@ class NopeArray<T> implements Validatable<T[]> {
     return this.test(rule);
   }
 
-  public every(callback: Function, message = 'Input does not satisfy condition') {
+  public every(callback: (value: T) => boolean, message = 'Input does not satisfy condition') {
     const rule: Rule<T[]> = (entry) => {
       if (entry === undefined || entry === null) {
         return;
@@ -124,7 +124,7 @@ class NopeArray<T> implements Validatable<T[]> {
     return this.test(rule);
   }
 
-  public some(callback: Function, message = 'Input does not satisfy condition') {
+  public some(callback: (value: T) => boolean, message = 'Input does not satisfy condition') {
     const rule: Rule<T[]> = (entry) => {
       if (entry === undefined || entry === null || entry.length === 0) {
         return;
@@ -144,7 +144,10 @@ class NopeArray<T> implements Validatable<T[]> {
     return this;
   }
 
-  public validate(entry?: T[] | Nil, context?: object | undefined): string | undefined {
+  public validate(
+    entry?: T[] | Nil,
+    context?: Record<string | number, unknown>,
+  ): string | undefined {
     for (const rule of this.validationRules) {
       const error = rule(entry, context);
 

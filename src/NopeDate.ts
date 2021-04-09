@@ -45,7 +45,7 @@ class NopeDate extends NopePrimitive<T> {
     return this.test(rule);
   }
 
-  public validate(entry?: any, context?: object | undefined): string | undefined {
+  public validate(entry?: any, context?: Record<string | number, unknown>): string | undefined {
     let value = entry;
 
     if (this.isEmpty(entry) || entry instanceof Date) {
@@ -55,7 +55,9 @@ class NopeDate extends NopePrimitive<T> {
     } else {
       const ms = Date.parse(entry);
 
-      if (isNaN(ms)) return this.message;
+      if (isNaN(ms)) {
+        return this.message;
+      }
 
       value = new Date(ms);
     }
