@@ -24,6 +24,16 @@ abstract class NopePrimitive<T> implements Validatable<T> {
     return this.test(rule);
   }
 
+  public notAllowed(message = 'Field is not allowed') {
+    const rule: Rule<T> = (entry) => {
+      if (!this.isEmpty(entry)) {
+        return message;
+      }
+    };
+
+    return this.test(rule);
+  }
+
   public when(
     keys: string[] | string,
     conditionObject: {
@@ -52,15 +62,21 @@ abstract class NopePrimitive<T> implements Validatable<T> {
     return this.test(rule);
   }
 
-  public oneOf(options: (T | NopeReference | Nil)[], message = 'Invalid option') {
+  public oneOf(options: (T | NopeReference | Nil)[] | NopeReference, message = 'Invalid option') {
     const rule: Rule<T> = (entry, context) => {
       if (entry === undefined) {
         return;
       }
 
-      const resolvedOptions = options.map((option) => resolveNopeRef(option, context));
+      let resolved: any[];
 
-      if (resolvedOptions.indexOf(entry) === -1) {
+      if (options instanceof NopeReference) {
+        resolved = resolveNopeRef(options, context);
+      } else {
+        resolved = options.map((option) => resolveNopeRef(option, context));
+      }
+
+      if (resolved.indexOf(entry) === -1) {
         return message;
       }
     };

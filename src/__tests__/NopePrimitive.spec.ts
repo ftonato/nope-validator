@@ -14,8 +14,23 @@ describe('#NopePrimitive', () => {
     it('should return an error message for a nil entry', () => {
       const validator = new Dummy().required('requiredError');
 
-      expect(validator.required().validate(undefined)).toEqual('requiredError');
-      expect(validator.required().validate(null)).toEqual('requiredError');
+      expect(validator.validate(undefined)).toEqual('requiredError');
+      expect(validator.validate(null)).toEqual('requiredError');
+    });
+  });
+
+  describe('#notAllowed', () => {
+    it('should return undefined for a nil entry', () => {
+      const validator = new Dummy().notAllowed('notAllowed');
+
+      expect(validator.validate(undefined)).toEqual(undefined);
+      expect(validator.validate(null)).toEqual(undefined);
+    });
+
+    it('should return an error message for a nil entry', () => {
+      const validator = new Dummy().notAllowed('notAllowed');
+
+      expect(validator.validate('42')).toEqual('notAllowed');
     });
   });
 

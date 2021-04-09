@@ -1,16 +1,28 @@
 import { Nil } from './types';
 import NopeReference from './NopeReference';
 
-export function resolveNopeRefsFromKeys(
-  options: (string | Nil)[],
-  context?: { [key: string]: any },
-) {
-  const resolvedOptions = options.map((option) => {
-    if (context && option !== undefined && option !== null) {
-      return context[option];
-    }
+function resolvePathFromContext(path: string, context?: Record<string | number, any>) {
+  const optionWithPath = path.split('../');
+  const depth = optionWithPath.length - 1;
 
-    return option;
+  const key = optionWithPath[optionWithPath.length - 1];
+
+  let ctx = context;
+
+  for (let i = 0; i < depth; i++) {
+    ctx = ctx?.___parent;
+  }
+
+  if (ctx && key !== undefined && key !== null) {
+    return ctx[key];
+  }
+
+  return key;
+}
+
+export function resolveNopeRefsFromKeys(options: string[], context?: Record<string | number, any>) {
+  const resolvedOptions = options.map((option) => {
+    return resolvePathFromContext(option, context);
   });
 
   return resolvedOptions;
@@ -22,10 +34,10 @@ export function every(arr: any[], predicate: (value: any) => boolean) {
 
 export function resolveNopeRef<T>(
   option: T | NopeReference | Nil,
-  context?: { [key: string]: any },
+  context?: Record<string | number, any>,
 ) {
-  if (option instanceof NopeReference && context) {
-    return context[option.key];
+  if (option instanceof NopeReference) {
+    return resolvePathFromContext(option.key, context);
   }
 
   return option;

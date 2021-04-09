@@ -82,11 +82,10 @@ class NopeObject {
     for (const key in this.objectShape) {
       const rule = this.objectShape[key];
 
-      const error = rule.validate(entry[key], entry, options);
-
-      if (error && typeof error === 'string') {
+      const error = rule.validate(entry[key], { ...entry, ___parent: context }, options);
+      if (error && (typeof error === 'string' || typeof error === 'object')) {
         areErrors = true;
-        errors[key] = error;
+        errors[key] = error as string;
 
         if (options?.abortEarly) {
           return errors;
