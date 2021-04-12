@@ -1,12 +1,10 @@
 # Nope 🙅
 
-[![codebeat badge](https://codebeat.co/badges/ee202bf2-693c-4318-9425-e2c0f1a48a1f)](https://codebeat.co/projects/github-com-bvego-nope-validator-master)
 [![CircleCI](https://circleci.com/gh/bvego/nope-validator.svg?style=svg)](https://circleci.com/gh/bvego/nope-validator)
 [![Fast](https://badgen.now.sh/badge/speed/really%20fast/green)](https://npm.im/nope-validator)
 [![Version](https://img.shields.io/npm/v/nope-validator.svg)](https://npm.im/nope-validator)
 [![size](https://img.shields.io/bundlephobia/min/nope-validator.svg)](https://bundlephobia.com/result?p=nope-validator)
 [![gzip](https://img.shields.io/bundlephobia/minzip/nope-validator.svg)](https://bundlephobia.com/result?p=nope-validator)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fbvego%2Fnope-validator.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fbvego%2Fnope-validator?ref=badge_shield)
 
 A small, simple and fast JS validator. Like, wow thats fast. 🚀
 
@@ -566,6 +564,3 @@ const schema = Nope.object().shape({
   )}
 </Formik>;
 ```
-
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fbvego%2Fnope-validator.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fbvego%2Fnope-validator?ref=badge_large)
