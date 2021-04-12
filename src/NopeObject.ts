@@ -23,13 +23,13 @@ class NopeObject {
   }
 
   public shape(shape: ObjectShape) {
-    this.objectShape = { ...this.objectShape, ...shape };
+    Object.assign(this.objectShape, shape);
 
     return this;
   }
 
   public extend(Base: NopeObject) {
-    this.objectShape = { ...this.objectShape, ...Base.objectShape };
+    Object.assign(this.objectShape, Base.objectShape);
 
     return this;
   }
@@ -78,16 +78,18 @@ class NopeObject {
 
     const errors: ShapeErrors = {};
     let areErrors = false;
+    const abortEarly = options?.abortEarly;
 
     for (const key in this.objectShape) {
       const rule = this.objectShape[key];
 
       const error = rule.validate(entry[key], { ...entry, ___parent: context }, options);
+
       if (error && (typeof error === 'string' || typeof error === 'object')) {
         areErrors = true;
         errors[key] = error as string;
 
-        if (options?.abortEarly) {
+        if (abortEarly) {
           return errors;
         }
       }
