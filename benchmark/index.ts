@@ -1,7 +1,7 @@
 // Make sure you build the library before running this code
 
 import * as Yup from 'yup';
-import Nope from '../lib/es2015';
+import Nope from 'nope-validator';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bench = require('benchmark');
 

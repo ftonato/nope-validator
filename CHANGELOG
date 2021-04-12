@@ -1,3 +1,11 @@
+0.12.2
+
+Improvements 🔨
+- Speed up validation a bit
+
+Internal 🏡
+- Changes to UMD build process
+
 0.12.1
 
 Fixes 🔨

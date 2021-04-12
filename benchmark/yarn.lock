@@ -80,6 +80,11 @@ node-gyp-build@^3.8.0:
   resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-3.9.0.tgz#53a350187dd4d5276750da21605d1cb681d09e25"
   integrity sha512-zLcTg6P4AbcHPq465ZMFNXx7XpKKJh+7kkN699NiQWisR2uWYOWNWqRHAmbnmKiL4e9aLSlmy5U7rEMUXV59+A==
 
+nope-validator@^0.12.1:
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/nope-validator/-/nope-validator-0.12.1.tgz#3343eefdafdf08931247c72a1a688da8665fd657"
+  integrity sha512-UNf89PLdbCTiUyF61NN2CLXYiBw7K0r4MeiOiCmOZysrMfTuAgB17VW6861I5FCiP5HjBxFMZG5B2Mw01c0aHw==
+
 platform@^1.3.3:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/platform/-/platform-1.3.5.tgz#fb6958c696e07e2918d2eeda0f0bc9448d733444"
