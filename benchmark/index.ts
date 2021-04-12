@@ -1,7 +1,8 @@
 // Make sure you build the library before running this code
 
-const Yup = require('yup');
-const Nope = require('..');
+import * as Yup from 'yup';
+import Nope from '../lib/es2015';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const bench = require('benchmark');
 
 const yupSchema = Yup.object().shape({
@@ -56,15 +57,18 @@ suite
     nopeSchema.validate(entry);
   })
 
-  .add('yup', () => {
+  .add('yup', async () => {
     try {
       yupSchema.validateSync(entry);
     } catch (_) {}
   })
-  .on('cycle', function (event) {
+  .on('cycle', function (event: any) {
     console.log(String(event.target));
   })
   .on('complete', function () {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     console.log('Fastest is ' + this.filter('fastest').map('name'));
+    process.exit(0);
   })
-  .run();
+  .run({ async: true });
