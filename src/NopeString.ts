@@ -1,5 +1,5 @@
 import NopePrimitive from './NopePrimitive';
-import { Rule } from './types';
+import { Nil, Rule } from './types';
 import { urlRegex, emailRegex } from './consts';
 
 class NopeString extends NopePrimitive<string> {
@@ -11,7 +11,7 @@ class NopeString extends NopePrimitive<string> {
     return super.validate(value, context);
   }
 
-  protected isEmpty(value: string | null | undefined): boolean {
+  protected isEmpty(value: string | Nil): boolean {
     return value === undefined || value === null || `${value}`.trim().length === 0;
   }
 

@@ -1,4 +1,4 @@
-import { Validatable, Rule, ShapeErrors } from './types';
+import { Validatable, Rule, ShapeErrors, Nil } from './types';
 import { pathToArray, getFromPath } from './utils';
 
 interface ObjectShape {
@@ -65,7 +65,7 @@ class NopeObject {
 
   public validate(
     entry: Record<string | number, any>,
-    context?: Record<string | number, any> | undefined | null,
+    context?: Record<string | number, any> | Nil,
     options?: ValidateOptions,
   ) {
     for (const rule of this.validationRules) {

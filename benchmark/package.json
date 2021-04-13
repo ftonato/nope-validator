@@ -6,7 +6,7 @@
   "dependencies": {
     "benchmark": "^2.1.4",
     "microtime": "^3.0.0",
-    "nope-validator": "^0.12.1",
+    "nope-validator": "^0.12.2",
     "ts-node": "^9.1.1",
     "yup": "^0.32.9"
   }

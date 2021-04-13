@@ -1,4 +1,4 @@
-import { Rule, Validatable, Nil } from './types';
+import { Rule, Validatable } from './types';
 import NopePrimitive from './NopePrimitive';
 import { deepEquals } from './utils';
 import NopeObject from './NopeObject';
@@ -145,7 +145,7 @@ class NopeArray<T> implements Validatable<T[]> {
   }
 
   public validate(
-    entry?: T[] | Nil,
+    entry?: T[] | null,
     context?: Record<string | number, unknown>,
   ): string | undefined {
     for (const rule of this.validationRules) {

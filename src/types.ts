@@ -2,7 +2,7 @@
 import NopePrimitive from './NopePrimitive';
 
 export type Rule<T> = (
-  entry: T | Nil,
+  entry?: T | null,
   context?: {
     [key: string]: any;
   },
