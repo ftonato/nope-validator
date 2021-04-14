@@ -1,22 +1,32 @@
 {
   "name": "nope-validator",
-  "version": "0.9.0",
-  "main": "lib/umd/index.js",
-  "module": "lib/es2015/index.js",
-  "types": "lib/umd/index.d.ts",
+  "version": "0.12.2",
+  "source": "src/index.ts",
+  "main": "lib/cjs/index.js",
+  "umd:main": "lib/umd/index.js",
+  "module": "lib/esm/index.js",
+  "types": "lib/cjs/index.d.ts",
+  "sideEffects": false,
   "license": "MIT",
   "description": "Fast and simple JS validator",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": "./lib/esm/index.js",
+      "require": "./lib/cjs/index.js"
+    }
+  },
   "scripts": {
-    "format": "prettier --write src/**/*.{ts}",
-    "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "format": "prettier --write src/**/*.ts",
+    "lint": "eslint src/**/*.ts",
     "test": "jest --env=node --colors src/**/*.spec.ts",
+    "build:umd": "rollup -c rollup/rollup.config.js",
     "build:es2015": "tsc --module es2015 --target es2015 --outDir lib/es2015",
     "build:esm": "tsc --module es2015 --target es5 --outDir lib/esm",
     "build:cjs": "tsc --module commonjs --target es5 --outDir lib/cjs",
-    "build:umd": "tsc --module umd --target es5 --outDir lib/umd",
-    "build:amd": "tsc --module amd --target es5 --outFile lib/amd/nope-validator.js",
-    "build": "rm -rf lib && yarn build:es2015 && yarn build:esm && yarn build:cjs && yarn build:umd && yarn build:amd",
-    "prepare": "npm run build",
+    "build:amd": "tsc --module amd --target es5 --outDir lib/amd",
+    "build": "yarn build:umd && yarn build:esm && yarn build:es2015 && yarn build:cjs && yarn build:amd",
+    "prepare": "npm run build && husky install",
     "prepublishOnly": "yarn test && yarn lint",
     "preversion": "npm run lint",
     "version": "yarn format && git add -A src",
@@ -34,30 +44,33 @@
     "type": "git"
   },
   "lint-staged": {
-    "*.{ts}": [
+    "*.ts": [
       "yarn format",
-      "yarn lint",
-      "git add"
+      "yarn lint"
     ]
   },
   "dependencies": {},
   "devDependencies": {
-    "@babel/types": "^7.5.5",
-    "@types/jest": "^24.0.15",
-    "@types/node": "^12.6.8",
-    "@typescript-eslint/eslint-plugin": "^1.12.0",
-    "@typescript-eslint/parser": "^1.12.0",
-    "eslint": "^6.0.1",
-    "eslint-config-prettier": "^6.0.0",
-    "eslint-plugin-prettier": "^3.1.0",
-    "husky": "^3.0.1",
-    "jest": "^24.8.0",
-    "lint-staged": "^9.2.0",
-    "nodemon": "^1.19.1",
-    "prettier": "^1.18.2",
-    "ts-jest": "^24.0.2",
-    "ts-node": "^8.3.0",
-    "typescript": "^3.5.3"
+    "@rollup/plugin-commonjs": "^17.1.0",
+    "@rollup/plugin-node-resolve": "^11.2.0",
+    "@swc-node/jest": "^1.1.1",
+    "@types/jest": "^26.0.22",
+    "@types/node": "^14.14.37",
+    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/parser": "^4.21.0",
+    "eslint": "^7.24.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "husky": "^6.0.0",
+    "jest": "^26.6.3",
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.2.1",
+    "rollup": "^2.39.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-sourcemaps": "^0.6.2",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "tslib": "^2.2.0",
+    "typescript": "^4.2.4"
   },
   "keywords": [
     "nope",
@@ -66,10 +79,5 @@
     "validation",
     "validator",
     "scheme"
-  ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  }
+  ]
 }

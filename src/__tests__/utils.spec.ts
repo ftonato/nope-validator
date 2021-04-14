@@ -3,9 +3,9 @@ import * as utils from '../utils';
 describe('#utils', () => {
   describe('#every', () => {
     it('should work', () => {
-      expect(utils.every([3, 4, 5], val => val > 1)).toBe(true);
-      expect(utils.every([true, true], val => val === true)).toBe(true);
-      expect(utils.every([true, false], val => val === true)).toBe(false);
+      expect(utils.every([3, 4, 5], (val) => val > 1)).toBe(true);
+      expect(utils.every([true, true], (val) => val === true)).toBe(true);
+      expect(utils.every([true, false], (val) => val === true)).toBe(false);
     });
   });
 
@@ -25,6 +25,13 @@ describe('#utils', () => {
       expect(utils.deepEquals({ a: [[42]] }, { a: [[42]] })).toEqual(true);
       expect(utils.deepEquals({ a: [[2, { a: 42 }]] }, { a: [[2, { a: 42 }]] })).toEqual(true);
       expect(utils.deepEquals({ a: [[2, { a: 42 }]] }, { a: [[2, { a: 41 }]] })).toEqual(false);
+    });
+  });
+
+  describe('#getFromPath', () => {
+    it('should work', () => {
+      expect(utils.getFromPath('a.b.c', { a: { b: { c: 42 } } })).toBe(42);
+      expect(utils.getFromPath('a.b.c[1].d', { a: { b: { c: [2, { d: 5 }] } } })).toBe(5);
     });
   });
 });

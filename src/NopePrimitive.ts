@@ -4,15 +4,29 @@ import { resolveNopeRefsFromKeys, every, resolveNopeRef } from './utils';
 
 abstract class NopePrimitive<T> implements Validatable<T> {
   protected validationRules: Rule<T>[] = [];
-  protected _type: string = 'undefined';
+  protected _type = 'undefined';
 
   public getType() {
     return this._type;
   }
 
+  protected isEmpty(entry: T | Nil) {
+    return entry === undefined || entry === null;
+  }
+
   public required(message = 'This field is required') {
-    const rule: Rule<T> = entry => {
-      if (entry === undefined || entry === null) {
+    const rule: Rule<T> = (entry) => {
+      if (this.isEmpty(entry)) {
+        return message;
+      }
+    };
+
+    return this.test(rule);
+  }
+
+  public notAllowed(message = 'Field is not allowed') {
+    const rule: Rule<T> = (entry) => {
+      if (!this.isEmpty(entry)) {
         return message;
       }
     };
@@ -48,11 +62,21 @@ abstract class NopePrimitive<T> implements Validatable<T> {
     return this.test(rule);
   }
 
-  public oneOf(options: (T | NopeReference | Nil)[], message = 'Invalid option') {
+  public oneOf(options: (T | NopeReference | Nil)[] | NopeReference, message = 'Invalid option') {
     const rule: Rule<T> = (entry, context) => {
-      const resolvedOptions = options.map(option => resolveNopeRef(option, context));
+      if (entry === undefined) {
+        return;
+      }
 
-      if (resolvedOptions.indexOf(entry) === -1) {
+      let resolved: any[];
+
+      if (options instanceof NopeReference) {
+        resolved = resolveNopeRef(options, context);
+      } else {
+        resolved = options.map((option) => resolveNopeRef(option, context));
+      }
+
+      if (resolved.indexOf(entry) === -1) {
         return message;
       }
     };
@@ -62,7 +86,7 @@ abstract class NopePrimitive<T> implements Validatable<T> {
 
   public notOneOf(options: (T | NopeReference | Nil)[], message = 'Invalid Option') {
     const rule: Rule<T> = (entry, context) => {
-      const resolvedOptions = options.map(option => resolveNopeRef(option, context));
+      const resolvedOptions = options.map((option) => resolveNopeRef(option, context));
 
       if (resolvedOptions.indexOf(entry) !== -1) {
         return message;
@@ -82,7 +106,7 @@ abstract class NopePrimitive<T> implements Validatable<T> {
    * @param entry - The value to be validated
    * @param context - Used for internal reference resolving. Do not pass this.
    */
-  public validate(entry?: T | Nil, context?: object | undefined): string | undefined {
+  public validate(entry?: T | Nil, context?: Record<string | number, unknown>): string | undefined {
     for (const rule of this.validationRules) {
       const error = rule(entry, context);
 

@@ -1,5 +1,5 @@
-nope x 941,878 ops/sec ±0.37% (94 runs sampled)
-yup x 6,566 ops/sec ±3.24% (90 runs sampled)
+nope x 239,596 ops/sec ±1.21% (91 runs sampled)
+yup x 37,334 ops/sec ±0.64% (90 runs sampled)
 
 Specs:
 Macbook Pro 2017, macOS Mojave

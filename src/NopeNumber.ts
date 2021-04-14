@@ -2,15 +2,16 @@ import NopePrimitive from './NopePrimitive';
 import { Rule } from './types';
 
 class NopeNumber extends NopePrimitive<number> {
-  protected _type: string = 'number';
+  private message = 'The field is not a number';
+  protected _type = 'number';
 
   public integer(message = 'Input must be an integer') {
-    const rule: Rule<number> = entry => {
-      if (entry === undefined || entry == null) {
+    const rule: Rule<number> = (entry) => {
+      if (this.isEmpty(entry)) {
         return;
       }
 
-      if (entry !== Math.floor(entry)) {
+      if (entry !== Math.floor(entry as number)) {
         return message;
       }
     };
@@ -18,27 +19,21 @@ class NopeNumber extends NopePrimitive<number> {
     return this.test(rule);
   }
 
-  /**
-   * @deprecated alias for greaterThan()
-   */
   public min(size: number, message?: string) {
     return this.greaterThan(size, message);
   }
 
-  /**
-   * @deprecated alias for lessThan()
-   */
   public max(size: number, message?: string) {
     return this.lessThan(size, message);
   }
 
   public greaterThan(size: number, message = 'Input is too small') {
-    const rule: Rule<number> = entry => {
-      if (entry === undefined || entry === null) {
+    const rule: Rule<number> = (entry) => {
+      if (this.isEmpty(entry)) {
         return;
       }
 
-      if (entry <= size) {
+      if ((entry as number) <= size) {
         return message;
       }
     };
@@ -47,12 +42,12 @@ class NopeNumber extends NopePrimitive<number> {
   }
 
   public lessThan(size: number, message = 'Input is too large') {
-    const rule: Rule<number> = entry => {
-      if (entry === undefined || entry === null) {
+    const rule: Rule<number> = (entry) => {
+      if (this.isEmpty(entry)) {
         return;
       }
 
-      if (entry >= size) {
+      if ((entry as number) >= size) {
         return message;
       }
     };
@@ -61,12 +56,12 @@ class NopeNumber extends NopePrimitive<number> {
   }
 
   public atLeast(size: number, message = 'Input is too small') {
-    const rule: Rule<number> = entry => {
-      if (entry === undefined || entry === null) {
+    const rule: Rule<number> = (entry) => {
+      if (this.isEmpty(entry)) {
         return;
       }
 
-      if (entry < size) {
+      if ((entry as number) < size) {
         return message;
       }
     };
@@ -75,12 +70,12 @@ class NopeNumber extends NopePrimitive<number> {
   }
 
   public atMost(size: number, message = 'Input is too large') {
-    const rule: Rule<number> = entry => {
-      if (entry === undefined || entry === null) {
+    const rule: Rule<number> = (entry) => {
+      if (this.isEmpty(entry)) {
         return;
       }
 
-      if (entry > size) {
+      if ((entry as number) > size) {
         return message;
       }
     };
@@ -94,6 +89,21 @@ class NopeNumber extends NopePrimitive<number> {
 
   public negative(message = 'Input must be negative') {
     return this.lessThan(0, message);
+  }
+
+  public validate(entry?: any, context?: Record<string | number, unknown>): string | undefined {
+    const value = !!entry ? Number(entry) : entry;
+
+    if (!this.isEmpty(value) && Number.isNaN(value)) {
+      return this.message;
+    }
+
+    return super.validate(value, context);
+  }
+
+  public constructor(message = 'The field is not a valid number') {
+    super();
+    this.message = message;
   }
 }
 

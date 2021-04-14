@@ -1,25 +1,24 @@
 # Nope 🙅
 
-[![codebeat badge](https://codebeat.co/badges/ee202bf2-693c-4318-9425-e2c0f1a48a1f)](https://codebeat.co/projects/github-com-bvego-nope-validator-master)
 [![CircleCI](https://circleci.com/gh/bvego/nope-validator.svg?style=svg)](https://circleci.com/gh/bvego/nope-validator)
 [![Fast](https://badgen.now.sh/badge/speed/really%20fast/green)](https://npm.im/nope-validator)
 [![Version](https://img.shields.io/npm/v/nope-validator.svg)](https://npm.im/nope-validator)
 [![size](https://img.shields.io/bundlephobia/min/nope-validator.svg)](https://bundlephobia.com/result?p=nope-validator)
 [![gzip](https://img.shields.io/bundlephobia/minzip/nope-validator.svg)](https://bundlephobia.com/result?p=nope-validator)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fbvego%2Fnope-validator.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fbvego%2Fnope-validator?ref=badge_shield)
 
 A small, simple and fast JS validator. Like, wow thats fast. 🚀
 
 Nope's API is ~~heavily inspired~~ stolen from [Yup](https://github.com/jquense/yup) but Nope attempts to be much smaller and much faster. To achieve this Nope only allows for synchronous data validation which should cover most of the use cases.
 
-Note that instead of throwing errors Nope simply returns the error object and if there are no errors it returns undefined.
+### Note: Nope is not a plug-and-play replacement for Yup, in some cases at least.
 
-Typescript definitions included. 🚀
+Instead of throwing errors Nope simply returns the error object and if there are no errors it returns undefined.
+
+Typescript definitions included. ✨
 
 - [Usage](#usage)
 - [API](#api)
 - [Usage with Formik](#usage-with-formik)
-- [Benchmark](#benchmark)
 
 ## Usage
 
@@ -73,7 +72,7 @@ UserSchema.validate({
 - `Primitives` (String, Number, Date, Boolean)
 
   - `when(key: string | string[], conditionObject: { is: boolean | ((...args: any) => boolean), then: NopeSchema, othervise: NopeSchema })` - Conditional validation of a key.
-  - The first param is the set of keys (or a single key) that the `is` predicate should run on.
+  - The first param is the set of keys (or a single key) that the `is` predicate should run on. Note that you can access the parent object(s) by using the ../ syntax as shown in the 2nd example
 
   - The `is` param can be set to simply true or false (which will run the .every method on the values and assert the against the passed `is`) or a predicate that will decide what schema will be active in that moment.
 
@@ -115,6 +114,38 @@ UserSchema.validate({
       test: 'testing',
     }); // { test: 'maxError' }
     ```
+  - ```js
+    const schema = Nope.object().shape({
+      shouldCreateUser: Nope.boolean().required('reqbool'),
+      user: Nope.object().shape({
+        name: Nope.string().when('../shouldCreateUser', {
+          is: (str) => !!str,
+          then: Nope.string().required('required'),
+          otherwise: Nope.string().notAllowed('not allowed'),
+        }),
+      }),
+    });
+
+    const validInput1 = {
+      shouldCreateUser: true,
+      user: {
+        name: 'user name',
+      },
+    };
+    const invalidInput1 = {
+      shouldCreateUser: true,
+      user: {
+        name: undefined,
+      },
+    };
+
+    expect(schema.validate(validInput1)).toEqual(undefined);
+    expect(schema.validate(invalidInput1)).toEqual({
+      user: {
+        name: 'required',
+      },
+    });
+    ```
 
   - `oneOf(options: string | ref[], message: string)` - Asserts if the entry is one of the defined options
   - ```js
@@ -149,6 +180,17 @@ UserSchema.validate({
       .validate(); // returns the error message
     ```
 
+  - `notAllowed(message: string)` - Asserts if the entry is nil
+  - ```
+    Nope.string()
+      .notAllowed()
+      .validate(null); // returns undefined
+
+    Nope.string()
+      .notAllowed()
+      .validate('42'); // returns the error message
+    ```
+
   - `test(rule: (entry: string) => string | undefined)` - Add a custom rule
   - ```js
     Nope.string()
@@ -161,6 +203,50 @@ UserSchema.validate({
     ```
 
   - `validate(entry: string | undefined | null)` - Runs the rule chain against an entry
+
+
+- `Object`
+  - `shape(shape: object)` - Sets the shape which of the object. Use name as keys and Nope validators as values
+  - ```js
+    const schema = Nope.object().shape({
+      name: Nope.string()
+        .atMost(15)
+        .required(),
+      email: Nope.string()
+        .email('Please provide a valid email')
+        .required(),
+    });
+
+    const errors = schema.validate({
+      name: 'Test',
+      email: 'invalidemail',
+    });
+
+    console.log(errors); // { email: 'Please provide a valid email', }
+    ```
+  - `extend(Base: NopeObject)` - Extends the schema of an already defined NopeObject
+  - ```js
+    const baseSchema = Nope.object().shape({
+      password: Nope.string().atLeast(5),
+      confirmPassword: Nope.string()
+        .oneOf([Nope.ref('password')], "Passwords don't match")
+        .required(),
+    });
+
+    const userSchema = Nope.object()
+      .extend(baseSchema)
+      .shape({
+        name: Nope.string()
+          .atLeast(4)
+          .required(),
+      });
+
+    userSchema.validate({
+      name: 'Jonathan',
+      password: 'birdybird',
+      confirmPassworod: 'burdyburd',
+    }); // returns { confirmPassword: 'Passwords don\'t match' }
+    ```
 
 - `String`
 
@@ -221,6 +307,16 @@ UserSchema.validate({
     Nope.string()
       .lessThan(4)
       .validate('http'); // returns the error message
+
+  - `exactLength(length: number, message: string)` - Asserts if the entry is of exact length
+  - ```js
+    Nope.string()
+      .exactLength(4)
+      .validate('test'); // returns undefined
+
+    Nope.string()
+      .exactLength(4)
+      .validate('testing'); // returns the error message
     ```
 
 - `Number`
@@ -331,53 +427,7 @@ UserSchema.validate({
       .false()
       .validate(true); // returns the error message
     ```
-
-- `Object`
-
-  - `shape(shape: object)` - Sets the shape which of the object. Use name as keys and Nope validators as values
-  - ```js
-    const schema = Nope.object().shape({
-      name: Nope.string()
-        .atMost(15)
-        .required(),
-      email: Nope.string()
-        .email('Please provide a valid email')
-        .required(),
-    });
-
-    const errors = schema.validate({
-      name: 'Test',
-      email: 'invalidemail',
-    });
-
-    console.log(errors); // { email: 'Please provide a valid email', }
-    ```
-
-  - `extend(Base: NopeObject)` - Extends the schema of an already defined NopeObject
-
-  - ```js
-    const baseSchema = Nope.object().shape({
-      password: Nope.string().atLeast(5),
-      confirmPassword: Nope.string()
-        .oneOf([Nope.ref('password')], "Passwords don't match")
-        .required(),
-    });
-
-    const userSchema = Nope.object()
-      .extend(baseSchema)
-      .shape({
-        name: Nope.string()
-          .atLeast(4)
-          .required(),
-      });
-
-    userSchema.validate({
-      name: 'Jonathan',
-      password: 'birdybird',
-      confirmPassworod: 'burdyburd',
-    }); // returns { confirmPassword: 'Passwords don\'t match' }
-    ```
-
+  
   - `noUnknown(message: string)` - Return an error message if the entry contains keys that are not defined in the schema
 
   - ```js
@@ -392,6 +442,49 @@ UserSchema.validate({
     ```
 
   - `validate(entry: object)` - Runs the rule chain against an entry
+  - `validateAt(path: string, entry: Record<string | number, any>)`
+  - ```js
+    const schema = Nope.object().shape({
+        foo: Nope.array().of(
+          Nope.object().shape({
+            loose: Nope.boolean(),
+            bar: Nope.string().when('loose', {
+              is: true,
+              then: Nope.string().max(5, 'tooLong'),
+              otherwise: Nope.string().min(5, 'tooShort'),
+            }),
+          }),
+        ),
+      });
+
+      const rootValue = {
+        foo: [{ bar: '123' }, { bar: '123456', loose: true }],
+      };
+
+      schema.validateAt('foo[0].bar', rootValue); // returns 'tooShort';
+      schema.validateAt('foo[1].bar', rootValue); // returns 'tooLong';
+    ```
+
+- `Array`
+  - `required(message: string)` - Required field (non falsy)
+  - `of(primitive: Validatable<T>)` - Required the field to be of a certain schema
+  - ```js
+    const schema = Nope.object().shape({
+      names: Nope.array()
+        .of(Nope.string().min(5))
+        .required(),
+    });
+
+    schema.validate({
+      names: ['Geralt']
+    }); // returns undefined;
+    ```
+  - `minLength(length: number, message?: string)` - Minimal length of the field
+  - `maxLength(length: number, message?: string)` - Max length of the field
+  - `mustContain(value: T, message?: string)` - Must contain a certain item
+  - `hasOnly(values: T[], message?: string)` - Must only contain certain items
+  - `every(predicate: item => boolean, message?: string)` - Every item passes predicate. Alike `Array.prototype.every`
+  - `some(predicate: item => boolean, message?: string)` - Some items pass the predicate. Alike `Array.prorotype.some`
 
 - `Reference` - allows the schema to reference other values in the provided entry
 
@@ -416,6 +509,27 @@ UserSchema.validate({
     });
 
     console.log(noerrors); // undefined
+    ```
+  - ```js
+      const schema = Nope.object().shape({
+        validUsernames: Nope.array().of(Nope.string()),
+        user: Nope.object().shape({
+          name: Nope.string().oneOf(Nope.ref('../validUsernames'), 'not valid'),
+        }),
+      });
+
+      const invalidInput = {
+        validUsernames: ['megatron'],
+        user: {
+          name: 'ultron',
+        },
+      };
+
+      expect(schema.validate(invalidInput1)).toEqual({
+        user: {
+          name: 'not valid',
+        },
+      });
     ```
 
 ## Usage with [Formik](https://github.com/jaredpalmer/formik)
@@ -450,18 +564,3 @@ const schema = Nope.object().shape({
   )}
 </Formik>;
 ```
-
-## Benchmark
-
-```bash
-nope x 941,878 ops/sec ±0.37% (94 runs sampled)
-yup x 6,566 ops/sec ±3.24% (90 runs sampled)
-```
-
-I'll add tests against other validation libraries as well.
-
-The benchmark results can be found in the `benchmark/` folder along with the specs and the code that was used for the benchmark.
-
-
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fbvego%2Fnope-validator.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fbvego%2Fnope-validator?ref=badge_large)

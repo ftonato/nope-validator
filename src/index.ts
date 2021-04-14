@@ -6,33 +6,24 @@ import NopeArray from './NopeArray';
 import NopeDate from './NopeDate';
 import NopeReference from './NopeReference';
 
-const NopeObjectConstructor = () => new NopeObject();
-const NopeStringConstructor = () => new NopeString();
-const NopeNumberConstructor = () => new NopeNumber();
-const NopeBooleanConstructor = () => new NopeBoolean();
-const NopeArrayConstructor = <T>() => new NopeArray<T>();
-const NopeDateConstructor = () => new NopeDate();
-const NopeReferenceConstructor = (key: string) => new NopeReference(key);
+const object = () => new NopeObject();
+const string = () => new NopeString();
+const number = (message?: string) => new NopeNumber(message);
+const boolean = () => new NopeBoolean();
+const date = (message?: string) => new NopeDate(message);
+const array = <T>() => new NopeArray<T>();
+const ref = (key: string) => new NopeReference(key);
 
 const Nope = {
-  object: NopeObjectConstructor,
-  string: NopeStringConstructor,
-  number: NopeNumberConstructor,
-  boolean: NopeBooleanConstructor,
-  array: NopeArrayConstructor,
-  date: NopeDateConstructor,
-  ref: NopeReferenceConstructor,
+  object,
+  string,
+  number,
+  boolean,
+  date,
+  array,
+  ref,
 };
 
-export {
-  Nope,
-  NopeObjectConstructor as object,
-  NopeNumberConstructor as number,
-  NopeStringConstructor as string,
-  NopeBooleanConstructor as boolean,
-  NopeArrayConstructor as array,
-  NopeDateConstructor as date,
-  NopeReferenceConstructor as ref,
-};
+export { Nope, object, string, number, boolean, date, array, ref };
 
 export default Nope;

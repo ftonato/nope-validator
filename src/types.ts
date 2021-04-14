@@ -14,7 +14,7 @@ export interface Validatable<T> {
 }
 
 export interface ShapeErrors {
-  [key: string]: string;
+  [key: string]: string | ShapeErrors;
 }
 
 export type Nil = null | undefined;

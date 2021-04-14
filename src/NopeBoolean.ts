@@ -2,11 +2,11 @@ import NopePrimitive from './NopePrimitive';
 import { Rule } from './types';
 
 class NopeBoolean extends NopePrimitive<boolean> {
-  protected _type: string = 'boolean';
+  protected _type = 'boolean';
 
   public true(message = 'Input must be true') {
-    const rule: Rule<boolean> = entry => {
-      if (entry === undefined || entry === null) {
+    const rule: Rule<boolean> = (entry) => {
+      if (this.isEmpty(entry)) {
         return;
       }
 
@@ -19,8 +19,8 @@ class NopeBoolean extends NopePrimitive<boolean> {
   }
 
   public false(message = 'Input must be false') {
-    const rule: Rule<boolean> = entry => {
-      if (entry === undefined || entry === null) {
+    const rule: Rule<boolean> = (entry) => {
+      if (this.isEmpty(entry)) {
         return;
       }
 
@@ -30,6 +30,12 @@ class NopeBoolean extends NopePrimitive<boolean> {
     };
 
     return this.test(rule);
+  }
+
+  public validate(entry?: any, context?: Record<string | number, unknown>): string | undefined {
+    const value = entry === undefined || entry === null ? entry : !!entry;
+
+    return super.validate(value, context);
   }
 }
 
