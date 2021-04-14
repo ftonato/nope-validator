@@ -6,7 +6,7 @@ It is pretty straight forward, but GitHub says that this file is nice to have so
 
 ## How to contribute:
 
-If you have an issue (feature request, bug report or just a question) feel free to open up an issue - should be handled it pretty quickly.
+If you have an issue (feature request, bug report or just a question) feel free to open up an issue - should be handled pretty quickly.
 Issue templates exist to help you with your report.
 
 If you wish to resolve an issue - feel free to ping me to assign you!
