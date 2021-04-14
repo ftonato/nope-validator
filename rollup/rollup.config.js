@@ -6,23 +6,22 @@ import external from 'rollup-plugin-peer-deps-external';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import typescript from 'rollup-plugin-typescript2';
 
-export function createRollupConfig(options) {
-  const name = options.name;
-  const outputName = `lib/${options.format}/` + `${name}.js`;
+export function createRollupConfig({name, format, tsconfig, input}) {
+  const outputName = `lib/${format}/` + `${name}.js`;
 
   return {
-    input: options.input,
+    input: input,
     output: {
+      name,
+      format,
       file: outputName,
-      format: options.format,
-      name: 'nope-validator',
       sourcemap: true,
       exports: 'named',
     },
     plugins: [
       external(),
       typescript({
-        tsconfig: options.tsconfig,
+        tsconfig,
         clean: true,
       }),
       resolve(),
