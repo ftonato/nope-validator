@@ -53,13 +53,13 @@ const entry = {
 
 const suite = new bench.Suite('test');
 suite
-  .add('nope', () => {
-    nopeSchema.validateAsync(entry);
+  .add('nope', async () => {
+    await nopeSchema.validateAsync(entry);
   })
 
   .add('yup', async () => {
     try {
-      yupSchema.validate(entry);
+      await yupSchema.validate(entry);
     } catch (_) {}
   })
   .on('cycle', function (event: any) {
