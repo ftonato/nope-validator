@@ -18,7 +18,7 @@
   },
   "scripts": {
     "format": "prettier --write src/**/*.ts",
-    "lint": "eslint 'src/**/*.ts'",
+    "lint": "eslint src/**/*.ts",
     "test": "jest --env=node --colors src/**/*.spec.ts",
     "build:umd": "rollup -c rollup/rollup.config.js",
     "build:es2015": "tsc --module es2015 --target es2015 --outDir lib/es2015",
