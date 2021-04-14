@@ -1,7 +1,7 @@
 // Make sure you build the library before running this code
 
 import * as Yup from 'yup';
-import Nope from 'nope-validator';
+import Nope from './nopesrc/index';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bench = require('benchmark');
 
@@ -54,12 +54,12 @@ const entry = {
 const suite = new bench.Suite('test');
 suite
   .add('nope', () => {
-    nopeSchema.validate(entry);
+    nopeSchema.validateAsync(entry);
   })
 
   .add('yup', async () => {
     try {
-      yupSchema.validateSync(entry);
+      yupSchema.validate(entry);
     } catch (_) {}
   })
   .on('cycle', function (event: any) {
