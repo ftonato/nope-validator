@@ -1,90 +1,97 @@
 import NopePrimitive from '../NopePrimitive';
 import Nope from '..';
+import { validateSyncAndAsync } from './utils';
 
 class Dummy extends NopePrimitive<string> {}
 
 describe('#NopePrimitive', () => {
   describe('#required', () => {
-    it('should return undefined for a non-nil entry', () => {
+    it('should return undefined for a non-nil entry', async () => {
       const validator = new Dummy().required();
 
-      expect(validator.validate('asd')).toEqual(undefined);
+      await validateSyncAndAsync(validator, 'asd', undefined);
     });
 
-    it('should return an error message for a nil entry', () => {
+    it('should return an error message for a nil entry', async () => {
       const validator = new Dummy().required('requiredError');
 
-      expect(validator.validate(undefined)).toEqual('requiredError');
-      expect(validator.validate(null)).toEqual('requiredError');
+      await validateSyncAndAsync(validator, undefined, 'requiredError');
+      await validateSyncAndAsync(validator, null, 'requiredError');
     });
   });
 
   describe('#notAllowed', () => {
-    it('should return undefined for a nil entry', () => {
+    it('should return undefined for a nil entry', async () => {
       const validator = new Dummy().notAllowed('notAllowed');
 
-      expect(validator.validate(undefined)).toEqual(undefined);
-      expect(validator.validate(null)).toEqual(undefined);
+      await validateSyncAndAsync(validator, undefined, undefined);
+      await validateSyncAndAsync(validator, null, undefined);
     });
 
-    it('should return an error message for a nil entry', () => {
+    it('should return an error message for a nil entry', async () => {
       const validator = new Dummy().notAllowed('notAllowed');
 
-      expect(validator.validate('42')).toEqual('notAllowed');
+      await validateSyncAndAsync(validator, '42', 'notAllowed');
     });
   });
 
   describe('#oneOf', () => {
-    it('should return undefined for a non-nil entry', () => {
+    it('should return undefined for a non-nil entry', async () => {
       const validator = new Dummy().oneOf(['a', 'b']);
 
-      expect(validator.validate('a')).toEqual(undefined);
+      await validateSyncAndAsync(validator, 'a', undefined);
     });
 
-    it('should return an error message for a invalid option', () => {
+    it('should return an error message for a invalid option', async () => {
       const validator = new Dummy().oneOf(['a', 'b'], 'oneOfError');
 
-      expect(validator.validate('c')).toEqual('oneOfError');
+      await validateSyncAndAsync(validator, 'c', 'oneOfError');
     });
 
-    it('should resolve references correctly', () => {
+    it('should resolve references correctly', async () => {
       const validator1 = Nope.object().shape({
         test: Nope.string(),
         test2: Nope.string().oneOf([Nope.ref('test')]),
       });
 
-      expect(
-        validator1.validate({
+      await validateSyncAndAsync(
+        validator1,
+        {
           test: 'a',
           test2: 'a',
-        }),
-      ).toEqual(undefined);
+        },
+        undefined,
+      );
 
       const validator2 = Nope.object().shape({
         test: Nope.string(),
         test2: Nope.string().oneOf([Nope.ref('test')], 'oneOfErr'),
       });
 
-      expect(
-        validator2.validate({
+      await validateSyncAndAsync(
+        validator2,
+        {
           test: 'a',
           test2: 'b',
-        }),
-      ).toEqual({
-        test2: 'oneOfErr',
-      });
+        },
+        {
+          test2: 'oneOfErr',
+        },
+      );
 
       const validator3 = Nope.object().shape({
         test: Nope.string(),
         test2: Nope.string().oneOf([Nope.ref('test'), 'c'], 'oneOfErr'),
       });
 
-      expect(
-        validator3.validate({
+      await validateSyncAndAsync(
+        validator3,
+        {
           test: 'a',
           test2: 'c',
-        }),
-      ).toEqual(undefined);
+        },
+        undefined,
+      );
     });
   });
 
@@ -95,69 +102,71 @@ describe('#NopePrimitive', () => {
       errorMessage = 'shouldNotMatch';
     });
 
-    it('should return undefined for a non-matching entry', () => {
+    it('should return undefined for a non-matching entry', async () => {
       const validator = new Dummy().notOneOf(['a', 'b']);
 
-      expect(validator.validate('c')).toEqual(undefined);
+      await validateSyncAndAsync(validator, 'c', undefined);
     });
 
-    it('should return an error messsage when an entry matches', () => {
+    it('should return an error messsage when an entry matches', async () => {
       const validator = new Dummy().notOneOf(['a', 'b'], errorMessage);
 
-      expect(validator.validate('b')).toEqual(errorMessage);
+      await validateSyncAndAsync(validator, 'b', errorMessage);
     });
 
     describe('reference tests', () => {
-      it('should return undefined when references do not match', () => {
+      it('should return undefined when references do not match', async () => {
         const validator = Nope.object().shape({
           key1: Nope.string(),
           key2: Nope.string().notOneOf([Nope.ref('key1')]),
         });
 
-        expect(
-          validator.validate({
+        await validateSyncAndAsync(
+          validator,
+          {
             key1: 'a',
             key2: 'b',
-          }),
-        ).toBeUndefined();
+          },
+          undefined,
+        );
       });
 
-      it('should return an error message when references match', () => {
+      it('should return an error message when references match', async () => {
         const validator = Nope.object().shape({
           key1: Nope.string(),
           key2: Nope.string().notOneOf([Nope.ref('key1')], errorMessage),
         });
 
-        expect(
-          validator.validate({
+        await validateSyncAndAsync(
+          validator,
+          {
             key1: 'a',
             key2: 'a',
-          }),
-        ).toEqual({
-          key2: errorMessage,
-        });
+          },
+          { key2: errorMessage },
+        );
       });
 
-      it('should return the error message when there is a non-reference match', () => {
+      it('should return the error message when there is a non-reference match', async () => {
         const validator = Nope.object().shape({
           key1: Nope.string(),
           key2: Nope.string().notOneOf([Nope.ref('key1'), 'b', 'c'], errorMessage),
         });
 
-        expect(
-          validator.validate({
+        await validateSyncAndAsync(
+          validator,
+          {
             key1: 'a',
             key2: 'c',
-          }),
-        ).toEqual({
-          key2: errorMessage,
-        });
+          },
+          { key2: errorMessage },
+        );
       });
     });
   });
 
   describe('#test', () => {
-    it('should return undefined for a valid value', () => {
+    it('should return undefined for a valid value', async () => {
       const validator = new Dummy()
         .test((entry) => {
           if (entry !== '42') {
@@ -166,10 +175,10 @@ describe('#NopePrimitive', () => {
         })
         .required();
 
-      expect(validator.validate('42')).toEqual(undefined);
+      await validateSyncAndAsync(validator, '42', undefined);
     });
 
-    it('should return the error message for an ivalid value', () => {
+    it('should return the error message for an ivalid value', async () => {
       const validator = new Dummy()
         .test((entry) => {
           if (entry !== '42') {
@@ -178,12 +187,12 @@ describe('#NopePrimitive', () => {
         })
         .required();
 
-      expect(validator.validate('41')).toEqual('42Error');
+      await validateSyncAndAsync(validator, '41', '42Error');
     });
   });
 
   describe('#when', () => {
-    it('should work with simple boolean keys', () => {
+    it('should work with simple boolean keys', async () => {
       const schema = Nope.object().shape({
         small: Nope.boolean().required(),
         test: Nope.number().when('small', {
@@ -193,33 +202,38 @@ describe('#NopePrimitive', () => {
         }),
       });
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           small: true,
           test: 3,
-        }),
-      ).toEqual({
-        test: 'should be small',
-      });
-
-      expect(
-        schema.validate({
+        },
+        {
+          test: 'should be small',
+        },
+      );
+      await validateSyncAndAsync(
+        schema,
+        {
           small: false,
           test: 1,
-        }),
-      ).toEqual({
-        test: 'should be big',
-      });
+        },
+        {
+          test: 'should be big',
+        },
+      );
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           small: false,
           test: 5,
-        }),
-      ).toEqual(undefined);
+        },
+        undefined,
+      );
     });
 
-    it('should work with multiple boolean keys', () => {
+    it('should work with multiple boolean keys', async () => {
       const schema = Nope.object().shape({
         small: Nope.boolean().required(),
         positive: Nope.boolean().required(),
@@ -230,46 +244,54 @@ describe('#NopePrimitive', () => {
         }),
       });
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           small: true,
           positive: false,
           test: 3,
-        }),
-      ).toEqual({
-        test: 'should be negative',
-      });
+        },
+        {
+          test: 'should be negative',
+        },
+      );
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           small: false,
           positive: true,
           test: 3,
-        }),
-      ).toEqual({
-        test: 'should be negative',
-      });
+        },
+        {
+          test: 'should be negative',
+        },
+      );
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           small: true,
           positive: true,
           test: 3,
-        }),
-      ).toEqual({
-        test: 'should be small',
-      });
+        },
+        {
+          test: 'should be small',
+        },
+      );
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           small: true,
           positive: true,
           test: 1,
-        }),
-      ).toEqual(undefined);
+        },
+        undefined,
+      );
     });
 
-    it('should work with a predicate', () => {
+    it('should work with a predicate', async () => {
       const schema = Nope.object().shape({
         small: Nope.boolean().required(),
         test: Nope.number().when(['small'], {
@@ -279,33 +301,39 @@ describe('#NopePrimitive', () => {
         }),
       });
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           small: true,
           test: 3,
-        }),
-      ).toEqual({
-        test: 'should be small',
-      });
+        },
+        {
+          test: 'should be small',
+        },
+      );
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           small: false,
           test: 1,
-        }),
-      ).toEqual({
-        test: 'should be big',
-      });
+        },
+        {
+          test: 'should be big',
+        },
+      );
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           small: true,
           test: 1,
-        }),
-      ).toEqual(undefined);
+        },
+        undefined,
+      );
     });
 
-    it('should work with a predicate and multiple conditions', () => {
+    it('should work with a predicate and multiple conditions', async () => {
       const schema = Nope.object().shape({
         num: Nope.number().required(),
         num2: Nope.number().required(),
@@ -316,54 +344,64 @@ describe('#NopePrimitive', () => {
         }),
       });
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           num: 42,
           num2: 43,
           test: 3,
-        }),
-      ).toEqual({
-        test: 'should be small',
-      });
+        },
+        {
+          test: 'should be small',
+        },
+      );
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           num: 41,
           num2: 42,
           test: 3,
-        }),
-      ).toEqual({
-        test: 'should be small',
-      });
+        },
+        {
+          test: 'should be small',
+        },
+      );
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           num: 41,
           num2: 41,
           test: 3,
-        }),
-      ).toEqual(undefined);
+        },
+        undefined,
+      );
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           num: 41,
           num2: 41,
           test: 1,
-        }),
-      ).toEqual({
-        test: 'should be big',
-      });
+        },
+        {
+          test: 'should be big',
+        },
+      );
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           num: 42,
           num2: 42,
           test: 1,
-        }),
-      ).toEqual(undefined);
+        },
+        undefined,
+      );
     });
 
-    it('should validate circulate referencing fields', () => {
+    it('should validate circulate referencing fields', async () => {
       const schema = Nope.object().shape({
         name: Nope.string().required(),
         pdf: Nope.string().when('csv', {
@@ -378,28 +416,34 @@ describe('#NopePrimitive', () => {
         }),
       });
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           name: 'a',
-        }),
-      ).toEqual({
-        csv: 'This field is required',
-        pdf: 'This field is required',
-      });
+        },
+        {
+          csv: 'This field is required',
+          pdf: 'This field is required',
+        },
+      );
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           name: 'a',
           csv: 'test',
-        }),
-      ).toBeUndefined();
+        },
+        undefined,
+      );
 
-      expect(
-        schema.validate({
+      await validateSyncAndAsync(
+        schema,
+        {
           name: 'a',
           pdf: 'test',
-        }),
-      ).toBeUndefined();
+        },
+        undefined,
+      );
     });
   });
 });

@@ -3,7 +3,7 @@
 import * as Yup from 'yup';
 import Nope from './nopesrc/index';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const bench = require('benchmark');
+import bench from 'benchmark';
 
 const yupSchema = Yup.object().shape({
   companyName: Yup.string().min(2).max(255).required(),
@@ -66,11 +66,19 @@ const entry = {
 
 const suite = new bench.Suite('test');
 suite
-  .add('nope', async () => {
-    await nopeSchema.validateAsync(entry);
+  .add('nopeSync', () => {
+    nopeSchema.validate(entry);
   })
 
-  .add('yup', async () => {
+  .add('yupSync', () => {
+    try {
+      yupSchema.validateSync(entry);
+    } catch (_) {}
+  })
+  .add('nopeAsync', async () => {
+    await nopeSchema.validateAsync(entry);
+  })
+  .add('yupAsync', async () => {
     try {
       await yupSchema.validate(entry);
     } catch (_) {}

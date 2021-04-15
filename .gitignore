@@ -9,3 +9,5 @@ coverage/
 .DS_Store
 
 .yarn-error.log
+
+benchmark/nopesrc

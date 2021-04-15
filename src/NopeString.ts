@@ -11,6 +11,15 @@ class NopeString extends NopePrimitive<string> {
     return super.validate(value, context);
   }
 
+  public validateAsync(
+    entry?: any,
+    context?: Record<string, unknown>,
+  ): Promise<string | undefined> {
+    const value = !!entry ? String(entry) : entry;
+
+    return super.validateAsync(value, context);
+  }
+
   protected isEmpty(value: string | Nil): boolean {
     return value === undefined || value === null || `${value}`.trim().length === 0;
   }

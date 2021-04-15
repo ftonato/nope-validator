@@ -12,5 +12,8 @@
     "nope-validator": "^0.12.2",
     "ts-node": "^9.1.1",
     "yup": "^0.32.9"
+  },
+  "devDependencies": {
+    "@types/benchmark": "^2.1.0"
   }
 }

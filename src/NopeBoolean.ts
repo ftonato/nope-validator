@@ -37,6 +37,15 @@ class NopeBoolean extends NopePrimitive<boolean> {
 
     return super.validate(value, context);
   }
+
+  public validateAsync(
+    entry?: any,
+    context?: Record<string | number, unknown>,
+  ): Promise<string | undefined> {
+    const value = entry === undefined || entry === null ? entry : !!entry;
+
+    return super.validateAsync(value, context);
+  }
 }
 
 export default NopeBoolean;
