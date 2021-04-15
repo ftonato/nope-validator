@@ -101,3 +101,20 @@ export function getFromPath(path: string, entry: Record<string | number, any>, d
 
   return value;
 }
+
+export function runValidators(tasks: any, entry: any, context: any) {
+  let done = false;
+  return tasks.reduce(function (previous: any, next: any) {
+    if (done) {
+      return previous;
+    }
+    return previous.then(function (error: any) {
+      if (error) {
+        done = true;
+        return error;
+      }
+
+      return next(entry, context);
+    });
+  }, Promise.resolve());
+}

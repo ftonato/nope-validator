@@ -1,6 +1,6 @@
-import { Validatable, Nil, Rule, AsyncRule } from './types';
+import { Validatable, Nil, Rule, AsyncRule, Context } from './types';
 import NopeReference from './NopeReference';
-import { resolveNopeRefsFromKeys, every, resolveNopeRef } from './utils';
+import { resolveNopeRefsFromKeys, every, resolveNopeRef, runValidators } from './utils';
 
 abstract class NopePrimitive<T> implements Validatable<T> {
   protected validationRules: (Rule<T> | AsyncRule<T>)[] = [];
@@ -118,19 +118,14 @@ abstract class NopePrimitive<T> implements Validatable<T> {
     }
   }
 
-  public async validateAsync(
-    entry?: T | Nil,
-    context?: Record<string | number, unknown>,
-  ): Promise<string | undefined> {
-    for (const rule of this.validationRules) {
-      const error = await rule(entry, context);
-
+  public validateAsync(entry?: T | Nil, context?: Context): Promise<string | undefined> {
+    return runValidators(this.validationRules, entry, context).then((error: any) => {
       if (error instanceof NopePrimitive) {
         return error.validateAsync(entry, context);
       } else if (error) {
         return error;
       }
-    }
+    });
   }
 }
 

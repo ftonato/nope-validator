@@ -19,6 +19,12 @@ const yupSchema = Yup.object().shape({
     .oneOf([Yup.ref('password')])
     .required(),
   acceptedTC: Yup.boolean().required(),
+  role: Yup.array().of(
+    Yup.object().shape({
+      label: Yup.string(),
+      value: Yup.string(),
+    }),
+  ),
 });
 
 const nopeSchema = Nope.object().shape({
@@ -35,6 +41,12 @@ const nopeSchema = Nope.object().shape({
     .oneOf([Nope.ref('password')])
     .required(),
   acceptedTC: Nope.boolean().required(),
+  role: Nope.array().of(
+    Nope.object().shape({
+      label: Nope.string(),
+      value: Nope.string(),
+    }),
+  ),
 });
 
 const entry = {
@@ -49,6 +61,7 @@ const entry = {
   password: 'passypass',
   confirmPassword: 'passypass',
   acceptedTC: true,
+  role: [{ label: 'admin', value: 'admin' }],
 };
 
 const suite = new bench.Suite('test');

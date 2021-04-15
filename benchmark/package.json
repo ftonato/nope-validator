@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "rm -rf nopesrc && cp -R ../src nopesrc && ts-node index.ts"
+    "start": "rm -rf nopesrc && cp -R ../src nopesrc && rm -rf nopesrc/__tests__ && ts-node index.ts"
   },
   "dependencies": {
     "benchmark": "^2.1.4",

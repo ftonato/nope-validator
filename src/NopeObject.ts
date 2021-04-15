@@ -1,5 +1,5 @@
-import { Validatable, Rule, AsyncRule, ShapeErrors } from './types';
-import { pathToArray, getFromPath } from './utils';
+import { Validatable, Rule, AsyncRule, ShapeErrors, Context } from './types';
+import { pathToArray, getFromPath, runValidators } from './utils';
 
 interface ObjectShape {
   [key: string]: Validatable<any> | NopeObject;
@@ -12,6 +12,24 @@ type ValidateOptions = {
 type AnyObject = Record<string | number, any>;
 
 type ErrorsResult = ShapeErrors | undefined;
+
+function runLocalValidators(tasks: any) {
+  let result = Promise.resolve();
+
+  for (const task of tasks) {
+    result = result.then((error) => {
+      task();
+
+      return error;
+    });
+
+    if (result) {
+      return result;
+    }
+  }
+
+  return result;
+}
 
 class NopeObject {
   private objectShape: ObjectShape;
@@ -80,10 +98,11 @@ class NopeObject {
     const abortEarly = options?.abortEarly;
     const errors: ErrorsResult = {};
 
+    const ctx = Object.assign({ ___parent: context }, entry);
+
     for (const key in this.objectShape) {
       const validator = this.objectShape[key];
-
-      const error = validator.validate(entry[key], { ...entry, ___parent: context }, options);
+      const error = validator.validate(entry[key], ctx, options);
 
       if (error) {
         areErrors = true;
@@ -102,48 +121,48 @@ class NopeObject {
     return undefined;
   }
 
-  public async validateAsync(
+  public validateAsync(
     entry: AnyObject,
-    context?: AnyObject | null,
+    context?: Context,
     options?: Omit<ValidateOptions, 'abortEarly'>,
   ) {
-    for (const rule of this.validationRules) {
-      const localErrors = await rule(entry);
-
-      if (localErrors) {
-        return localErrors;
+    return runValidators(this.validationRules, entry, context).then((localError: any) => {
+      if (localError) {
+        return localError;
       }
-    }
 
-    const keys = [];
-    const results = [];
-    for (const key in this.objectShape) {
-      const validator = this.objectShape[key];
-      const error = validator.validateAsync(entry[key], { ...entry, ___parent: context }, options);
+      const keys: string[] = [];
+      const results: any[] = [];
 
-      keys.push(key);
-      results.push(error);
-    }
+      const ctx = Object.assign({ ___parent: context }, entry);
 
-    const resolvedErrors = await Promise.all(results);
+      for (const key in this.objectShape) {
+        const validator = this.objectShape[key];
+        const error = validator.validateAsync(entry[key], ctx, options);
 
-    const errors: ErrorsResult = {};
-    let areErrors = false;
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i];
-      const error = resolvedErrors[i];
-
-      if (error) {
-        areErrors = true;
-        errors[key] = error as string;
+        keys.push(key);
+        results.push(error);
       }
-    }
 
-    if (areErrors) {
-      return errors;
-    }
+      return Promise.all(results).then((resolvedErrors) => {
+        const errors: ErrorsResult = {};
+        let areErrors = false;
+        for (let i = 0; i < keys.length; i++) {
+          const error = resolvedErrors[i];
 
-    return undefined;
+          if (error) {
+            areErrors = true;
+            errors[keys[i]] = error as string;
+          }
+        }
+
+        if (areErrors) {
+          return errors;
+        }
+
+        return undefined;
+      });
+    });
   }
 
   public validateAt(path: string, entry: Record<string | number, any>) {
