@@ -1,7 +1,7 @@
 import { Rule, Validatable } from './types';
-import NopePrimitive from './NopePrimitive';
+import { NopePrimitive } from './NopePrimitive';
 import { deepEquals, runValidators } from './utils';
-import NopeObject from './NopeObject';
+import { NopeObject } from './NopeObject';
 
 function ofType(entry: any, primitive: any) {
   let done = false;
@@ -20,7 +20,7 @@ function ofType(entry: any, primitive: any) {
   }, Promise.resolve());
 }
 
-class NopeArray<T> implements Validatable<T[]> {
+export class NopeArray<T> implements Validatable<T[]> {
   protected _type = 'object';
   public validationRules: Rule<T[]>[] = [];
   public ofShape: Validatable<T> | NopeObject | null = null;
@@ -212,5 +212,3 @@ class NopeArray<T> implements Validatable<T[]> {
     );
   }
 }
-
-export default NopeArray;

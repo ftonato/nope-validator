@@ -1,4 +1,4 @@
-import NopePrimitive from '../NopePrimitive';
+import { NopePrimitive } from '../NopePrimitive';
 import Nope from '..';
 import { validateSyncAndAsync } from './utils';
 

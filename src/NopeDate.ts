@@ -1,14 +1,10 @@
-import NopePrimitive from './NopePrimitive';
-import NopeReference from './NopeReference';
+import { NopePrimitive } from './NopePrimitive';
+import { NopeReference } from './NopeReference';
 import { Rule } from './types';
 
 type T = string | number | Date;
 
-function isValidDate(d: Date): boolean {
-  return d instanceof Date && !isNaN(+d);
-}
-
-class NopeDate extends NopePrimitive<T> {
+export class NopeDate extends NopePrimitive<T> {
   private message: string;
   protected _type = 'object';
 
@@ -100,5 +96,3 @@ class NopeDate extends NopePrimitive<T> {
     this.message = message;
   }
 }
-
-export default NopeDate;

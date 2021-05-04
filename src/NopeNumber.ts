@@ -1,7 +1,7 @@
-import NopePrimitive from './NopePrimitive';
+import { NopePrimitive } from './NopePrimitive';
 import { Rule } from './types';
 
-class NopeNumber extends NopePrimitive<number> {
+export class NopeNumber extends NopePrimitive<number> {
   private message = 'The field is not a number';
   protected _type = 'number';
 
@@ -119,5 +119,3 @@ class NopeNumber extends NopePrimitive<number> {
     this.message = message;
   }
 }
-
-export default NopeNumber;

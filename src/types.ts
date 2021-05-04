@@ -1,5 +1,5 @@
 // shared types
-import NopePrimitive from './NopePrimitive';
+import { NopePrimitive } from './NopePrimitive';
 
 type RuleResult<T> = string | undefined | NopePrimitive<T>;
 

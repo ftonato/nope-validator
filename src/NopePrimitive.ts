@@ -1,8 +1,8 @@
 import { Validatable, Nil, Rule, AsyncRule, Context } from './types';
-import NopeReference from './NopeReference';
+import { NopeReference } from './NopeReference';
 import { resolveNopeRefsFromKeys, every, resolveNopeRef, runValidators } from './utils';
 
-abstract class NopePrimitive<T> implements Validatable<T> {
+export abstract class NopePrimitive<T> implements Validatable<T> {
   protected validationRules: (Rule<T> | AsyncRule<T>)[] = [];
   protected _type = 'undefined';
 
@@ -128,5 +128,3 @@ abstract class NopePrimitive<T> implements Validatable<T> {
     });
   }
 }
-
-export default NopePrimitive;

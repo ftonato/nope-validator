@@ -1,7 +1,7 @@
-import NopePrimitive from './NopePrimitive';
+import { NopePrimitive } from './NopePrimitive';
 import { Rule } from './types';
 
-class NopeBoolean extends NopePrimitive<boolean> {
+export class NopeBoolean extends NopePrimitive<boolean> {
   protected _type = 'boolean';
 
   public true(message = 'Input must be true') {
@@ -47,5 +47,3 @@ class NopeBoolean extends NopePrimitive<boolean> {
     return super.validateAsync(value, context);
   }
 }
-
-export default NopeBoolean;

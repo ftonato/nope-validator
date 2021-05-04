@@ -1,5 +1,5 @@
 import { Nil } from './types';
-import NopeReference from './NopeReference';
+import { NopeReference } from './NopeReference';
 
 function resolvePathFromContext(path: string, context?: Record<string | number, any>) {
   const optionWithPath = path.split('../');

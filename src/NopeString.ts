@@ -1,8 +1,8 @@
-import NopePrimitive from './NopePrimitive';
+import { NopePrimitive } from './NopePrimitive';
 import { Nil, Rule } from './types';
 import { urlRegex, emailRegex } from './consts';
 
-class NopeString extends NopePrimitive<string> {
+export class NopeString extends NopePrimitive<string> {
   protected _type = 'string';
 
   public validate(entry?: any, context?: Record<string, unknown>): string | undefined {
@@ -129,5 +129,3 @@ class NopeString extends NopePrimitive<string> {
     return this.test(rule);
   }
 }
-
-export default NopeString;

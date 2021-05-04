@@ -13,7 +13,7 @@ type AnyObject = Record<string | number, any>;
 
 type ErrorsResult = ShapeErrors | undefined;
 
-class NopeObject {
+export class NopeObject {
   private objectShape: ObjectShape;
   private validationRules: (Rule<AnyObject> | AsyncRule<AnyObject>)[] = [];
   protected _type = 'object';
@@ -172,5 +172,3 @@ class NopeObject {
     return validator.validate(value, parentValue);
   }
 }
-
-export default NopeObject;

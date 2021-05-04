@@ -1,10 +1,10 @@
-import NopeObject from './NopeObject';
-import NopeString from './NopeString';
-import NopeNumber from './NopeNumber';
-import NopeBoolean from './NopeBoolean';
-import NopeArray from './NopeArray';
-import NopeDate from './NopeDate';
-import NopeReference from './NopeReference';
+import { NopeObject } from './NopeObject';
+import { NopeString } from './NopeString';
+import { NopeNumber } from './NopeNumber';
+import { NopeBoolean } from './NopeBoolean';
+import { NopeArray } from './NopeArray';
+import { NopeDate } from './NopeDate';
+import { NopeReference } from './NopeReference';
 
 const object = () => new NopeObject();
 const string = () => new NopeString();
