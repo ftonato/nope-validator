@@ -52,7 +52,7 @@ const UserSchema = Nope.object().shape({
     .required(),
   confirmEmail: Nope.string()
     .oneOf([Nope.ref('email')])
-    .requried(),
+    .required(),
 });
 
 UserSchema.validate({
