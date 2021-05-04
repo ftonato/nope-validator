@@ -354,5 +354,35 @@ describe('#NopeObject', () => {
       const validErrors = await schema.validateAsync(valid);
       expect(validErrors).toEqual(undefined);
     });
+
+    it('shoudld work with a simulated API call', async () => {
+      const divideBy2 = async (num: number) => {
+        await new Promise((res) => setTimeout(res, 10));
+        return num / 2;
+      };
+
+      const schema = Nope.object().shape({
+        num: Nope.number().test(async (val) => {
+          const res = await divideBy2(val);
+
+          if (res !== 42) {
+            return 'error';
+          }
+        }),
+      });
+
+      expect(
+        await schema.validateAsync({
+          num: 84,
+        }),
+      ).toBe(undefined);
+      expect(
+        await schema.validateAsync({
+          num: 83,
+        }),
+      ).toEqual({
+        num: 'error',
+      });
+    });
   });
 });

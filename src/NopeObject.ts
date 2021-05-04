@@ -13,24 +13,6 @@ type AnyObject = Record<string | number, any>;
 
 type ErrorsResult = ShapeErrors | undefined;
 
-function runLocalValidators(tasks: any) {
-  let result = Promise.resolve();
-
-  for (const task of tasks) {
-    result = result.then((error) => {
-      task();
-
-      return error;
-    });
-
-    if (result) {
-      return result;
-    }
-  }
-
-  return result;
-}
-
 class NopeObject {
   private objectShape: ObjectShape;
   private validationRules: (Rule<AnyObject> | AsyncRule<AnyObject>)[] = [];

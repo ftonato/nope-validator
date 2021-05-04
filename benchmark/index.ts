@@ -1,7 +1,7 @@
 // Make sure you build the library before running this code
 
 import * as Yup from 'yup';
-import Nope from './nopesrc/index';
+import * as Nope from './nopesrc/index';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import bench from 'benchmark';
 
