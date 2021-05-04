@@ -51,7 +51,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^18.0.0",
+    "@rollup/plugin-commonjs": "^18.1.0",
     "@rollup/plugin-node-resolve": "^11.2.0",
     "@swc-node/jest": "^1.2.1",
     "@types/jest": "^26.0.22",
