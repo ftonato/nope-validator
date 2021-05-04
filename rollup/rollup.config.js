@@ -6,7 +6,7 @@ import external from 'rollup-plugin-peer-deps-external';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import typescript from 'rollup-plugin-typescript2';
 
-export function createRollupConfig({name, format, tsconfig, input}) {
+export function createRollupConfig({ name, format, tsconfig, input }) {
   const outputName = `lib/${format}/` + `${name}.js`;
 
   return {
@@ -34,7 +34,7 @@ export function createRollupConfig({name, format, tsconfig, input}) {
 }
 
 const umd = {
-  name: 'nope-validator',
+  name: 'index',
   format: 'umd',
   input: pkg.source,
 };
