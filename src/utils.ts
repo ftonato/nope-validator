@@ -108,13 +108,22 @@ export function runValidators(tasks: any, entry: any, context: any) {
     if (done) {
       return previous;
     }
-    return previous.then(function (error: any) {
-      if (error) {
-        done = true;
-        return error;
-      }
+    return previous
+      .then(function (error: any) {
+        if (error) {
+          done = true;
+          return error;
+        }
 
-      return next(entry, context);
-    });
+        return next(entry, context);
+      })
+      .catch(function (error: any) {
+        if (error) {
+          done = true;
+          return error;
+        }
+
+        return next(entry, context);
+      });
   }, Promise.resolve());
 }

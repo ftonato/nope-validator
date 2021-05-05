@@ -68,10 +68,16 @@ describe('#NopeArray', () => {
   });
 
   describe('#minLength', () => {
-    it('should return undefined for an empty entry', async () => {
+    it('should return undefined for an empty or length larger than provided', async () => {
       await validateSyncAndAsync(
         Nope.array<any>().minLength(5, 'minLengthErrorMessage'),
         undefined,
+        undefined,
+      );
+
+      await validateSyncAndAsync(
+        Nope.array<any>().minLength(5, 'minLengthErrorMessage'),
+        [1, 2, 3, 4, 5, 6, 7],
         undefined,
       );
     });
@@ -98,10 +104,16 @@ describe('#NopeArray', () => {
   });
 
   describe('#maxLength', () => {
-    it('should return undefined for an empty entry', async () => {
+    it('should return undefined for an empty entry or an entry smaller than the provided length', async () => {
       await validateSyncAndAsync(
         Nope.array<any>().maxLength(5, 'maxLengthErrorMessage'),
         undefined,
+        undefined,
+      );
+
+      await validateSyncAndAsync(
+        Nope.array<any>().maxLength(5, 'maxLengthErrorMessage'),
+        [1, 2, 3, 4],
         undefined,
       );
     });
@@ -166,11 +178,19 @@ describe('#NopeArray', () => {
       );
     });
 
-    it('should return error message for an entry having different hasOnly from hasOnly passed', async () => {
+    it('should return error message for an entry having different values from hasOnly', async () => {
       await validateSyncAndAsync(
         Nope.array<any>().hasOnly([1, 2, 3], 'validateError'),
         [1, 2, 3, 4, 5, 6],
         'validateError',
+      );
+    });
+
+    it('should return undefined for having correct values', async () => {
+      await validateSyncAndAsync(
+        Nope.array<any>().hasOnly([1, 2, 3], 'validateError'),
+        [1, 2, 3],
+        undefined,
       );
     });
 

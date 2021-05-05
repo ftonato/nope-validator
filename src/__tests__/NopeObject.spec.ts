@@ -339,7 +339,7 @@ describe('#NopeObject', () => {
           if (str) {
             return Promise.resolve(undefined);
           }
-          return Promise.resolve('str');
+          return Promise.reject('str');
         }),
       });
 
@@ -358,6 +358,7 @@ describe('#NopeObject', () => {
     it('shoudld work with a simulated API call', async () => {
       const divideBy2 = async (num: number) => {
         await new Promise((res) => setTimeout(res, 10));
+
         return num / 2;
       };
 
