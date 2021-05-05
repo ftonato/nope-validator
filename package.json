@@ -1,6 +1,6 @@
 {
   "name": "nope-validator",
-  "version": "0.12.3-beta.1",
+  "version": "1.0.0-beta.0",
   "source": "src/index.ts",
   "main": "lib/cjs/index.js",
   "umd:main": "lib/umd/index.js",
