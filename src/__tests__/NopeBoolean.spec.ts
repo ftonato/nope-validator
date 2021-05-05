@@ -1,31 +1,32 @@
 import Nope from '..';
+import { validateSyncAndAsync } from './utils';
 
 describe('#NopeBoolean', () => {
   describe('#true', () => {
-    it('should return undefined for an empty entry', () => {
-      expect(Nope.boolean().true().validate(undefined)).toBe(undefined);
+    it('should return undefined for an empty entry', async () => {
+      await validateSyncAndAsync(Nope.boolean().true(), undefined, undefined);
     });
 
-    it('should return an error message for a false entry', () => {
-      expect(Nope.boolean().true('trueError').validate(false)).toBe('trueError');
+    it('should return an error message for a false entry', async () => {
+      await validateSyncAndAsync(Nope.boolean().true('trueError'), false, 'trueError');
     });
 
-    it('should return undefined for a true entry', () => {
-      expect(Nope.boolean().true().validate(true)).toBe(undefined);
+    it('should return undefined for a true entry', async () => {
+      await validateSyncAndAsync(Nope.boolean().true('trueError'), true, undefined);
     });
   });
 
   describe('#false', () => {
-    it('should return undefined for an empty entry', () => {
-      expect(Nope.boolean().false().validate(undefined)).toBe(undefined);
+    it('should return undefined for an empty entry', async () => {
+      await validateSyncAndAsync(Nope.boolean().false(), undefined, undefined);
     });
 
-    it('should return an error message for a true entry', () => {
-      expect(Nope.boolean().false('falseError').validate(true)).toBe('falseError');
+    it('should return an error message for a true entry', async () => {
+      await validateSyncAndAsync(Nope.boolean().false('falseError'), true, 'falseError');
     });
 
-    it('should return undefined for a false entry', () => {
-      expect(Nope.boolean().false().validate(false)).toBe(undefined);
+    it('should return undefined for a false entry', async () => {
+      await validateSyncAndAsync(Nope.boolean().false(), false, undefined);
     });
   });
 });

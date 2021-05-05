@@ -1,9 +1,9 @@
-import { Validatable, Nil, Rule } from './types';
-import NopeReference from './NopeReference';
-import { resolveNopeRefsFromKeys, every, resolveNopeRef } from './utils';
+import { Validatable, Nil, Rule, AsyncRule, Context } from './types';
+import { NopeReference } from './NopeReference';
+import { resolveNopeRefsFromKeys, every, resolveNopeRef, runValidators } from './utils';
 
-abstract class NopePrimitive<T> implements Validatable<T> {
-  protected validationRules: Rule<T>[] = [];
+export abstract class NopePrimitive<T> implements Validatable<T> {
+  protected validationRules: (Rule<T> | AsyncRule<T>)[] = [];
   protected _type = 'undefined';
 
   public getType() {
@@ -96,7 +96,7 @@ abstract class NopePrimitive<T> implements Validatable<T> {
     return this.test(rule);
   }
 
-  public test(rule: Rule<T>) {
+  public test(rule: Rule<T> | AsyncRule<T>) {
     this.validationRules.push(rule);
 
     return this;
@@ -113,10 +113,18 @@ abstract class NopePrimitive<T> implements Validatable<T> {
       if (error instanceof NopePrimitive) {
         return error.validate(entry, context);
       } else if (error) {
-        return error;
+        return error as string;
       }
     }
   }
-}
 
-export default NopePrimitive;
+  public validateAsync(entry?: T | Nil, context?: Context): Promise<string | undefined> {
+    return runValidators(this.validationRules, entry, context).then((error: any) => {
+      if (error instanceof NopePrimitive) {
+        return error.validateAsync(entry, context);
+      } else if (error) {
+        return error;
+      }
+    });
+  }
+}

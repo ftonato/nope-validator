@@ -6,22 +6,34 @@ import external from 'rollup-plugin-peer-deps-external';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import typescript from 'rollup-plugin-typescript2';
 
-export function createRollupConfig({name, format, tsconfig, input}) {
-  const outputName = `lib/${format}/` + `${name}.js`;
+export function createRollupConfig({
+  name,
+  format,
+  tsconfigOverride,
+  input,
+  preserveModules = false,
+}) {
+  const outputPath = `lib/${name || format}`;
+  const outputName = `${outputPath}/index.js`;
 
   return {
-    input: input,
+    input,
     output: {
-      name,
+      name: 'index',
       format,
-      file: outputName,
+      ...(preserveModules
+        ? {
+            dir: outputPath,
+            preserveModules,
+          }
+        : { file: outputName }),
       sourcemap: true,
       exports: 'named',
     },
     plugins: [
       external(),
       typescript({
-        tsconfig,
+        tsconfigOverride,
         clean: true,
       }),
       resolve(),
@@ -33,10 +45,32 @@ export function createRollupConfig({name, format, tsconfig, input}) {
   };
 }
 
-const umd = {
-  name: 'nope-validator',
-  format: 'umd',
-  input: pkg.source,
-};
+const outputs = [
+  {
+    format: 'umd',
+    input: pkg.source,
+  },
+  {
+    format: 'cjs',
+    input: pkg.source,
+    preserveModules: true,
+  },
+  {
+    format: 'amd',
+    input: pkg.source,
+    preserveModules: true,
+  },
+  {
+    name: 'esm',
+    tsconfigOverride: {
+      compilerOptions: {
+        target: 'es2016',
+      },
+    },
+    format: 'es',
+    input: pkg.source,
+    preserveModules: true,
+  },
+];
 
-export default createRollupConfig(umd);
+export default outputs.map(createRollupConfig);

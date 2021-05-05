@@ -1,7 +1,7 @@
-import NopePrimitive from './NopePrimitive';
+import { NopePrimitive } from './NopePrimitive';
 import { Rule } from './types';
 
-class NopeNumber extends NopePrimitive<number> {
+export class NopeNumber extends NopePrimitive<number> {
   private message = 'The field is not a number';
   protected _type = 'number';
 
@@ -101,10 +101,21 @@ class NopeNumber extends NopePrimitive<number> {
     return super.validate(value, context);
   }
 
+  public validateAsync(
+    entry?: any,
+    context?: Record<string | number, unknown>,
+  ): Promise<string | undefined> {
+    const value = !!entry ? Number(entry) : entry;
+
+    if (!this.isEmpty(value) && Number.isNaN(value)) {
+      return Promise.resolve(this.message);
+    }
+
+    return super.validateAsync(value, context);
+  }
+
   public constructor(message = 'The field is not a valid number') {
     super();
     this.message = message;
   }
 }
-
-export default NopeNumber;

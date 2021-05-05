@@ -1,47 +1,60 @@
 import Nope from '..';
+import { validateSyncAndAsync } from './utils';
 
 describe('#NopeDate', () => {
   describe('#before', () => {
-    it('should return undefined for an empty entry', () => {
-      expect(Nope.date().before('2019-01-01').validate(undefined)).toBe(undefined);
+    it('should return undefined for an empty entry', async () => {
+      await validateSyncAndAsync(Nope.date().before('2019-01-01'), undefined, undefined);
     });
 
-    it('should return an error message for an invalid entry', () => {
-      expect(Nope.date().before('2019-01-01', 'beforeError').validate('2019-01-02')).toBe(
+    it('should return an error message for an invalid entry', async () => {
+      await validateSyncAndAsync(
+        Nope.date().before('2019-01-01', 'beforeError'),
+        '2019-01-02',
         'beforeError',
       );
     });
 
-    it('should return undefined for a valid entry', () => {
-      expect(Nope.date().before('2019-01-02').validate('2019-01-01')).toBe(undefined);
+    it('should return undefined for a valid entry', async () => {
+      await validateSyncAndAsync(Nope.date().before('2019-01-02'), '2019-01-01', undefined);
     });
   });
 
   describe('#after', () => {
-    it('should return undefined for an empty entry', () => {
-      expect(Nope.date().after('2019-01-01').validate(undefined)).toBe(undefined);
+    it('should return undefined for an empty entry', async () => {
+      await validateSyncAndAsync(Nope.date().after('2019-01-01'), undefined, undefined);
     });
 
-    it('should return an error message for an invalid entry', () => {
-      expect(Nope.date().after('2019-01-02', 'afterError').validate('2019-01-01')).toBe(
+    it('should return an error message for an invalid entry', async () => {
+      await validateSyncAndAsync(
+        Nope.date().after('2019-01-02', 'afterError'),
+        '2019-01-01',
         'afterError',
       );
     });
 
-    it('should return undefined for a valid entry', () => {
-      expect(Nope.date().after('2019-01-01').validate('2019-01-02')).toBe(undefined);
+    it('should return undefined for a valid entry', async () => {
+      await validateSyncAndAsync(
+        Nope.date().after('2019-01-01', 'afterError'),
+        '2019-01-02',
+        undefined,
+      );
     });
   });
 
   describe('#date', () => {
-    it('should return notADate for an invalid date', () => {
-      expect(Nope.date().after('2019-01-01').validate('not a date')).toBe(
+    it('should return notADate for an invalid date', async () => {
+      await validateSyncAndAsync(
+        Nope.date().after('2019-01-01'),
+        'not a date',
         'The field is not a valid date',
       );
     });
 
-    it('should return a defined error message for an invalid date', () => {
-      expect(Nope.date('dateError').after('2019-01-02', 'afterError').validate('not a date')).toBe(
+    it('should return a defined error message for an invalid date', async () => {
+      await validateSyncAndAsync(
+        Nope.date('dateError').after('2019-01-02', 'afterError'),
+        'not a date',
         'dateError',
       );
     });

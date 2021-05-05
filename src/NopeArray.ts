@@ -1,9 +1,26 @@
-import { Rule, Validatable, Nil } from './types';
-import NopePrimitive from './NopePrimitive';
-import { deepEquals } from './utils';
-import NopeObject from './NopeObject';
+import { Rule, Validatable } from './types';
+import { NopePrimitive } from './NopePrimitive';
+import { deepEquals, runValidators } from './utils';
+import { NopeObject } from './NopeObject';
 
-class NopeArray<T> implements Validatable<T[]> {
+function ofType(entry: any, primitive: any) {
+  let done = false;
+  return entry.reduce(function (previous: any, next: any) {
+    if (done) {
+      return previous;
+    }
+    return previous.then(function (error: any) {
+      if (error) {
+        done = true;
+        return error;
+      }
+
+      return primitive.validateAsync(next);
+    });
+  }, Promise.resolve());
+}
+
+export class NopeArray<T> implements Validatable<T[]> {
   protected _type = 'object';
   public validationRules: Rule<T[]>[] = [];
   public ofShape: Validatable<T> | NopeObject | null = null;
@@ -42,6 +59,27 @@ class NopeArray<T> implements Validatable<T[]> {
       if (error) {
         return message;
       }
+    };
+
+    return this.test(rule);
+  }
+
+  public ofAsync(
+    primitive: Validatable<T> | NopeObject,
+    message = 'One or more elements are of invalid type',
+  ) {
+    this.ofShape = primitive;
+
+    const rule: Rule<T[]> = (entry) => {
+      if (entry === undefined || entry === null) {
+        return;
+      }
+
+      if (entry.some((value) => primitive.getType() !== typeof value)) {
+        return message;
+      }
+
+      return ofType(entry, primitive).then((error?: string) => (error && message) || undefined);
     };
 
     return this.test(rule);
@@ -145,7 +183,7 @@ class NopeArray<T> implements Validatable<T[]> {
   }
 
   public validate(
-    entry?: T[] | Nil,
+    entry?: T[] | null,
     context?: Record<string | number, unknown>,
   ): string | undefined {
     for (const rule of this.validationRules) {
@@ -158,6 +196,19 @@ class NopeArray<T> implements Validatable<T[]> {
       }
     }
   }
-}
 
-export default NopeArray;
+  public validateAsync(
+    entry?: T[] | null,
+    context?: Record<string | number, unknown>,
+  ): Promise<string | undefined> {
+    return runValidators(this.validationRules, entry, context).then(
+      (error: NopePrimitive<T[]> | string | undefined) => {
+        if (error instanceof NopePrimitive) {
+          return error.validateAsync(entry, context);
+        } else if (error) {
+          return error;
+        }
+      },
+    );
+  }
+}

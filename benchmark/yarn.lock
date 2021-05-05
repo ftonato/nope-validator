@@ -9,6 +9,11 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@types/benchmark@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@types/benchmark/-/benchmark-2.1.0.tgz#157e2ef22311d3140fb33e82a938a1beb26e78e0"
+  integrity sha512-wxT2/LZn4z0NvSfZirxmBx686CU7EXp299KHkIk79acXpQtgeYHrslFzDacPGXifC0Pe3CEaLup07bgY1PnuQw==
+
 "@types/lodash@^4.14.165":
   version "4.14.168"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.168.tgz#fe24632e79b7ade3f132891afff86caa5e5ce008"
@@ -80,10 +85,10 @@ node-gyp-build@^3.8.0:
   resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-3.9.0.tgz#53a350187dd4d5276750da21605d1cb681d09e25"
   integrity sha512-zLcTg6P4AbcHPq465ZMFNXx7XpKKJh+7kkN699NiQWisR2uWYOWNWqRHAmbnmKiL4e9aLSlmy5U7rEMUXV59+A==
 
-nope-validator@^0.12.1:
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/nope-validator/-/nope-validator-0.12.1.tgz#3343eefdafdf08931247c72a1a688da8665fd657"
-  integrity sha512-UNf89PLdbCTiUyF61NN2CLXYiBw7K0r4MeiOiCmOZysrMfTuAgB17VW6861I5FCiP5HjBxFMZG5B2Mw01c0aHw==
+nope-validator@^0.12.2:
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/nope-validator/-/nope-validator-0.12.2.tgz#7860c9d1ebed5d5d1d6819d19ae25779206663de"
+  integrity sha512-anjqqIqNKxRlo3mBfm1V4V9ShEkj+65BHEvq9yIESjaeWwAJELQl354uQUG2swjk/k6Gifc9L+RQ0iek6X34/w==
 
 platform@^1.3.3:
   version "1.3.5"

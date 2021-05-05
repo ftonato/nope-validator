@@ -1,10 +1,10 @@
-import NopePrimitive from './NopePrimitive';
-import NopeReference from './NopeReference';
+import { NopePrimitive } from './NopePrimitive';
+import { NopeReference } from './NopeReference';
 import { Rule } from './types';
 
 type T = string | number | Date;
 
-class NopeDate extends NopePrimitive<T> {
+export class NopeDate extends NopePrimitive<T> {
   private message: string;
   protected _type = 'object';
 
@@ -20,7 +20,7 @@ class NopeDate extends NopePrimitive<T> {
       const resolvedBeforeDate =
         beforeDate instanceof NopeReference && context ? context[beforeDate.key] : beforeDate;
 
-      if ((entry as Date) >= new Date(resolvedBeforeDate)) {
+      if (new Date(entry as Date) >= new Date(resolvedBeforeDate)) {
         return message;
       }
     };
@@ -37,7 +37,7 @@ class NopeDate extends NopePrimitive<T> {
       const resolvedAfterDate =
         afterDate instanceof NopeReference && context ? context[afterDate.key] : afterDate;
 
-      if ((entry as Date) <= new Date(resolvedAfterDate)) {
+      if (new Date(entry as Date) <= new Date(resolvedAfterDate)) {
         return message;
       }
     };
@@ -45,24 +45,50 @@ class NopeDate extends NopePrimitive<T> {
     return this.test(rule);
   }
 
-  public validate(entry?: any, context?: Record<string | number, unknown>): string | undefined {
+  private parseDate(entry?: any) {
     let value = entry;
 
     if (this.isEmpty(entry) || entry instanceof Date) {
       value = entry;
-    } else if (!isNaN(entry)) {
+    } else if (!isNaN(+new Date(entry))) {
       value = new Date(entry);
     } else {
-      const ms = Date.parse(entry);
+      const ms = new Date(entry);
 
-      if (isNaN(ms)) {
-        return this.message;
+      if (isNaN(+ms)) {
+        throw this.message;
       }
 
       value = new Date(ms);
     }
 
+    return value;
+  }
+
+  public validate(entry?: any, context?: Record<string | number, unknown>): string | undefined {
+    let value;
+
+    try {
+      value = this.parseDate(entry);
+    } catch (error) {
+      return error;
+    }
+
     return super.validate(value, context);
+  }
+  public validateAsync(
+    entry?: any,
+    context?: Record<string | number, unknown>,
+  ): Promise<string | undefined> {
+    let value;
+
+    try {
+      value = this.parseDate(entry);
+    } catch (error) {
+      return Promise.resolve(error);
+    }
+
+    return super.validateAsync(value, context);
   }
 
   public constructor(message = 'The field is not a valid date') {
@@ -70,5 +96,3 @@ class NopeDate extends NopePrimitive<T> {
     this.message = message;
   }
 }
-
-export default NopeDate;

@@ -1,15 +1,17 @@
 // shared types
-import NopePrimitive from './NopePrimitive';
+import { NopePrimitive } from './NopePrimitive';
 
-export type Rule<T> = (
-  entry: T | Nil,
-  context?: {
-    [key: string]: any;
-  },
-) => string | undefined | NopePrimitive<T>;
+type RuleResult<T> = string | undefined | NopePrimitive<T>;
+
+export type Context = Record<string | number, any>;
+
+export type Rule<T> = (entry?: T | null, context?: Context) => RuleResult<T>;
+
+export type AsyncRule<T> = (entry?: T | null, context?: Context) => Promise<RuleResult<T>>;
 
 export interface Validatable<T> {
   validate: Rule<T>;
+  validateAsync: AsyncRule<T>;
   getType: () => string;
 }
 

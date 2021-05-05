@@ -1,9 +1,9 @@
 // Make sure you build the library before running this code
 
 import * as Yup from 'yup';
-import Nope from 'nope-validator';
+import * as Nope from '../lib/cjs/index';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const bench = require('benchmark');
+import bench from 'benchmark';
 
 const yupSchema = Yup.object().shape({
   companyName: Yup.string().min(2).max(255).required(),
@@ -19,6 +19,12 @@ const yupSchema = Yup.object().shape({
     .oneOf([Yup.ref('password')])
     .required(),
   acceptedTC: Yup.boolean().required(),
+  role: Yup.array().of(
+    Yup.object().shape({
+      label: Yup.string(),
+      value: Yup.string(),
+    }),
+  ),
 });
 
 const nopeSchema = Nope.object().shape({
@@ -35,6 +41,12 @@ const nopeSchema = Nope.object().shape({
     .oneOf([Nope.ref('password')])
     .required(),
   acceptedTC: Nope.boolean().required(),
+  role: Nope.array().of(
+    Nope.object().shape({
+      label: Nope.string(),
+      value: Nope.string(),
+    }),
+  ),
 });
 
 const entry = {
@@ -49,17 +61,26 @@ const entry = {
   password: 'passypass',
   confirmPassword: 'passypass',
   acceptedTC: true,
+  role: [{ label: 'admin', value: 'admin' }],
 };
 
 const suite = new bench.Suite('test');
 suite
-  .add('nope', () => {
+  .add('nopeSync', () => {
     nopeSchema.validate(entry);
   })
 
-  .add('yup', async () => {
+  .add('yupSync', () => {
     try {
       yupSchema.validateSync(entry);
+    } catch (_) {}
+  })
+  .add('nopeAsync', async () => {
+    await nopeSchema.validateAsync(entry);
+  })
+  .add('yupAsync', async () => {
+    try {
+      await yupSchema.validate(entry);
     } catch (_) {}
   })
   .on('cycle', function (event: any) {

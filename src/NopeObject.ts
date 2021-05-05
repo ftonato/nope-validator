@@ -1,5 +1,5 @@
-import { Validatable, Rule, ShapeErrors } from './types';
-import { pathToArray, getFromPath } from './utils';
+import { Validatable, Rule, AsyncRule, ShapeErrors, Context } from './types';
+import { pathToArray, getFromPath, runValidators } from './utils';
 
 interface ObjectShape {
   [key: string]: Validatable<any> | NopeObject;
@@ -9,9 +9,13 @@ type ValidateOptions = {
   abortEarly: boolean;
 };
 
-class NopeObject {
+type AnyObject = Record<string | number, any>;
+
+type ErrorsResult = ShapeErrors | undefined;
+
+export class NopeObject {
   private objectShape: ObjectShape;
-  private validationRules: Rule<Record<string | number, unknown>>[] = [];
+  private validationRules: (Rule<AnyObject> | AsyncRule<AnyObject>)[] = [];
   protected _type = 'object';
 
   public constructor(objectShape?: ObjectShape) {
@@ -63,11 +67,7 @@ class NopeObject {
     return this;
   }
 
-  public validate(
-    entry: Record<string | number, any>,
-    context?: Record<string | number, any> | undefined | null,
-    options?: ValidateOptions,
-  ) {
+  public validate(entry: AnyObject, context?: AnyObject | null, options?: ValidateOptions) {
     for (const rule of this.validationRules) {
       const localErrors = rule(entry);
 
@@ -76,16 +76,17 @@ class NopeObject {
       }
     }
 
-    const errors: ShapeErrors = {};
     let areErrors = false;
     const abortEarly = options?.abortEarly;
+    const errors: ErrorsResult = {};
+
+    const ctx = Object.assign({ ___parent: context }, entry);
 
     for (const key in this.objectShape) {
-      const rule = this.objectShape[key];
+      const validator = this.objectShape[key];
+      const error = validator.validate(entry[key], ctx, options);
 
-      const error = rule.validate(entry[key], { ...entry, ___parent: context }, options);
-
-      if (error && (typeof error === 'string' || typeof error === 'object')) {
+      if (error) {
         areErrors = true;
         errors[key] = error as string;
 
@@ -100,6 +101,50 @@ class NopeObject {
     }
 
     return undefined;
+  }
+
+  public validateAsync(
+    entry: AnyObject,
+    context?: Context,
+    options?: Omit<ValidateOptions, 'abortEarly'>,
+  ) {
+    return runValidators(this.validationRules, entry, context).then((localError: any) => {
+      if (localError) {
+        return localError;
+      }
+
+      const keys: string[] = [];
+      const results: any[] = [];
+
+      const ctx = Object.assign({ ___parent: context }, entry);
+
+      for (const key in this.objectShape) {
+        const validator = this.objectShape[key];
+        const error = validator.validateAsync(entry[key], ctx, options);
+
+        keys.push(key);
+        results.push(error);
+      }
+
+      return Promise.all(results).then((resolvedErrors) => {
+        const errors: ErrorsResult = {};
+        let areErrors = false;
+        for (let i = 0; i < keys.length; i++) {
+          const error = resolvedErrors[i];
+
+          if (error) {
+            areErrors = true;
+            errors[keys[i]] = error as string;
+          }
+        }
+
+        if (areErrors) {
+          return errors;
+        }
+
+        return undefined;
+      });
+    });
   }
 
   public validateAt(path: string, entry: Record<string | number, any>) {
@@ -127,5 +172,3 @@ class NopeObject {
     return validator.validate(value, parentValue);
   }
 }
-
-export default NopeObject;

@@ -1,26 +1,39 @@
 import Nope from '..';
+import { validateSyncAndAsync } from './utils';
 
 describe('#NopeObject', () => {
   describe('#extend', () => {
-    it('should extend the schema correctly', () => {
+    it('should extend the schema correctly', async () => {
       const schema1 = Nope.object().shape({
         name: Nope.string().min(5, 'minNameMessage'),
         password: Nope.string().min(4, 'minPWMessage'),
       });
 
-      const schema2 = Nope.object().extend(schema1);
+      const schema2 = Nope.object()
+        .extend(schema1)
+        .shape({
+          email: Nope.string().test(async (val) => {
+            if (!val) {
+              return 'asd';
+            }
+          }),
+        });
+
+      await validateSyncAndAsync(
+        schema1,
+        { name: 'test', password: 'magic' },
+        { name: 'minNameMessage' },
+      );
 
       expect(
-        schema2.validate({
-          name: 'test',
-          password: 'magic',
-        }),
-      ).toEqual({
-        name: 'minNameMessage',
-      });
+        await schema2.validateAsync(
+          { name: 'test', password: 'magic' },
+          { name: 'minNameMessage', email: 'asd' },
+        ),
+      );
     });
 
-    it('should extend the schema correctly with own validators', () => {
+    it('should extend the schema correctly with own validators', async () => {
       const schema1 = Nope.object().shape({
         name: Nope.string().min(5, 'minNameMessage'),
       });
@@ -31,17 +44,19 @@ describe('#NopeObject', () => {
           password: Nope.string().min(4, 'minPWMessage'),
         });
 
-      expect(
-        schema2.validate({
+      await validateSyncAndAsync(
+        schema2,
+        {
           name: 'magical',
           password: 'pw',
-        }),
-      ).toEqual({
-        password: 'minPWMessage',
-      });
+        },
+        {
+          password: 'minPWMessage',
+        },
+      );
     });
 
-    it('should extend the schema correctly with own validators in reverse', () => {
+    it('should extend the schema correctly with own validators in reverse', async () => {
       const schema1 = Nope.object().shape({
         name: Nope.string().min(5, 'minNameMessage'),
       });
@@ -52,17 +67,16 @@ describe('#NopeObject', () => {
         })
         .extend(schema1);
 
-      expect(
-        schema2.validate({
-          name: 'magical',
-          password: 'pw',
-        }),
-      ).toEqual({
-        password: 'minPWMessage',
-      });
+      await validateSyncAndAsync(
+        schema2,
+        { name: 'magical', password: 'pw' },
+        {
+          password: 'minPWMessage',
+        },
+      );
     });
 
-    it('should extend the schema correctly with own validators and references', () => {
+    it('should extend the schema correctly with own validators and references', async () => {
       const schema1 = Nope.object().shape({
         password: Nope.string().min(5, 'minPwMessage'),
         password2: Nope.string().oneOf([Nope.ref('password')], 'pwMatchError'),
@@ -74,18 +88,20 @@ describe('#NopeObject', () => {
           name: Nope.string().min(4, 'nameError'),
         });
 
-      expect(
-        schema2.validate({
+      await validateSyncAndAsync(
+        schema2,
+        {
           name: 'magical',
           password: 'password',
           password2: 'password2',
-        }),
-      ).toEqual({
-        password2: 'pwMatchError',
-      });
+        },
+        {
+          password2: 'pwMatchError',
+        },
+      );
     });
 
-    it('should extend the schema correctly with own validators and references in reverse', () => {
+    it('should extend the schema correctly with own validators and references in reverse', async () => {
       const schema1 = Nope.object().shape({
         password: Nope.string().min(5, 'minPwMessage'),
         password2: Nope.string().oneOf([Nope.ref('password')], 'pwMatchError'),
@@ -97,20 +113,22 @@ describe('#NopeObject', () => {
         })
         .extend(schema1);
 
-      expect(
-        schema2.validate({
+      await validateSyncAndAsync(
+        schema2,
+        {
           name: 'magical',
           password: 'password',
           password2: 'password2',
-        }),
-      ).toEqual({
-        password2: 'pwMatchError',
-      });
+        },
+        {
+          password2: 'pwMatchError',
+        },
+      );
     });
   });
 
   describe('noUnknown', () => {
-    it('should not allow unknown keys', () => {
+    it('should not allow unknown keys', async () => {
       const schema = Nope.object()
         .shape({
           a: Nope.string(),
@@ -118,20 +136,8 @@ describe('#NopeObject', () => {
         })
         .noUnknown('noUnknownError');
 
-      expect(
-        schema.validate({
-          a: 'magic',
-          b: 42,
-        }),
-      ).toBeUndefined();
-
-      expect(
-        schema.validate({
-          a: 'magic',
-          b: 42,
-          c: 5,
-        }),
-      ).toBe('noUnknownError');
+      await validateSyncAndAsync(schema, { a: 'magic', b: 42 }, undefined);
+      await validateSyncAndAsync(schema, { a: 'magic', b: 42, c: 5 }, 'noUnknownError');
     });
 
     it('should throw an error if used wrongly', () => {
@@ -144,22 +150,18 @@ describe('#NopeObject', () => {
   });
 
   describe('consistency', () => {
-    it('should be consistent', () => {
+    it('should be consistent', async () => {
       const schema = Nope.object().shape({
         email: Nope.string().email('error'),
         url: Nope.string().url('urlError'),
       });
 
-      let resp = schema.validate({
+      const input = {
         email: 'test@test.com',
         url: 'https://google.com',
-      });
-      expect(resp).toBeUndefined();
-      resp = schema.validate({
-        email: 'test@test.com',
-        url: 'https://google.com',
-      });
-      expect(resp).toBeUndefined();
+      };
+      await validateSyncAndAsync(schema, input, undefined);
+      await validateSyncAndAsync(schema, input, undefined);
     });
   });
 
@@ -218,7 +220,7 @@ describe('#NopeObject', () => {
   });
 
   describe('#nested', () => {
-    it('should work', () => {
+    it('should work', async () => {
       const schema = Nope.object().shape({
         user: Nope.object().shape({
           name: Nope.string().required('req'),
@@ -237,15 +239,15 @@ describe('#NopeObject', () => {
         },
       };
 
-      expect(schema.validate(validInput)).toEqual(undefined);
-      expect(schema.validate(invalidInput)).toEqual({
+      await validateSyncAndAsync(schema, validInput, undefined);
+      await validateSyncAndAsync(schema, invalidInput, {
         user: {
           name: 'req',
         },
       });
     });
 
-    it('should work when going back to the parent', () => {
+    it('should work when going back to the parent', async () => {
       const schema = Nope.object().shape({
         shouldCreateUser: Nope.boolean().required('reqbool'),
         user: Nope.object().shape({
@@ -281,31 +283,28 @@ describe('#NopeObject', () => {
         },
       };
 
-      expect(schema.validate(validInput1)).toEqual(undefined);
-      expect(schema.validate(invalidInput1)).toEqual({
+      await validateSyncAndAsync(schema, validInput1, undefined);
+      await validateSyncAndAsync(schema, invalidInput1, {
         user: {
           name: 'required',
         },
       });
-      expect(schema.validate(invalidInput2)).toEqual({
+      await validateSyncAndAsync(schema, invalidInput2, {
         user: {
           name: 'not allowed',
         },
       });
-      expect(schema.validate(invalidInput3)).toEqual({
+      await validateSyncAndAsync(schema, invalidInput3, {
         shouldCreateUser: 'reqbool',
         user: {
           name: 'not allowed',
         },
-      });
-      expect(schema.validate(invalidInput3, undefined, { abortEarly: true })).toEqual({
-        shouldCreateUser: 'reqbool',
       });
     });
 
-    it('should work with refs', () => {
+    it('should work with refs', async () => {
       const schema = Nope.object().shape({
-        validUsernames: Nope.array().of(Nope.string()),
+        validUsernames: Nope.array<string>().of(Nope.string()),
         user: Nope.object().shape({
           name: Nope.string().oneOf(Nope.ref('../validUsernames'), 'not valid'),
         }),
@@ -324,11 +323,66 @@ describe('#NopeObject', () => {
         },
       };
 
-      expect(schema.validate(validInput1)).toEqual(undefined);
-      expect(schema.validate(invalidInput1)).toEqual({
+      await validateSyncAndAsync(schema, validInput1, undefined);
+      await validateSyncAndAsync(schema, invalidInput1, {
         user: {
           name: 'not valid',
         },
+      });
+    });
+  });
+
+  describe('#async', () => {
+    it('should work', async () => {
+      const schema = Nope.object().shape({
+        username: Nope.string().test((str) => {
+          if (str) {
+            return Promise.resolve(undefined);
+          }
+          return Promise.reject('str');
+        }),
+      });
+
+      const invalid = { username: undefined };
+      const valid = { username: '123' };
+      const invalidErrors = await schema.validateAsync(invalid);
+
+      expect(invalidErrors).toEqual({
+        username: 'str',
+      });
+
+      const validErrors = await schema.validateAsync(valid);
+      expect(validErrors).toEqual(undefined);
+    });
+
+    it('shoudld work with a simulated API call', async () => {
+      const divideBy2 = async (num: number) => {
+        await new Promise((res) => setTimeout(res, 10));
+
+        return num / 2;
+      };
+
+      const schema = Nope.object().shape({
+        num: Nope.number().test(async (val) => {
+          const res = await divideBy2(val);
+
+          if (res !== 42) {
+            return 'error';
+          }
+        }),
+      });
+
+      expect(
+        await schema.validateAsync({
+          num: 84,
+        }),
+      ).toBe(undefined);
+      expect(
+        await schema.validateAsync({
+          num: 83,
+        }),
+      ).toEqual({
+        num: 'error',
       });
     });
   });
