@@ -1,3 +1,16 @@
+1.0.0 🎉
+
+Improvements
+- Drastically improved performance for synchronous validation
+- Better API docs
+
+Added 🚀
+- Async validation
+
+Internal 🏡
+- A lot of dev dependencies upgraded
+- Removed default exports within code
+
 0.12.2
 
 Improvements 🔨
