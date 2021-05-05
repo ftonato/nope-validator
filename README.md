@@ -44,12 +44,8 @@ import Nope from 'nope-validator';
 // create a schema
 
 const UserSchema = Nope.object().shape({
-  name: Nope.string()
-    .atLeast(5, 'Please provide a longer name')
-    .atMost(255, 'Name is too long!'),
-  email: Nope.string()
-    .email()
-    .required(),
+  name: Nope.string().atLeast(5, 'Please provide a longer name').atMost(255, 'Name is too long!'),
+  email: Nope.string().email().required(),
   confirmEmail: Nope.string()
     .oneOf([Nope.ref('email')])
     .required(),
@@ -71,35 +67,75 @@ UserSchema.validate({
 
 For more details on what's available in Nope, check out the [documentation](https://github.com/bvego/nope-validator/wiki).
 
+## Usage with [react-hook-form](https://github.com/react-hook-form/react-hook-form)
+
+Huge thanks to the RHF team for making a resolver for nope, enabling you to use nope as a validator in your RHF-controlled forms.
+
+```jsx
+import { nopeResolver } from '@hookform/resolvers/nope';
+import { useForm } from 'react-hook-form';
+import * as Nope from 'nope-validator';
+
+const schema = Nope.object().shape({
+  username: Nope.string().required(),
+  password: Nope.string().required(),
+});
+
+function Component({ onSubmit }) {
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    resolver: nopeResolver(schema),
+  });
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input {...register('username')} />
+      {errors.username && <div>{errors.username.message}</div>}
+
+      <input {...register('password')} />
+      {errors.password && <div>{errors.password.message}</div>}
+
+      <button type="submit">submit</button>
+    </form>
+  );
+}
+```
+
 ## Usage with [Formik](https://github.com/jaredpalmer/formik)
 
 Instead of passing it through the `validationSchema` prop, you should call Nope's validate on the `validate` prop as shown in the example below.
 
 ```jsx
+import { Formik } from 'formik';
+import * as Nope from 'nope-validator';
+
 const schema = Nope.object().shape({
-  email: Nope.string()
-    .email()
-    .atMost(255)
-    .required(),
-  password: Nope.string()
-    .atLeast(8)
-    .atMost(64)
-    .required(),
+  username: Nope.string().required(),
+  password: Nope.string().required(),
 });
 
-<Formik
-  initialValues={{ email: '', password: '' }}
-  validate={values => schema.validate(values)}
-  onSubmit={values => console.log('Submitted', values)}
->
-  {() => (
-    <Form>
-      <Field type="email" name="email" />
-      <ErrorMessage name="email" component="div" />
-      <Field type="password" name="password" />
-      <ErrorMessage name="password" component="div" />
-      <button type="submit">Submit</button>
-    </Form>
-  )}
-</Formik>;
+function Component({ onSubmit }) {
+  return (
+    <Formik
+      initialValues={{ username: '', password: '' }}
+      validate={(values) => schema.validate(values)}
+      onSubmit={(values) => console.log('Submitted', values)}
+    >
+      {() => (
+        <Form>
+          <Field type="username" name="username" />
+          <ErrorMessage name="username" component="div" />
+
+          <Field type="password" name="password" />
+          <ErrorMessage name="password" component="div" />
+
+          <button type="submit">Submit</button>
+        </Form>
+      )}
+    </Formik>
+  );
+}
 ```
