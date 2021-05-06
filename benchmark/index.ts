@@ -27,6 +27,14 @@ const yupSchema = Yup.object().shape({
   ),
 });
 
+const yupAsyncSchema = yupSchema.shape({
+  asyncKey: Yup.string().test('test', 'msg', async () => {
+    await Promise.resolve(undefined);
+
+    return true;
+  }),
+});
+
 const nopeSchema = Nope.object().shape({
   companyName: Nope.string().min(2).max(255).required(),
   legalName: Nope.string().min(2).max(255).required(),
@@ -49,6 +57,16 @@ const nopeSchema = Nope.object().shape({
   ),
 });
 
+const nopeAsyncSchema = Nope.object()
+  .extend(nopeSchema)
+  .shape({
+    asyncKey: Nope.string().test(async () => {
+      const res = await Promise.resolve(undefined);
+
+      return res;
+    }),
+  });
+
 const entry = {
   companyName: 'company name',
   legalName: 'legal name',
@@ -64,6 +82,10 @@ const entry = {
   role: [{ label: 'admin', value: 'admin' }],
 };
 
+const asyncEntry = {
+  ...entry,
+};
+
 const suite = new bench.Suite('test');
 suite
   .add('nopeSync', () => {
@@ -76,11 +98,11 @@ suite
     } catch (_) {}
   })
   .add('nopeAsync', async () => {
-    await nopeSchema.validateAsync(entry);
+    await nopeAsyncSchema.validateAsync(asyncEntry);
   })
   .add('yupAsync', async () => {
     try {
-      await yupSchema.validate(entry);
+      await yupAsyncSchema.validate(asyncEntry);
     } catch (_) {}
   })
   .on('cycle', function (event: any) {

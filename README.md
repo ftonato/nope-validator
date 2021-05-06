@@ -18,6 +18,7 @@ Typescript definitions included. ✨
 
 - [Usage](#usage)
 - [API](#api)
+- [Usage with react-hook-form](#usage-with-react-hook-form)
 - [Usage with Formik](#usage-with-formik)
 
 ## Usage
