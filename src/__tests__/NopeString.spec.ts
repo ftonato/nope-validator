@@ -227,6 +227,41 @@ describe('#NopeString', () => {
     });
   });
 
+  describe('#between', () => {
+    it('should return undefined for an empty entry', async () => {
+      const schema = Nope.string().between(5, 10, 'atLeastErrorMessage', 'atMostErrorMessage');
+      await validateSyncAndAsync(schema, undefined, undefined);
+    });
+
+    it('should return an error message for an entry shorter than the threshold', async () => {
+      const schema = Nope.string().between(5, 10);
+      await validateSyncAndAsync(schema, 'tour', 'Input is too short');
+    });
+
+    it('should return undefined for an entry equal to the threshold', async () => {
+      const schema = Nope.string().between(4, 10);
+      await validateSyncAndAsync(schema, 'tour', undefined);
+    });
+
+    it('should return an error message for an entry longer than the threshold', async () => {
+      const schema = Nope.string().between(5, 6);
+      await validateSyncAndAsync(schema, 'magicalmystery', 'Input is too long');
+    });
+
+    it('should return undefined for both equal entries to the threshold', async () => {
+      const schema = Nope.string().between(5, 5);
+      await validateSyncAndAsync(schema, 'seven', undefined);
+    });
+
+    it('should throw an error if used wrongly', () => {
+      const schema = Nope.string().between(5, 1);
+
+      expect(() => {
+        schema.validate({ example: 42 });
+      }).toThrowError();
+    });
+  });
+
   describe('#required', () => {
     it('should return requiredMessage for undefined', async () => {
       const schema = Nope.string().required('requiredMessage');
