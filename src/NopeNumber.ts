@@ -83,6 +83,28 @@ export class NopeNumber extends NopePrimitive<number> {
     return this.test(rule);
   }
 
+  public between(
+    sizeStart: number,
+    sizeEnd: number,
+    atLeastMessage = 'Input is too small',
+    atMostMessage = 'Input is too large',
+  ) {
+    if (sizeStart && sizeEnd && sizeStart > sizeEnd) {
+      const rule: Rule<unknown> = () => {
+        throw Error(
+          'between must receive an initial size (sizeStart) smaller than the final size (sizeEnd) parameter',
+        );
+      };
+
+      return this.test(rule);
+    }
+
+    this.atLeast(sizeStart, atLeastMessage);
+    this.atMost(sizeEnd, atMostMessage);
+
+    return this;
+  }
+
   public positive(message = 'Input must be positive') {
     return this.greaterThan(0, message);
   }

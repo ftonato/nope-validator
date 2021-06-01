@@ -138,6 +138,45 @@ describe('#NopeNumber', () => {
     });
   });
 
+  describe('#between', () => {
+    it('should return an error message for an entry smaller than the the threshold', async () => {
+      await validateSyncAndAsync(Nope.number().between(5, 10), 2, 'Input is too small');
+    });
+
+    it('should return undefined for an entry equal (startSize) to the threshold', async () => {
+      await validateSyncAndAsync(Nope.number().between(3, 10, 'atLeastErrorMessage'), 3, undefined);
+    });
+
+    it('should return an error message for an entry greater than the theshold', async () => {
+      await validateSyncAndAsync(
+        Nope.number().between(5, 6, 'tooSmall', 'tooLarge'),
+        7,
+        'tooLarge',
+      );
+    });
+
+    it('should return undefined for an entry equal (endSize) to the threshold', async () => {
+      await validateSyncAndAsync(
+        Nope.number().between(10, 15, 'atMostErrorMessage'),
+        10,
+        undefined,
+      );
+    });
+
+    it('should return undefined for an empty entry', async () => {
+      const schema = Nope.number().between(5, 10, 'atLeastErrorMessage', 'atMostErrorMessage');
+      await validateSyncAndAsync(schema, undefined, undefined);
+    });
+
+    it('should throw an error if used wrongly', () => {
+      const schema = Nope.number().between(5, 1);
+
+      expect(() => {
+        schema.validate(0);
+      }).toThrowError();
+    });
+  });
+
   describe('#positive', () => {
     it('should return undefined for an empty entry', async () => {
       await validateSyncAndAsync(Nope.number().positive(), undefined, undefined);

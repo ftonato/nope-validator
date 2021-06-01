@@ -238,9 +238,14 @@ describe('#NopeString', () => {
       await validateSyncAndAsync(schema, 'tour', 'Input is too short');
     });
 
-    it('should return undefined for an entry equal to the threshold', async () => {
+    it('should return undefined for an entry equal (startLength) to the threshold', async () => {
       const schema = Nope.string().between(4, 10);
       await validateSyncAndAsync(schema, 'tour', undefined);
+    });
+
+    it('should return undefined for an entry equal (endLength) to the threshold', async () => {
+      const schema = Nope.string().between(4, 10);
+      await validateSyncAndAsync(schema, '1234567890', undefined);
     });
 
     it('should return an error message for an entry longer than the threshold', async () => {
@@ -257,7 +262,7 @@ describe('#NopeString', () => {
       const schema = Nope.string().between(5, 1);
 
       expect(() => {
-        schema.validate({ example: 42 });
+        schema.validate('John Doe');
       }).toThrowError();
     });
   });
