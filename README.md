@@ -36,7 +36,12 @@ or
 npm install -S nope-validator
 ```
 
+or (even), do you wanna to **[try it online](https://replit.com/@ftonato/nope-validator-with-nodeJS)**?
+
+
 ```js
+import the dependency on your app
+
 // const Nope = require('nope-validator'); // or
 // const { Nope } = require('nope-validator'); // or
 import Nope from 'nope-validator';
@@ -58,6 +63,7 @@ UserSchema.validate({
   email: 'me@gmail.com',
   confirmEmail: 'me@gmail.com',
 }); // returns an error object { name: 'Please provide a longer name '};
+
 UserSchema.validate({
   name: 'Jonathan Livingston',
   email: 'me@gmail.com',
@@ -137,3 +143,7 @@ function Component({ onSubmit }) {
   );
 }
 ```
+
+## License
+
+MIT
