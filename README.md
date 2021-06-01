@@ -40,7 +40,7 @@ or (even), do you wanna to **[try it online](https://replit.com/@ftonato/nope-va
 
 
 ```js
-import the dependency on your app
+// import the dependency on your app
 
 // const Nope = require('nope-validator'); // or
 // const { Nope } = require('nope-validator'); // or
