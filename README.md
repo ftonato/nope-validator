@@ -14,14 +14,15 @@ Nope's API is ~~heavily inspired~~ stolen from [Yup](https://github.com/jquense/
 
 Instead of throwing errors Nope simply returns the error object and if there are no errors it returns undefined.
 
+For more details on what's available in Nope, check out the [documentation](https://github.com/bvego/nope-validator/wiki).
+
 Typescript definitions included. ✨
 
-- [Usage](#usage)
-- [API](#api)
+- [Getting started](#getting-started)
 - [Usage with react-hook-form](#usage-with-react-hook-form)
 - [Usage with Formik](#usage-with-formik)
 
-## Usage
+## Getting started
 
 To start using Nope simply do
 
@@ -63,10 +64,6 @@ UserSchema.validate({
   confirmEmail: 'me@gmail.com',
 }); // returns undefined since there are no errors
 ```
-
-## API
-
-For more details on what's available in Nope, check out the [documentation](https://github.com/bvego/nope-validator/wiki).
 
 ## Usage with [react-hook-form](https://github.com/react-hook-form/react-hook-form)
 
