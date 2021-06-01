@@ -1,6 +1,6 @@
 import { Validatable, Nil, Rule, AsyncRule, Context } from './types';
 import { NopeReference } from './NopeReference';
-import { resolveNopeRefsFromKeys, every, resolveNopeRef, runValidators } from './utils';
+import { resolveNopeRefsFromKeys, every, resolveNopeRef, runValidators, isNil } from './utils';
 
 export abstract class NopePrimitive<T> implements Validatable<T> {
   protected validationRules: (Rule<T> | AsyncRule<T>)[] = [];
@@ -11,7 +11,7 @@ export abstract class NopePrimitive<T> implements Validatable<T> {
   }
 
   protected isEmpty(entry: T | Nil) {
-    return entry === undefined || entry === null;
+    return isNil(entry);
   }
 
   public required(message = 'This field is required') {

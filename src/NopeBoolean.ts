@@ -1,5 +1,6 @@
 import { NopePrimitive } from './NopePrimitive';
 import { Rule } from './types';
+import { isNil } from './utils';
 
 export class NopeBoolean extends NopePrimitive<boolean> {
   protected _type = 'boolean';
@@ -33,7 +34,7 @@ export class NopeBoolean extends NopePrimitive<boolean> {
   }
 
   public validate(entry?: any, context?: Record<string | number, unknown>): string | undefined {
-    const value = entry === undefined || entry === null ? entry : !!entry;
+    const value = isNil(entry) ? entry : !!entry;
 
     return super.validate(value, context);
   }
@@ -42,7 +43,7 @@ export class NopeBoolean extends NopePrimitive<boolean> {
     entry?: any,
     context?: Record<string | number, unknown>,
   ): Promise<string | undefined> {
-    const value = entry === undefined || entry === null ? entry : !!entry;
+    const value = isNil(entry) ? entry : !!entry;
 
     return super.validateAsync(value, context);
   }

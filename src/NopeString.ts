@@ -1,6 +1,7 @@
 import { NopePrimitive } from './NopePrimitive';
 import { Nil, Rule } from './types';
 import { urlRegex, emailRegex } from './consts';
+import { isNil } from './utils';
 
 export class NopeString extends NopePrimitive<string> {
   protected _type = 'string';
@@ -21,7 +22,7 @@ export class NopeString extends NopePrimitive<string> {
   }
 
   protected isEmpty(value: string | Nil): boolean {
-    return value === undefined || value === null || `${value}`.trim().length === 0;
+    return isNil(value) || `${value}`.trim().length === 0;
   }
 
   public regex(regex: RegExp, message = "Doesn't satisfy the rule"): this {
@@ -39,19 +40,23 @@ export class NopeString extends NopePrimitive<string> {
   }
 
   public url(message = 'Input is not a valid url'): this {
-    return this.regex(urlRegex, message);
+    this.regex(urlRegex, message);
+    return this;
   }
 
   public email(message = 'Input is not a valid email'): this {
-    return this.regex(emailRegex, message);
+    this.regex(emailRegex, message);
+    return this;
   }
 
   public min(length: number, message?: string): this {
-    return this.greaterThan(length, message);
+    this.greaterThan(length, message);
+    return this;
   }
 
   public max(length: number, message?: string): this {
-    return this.lessThan(length, message);
+    this.lessThan(length, message);
+    return this;
   }
 
   public greaterThan(length: number, message = 'Input is too short'): this {

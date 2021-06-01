@@ -20,11 +20,13 @@ export class NopeNumber extends NopePrimitive<number> {
   }
 
   public min(size: number, message?: string) {
-    return this.greaterThan(size, message);
+    this.greaterThan(size, message);
+    return this;
   }
 
   public max(size: number, message?: string) {
-    return this.lessThan(size, message);
+    this.lessThan(size, message);
+    return this;
   }
 
   public greaterThan(size: number, message = 'Input is too small') {
@@ -106,11 +108,13 @@ export class NopeNumber extends NopePrimitive<number> {
   }
 
   public positive(message = 'Input must be positive') {
-    return this.greaterThan(0, message);
+    this.greaterThan(0, message);
+    return this;
   }
 
   public negative(message = 'Input must be negative') {
-    return this.lessThan(0, message);
+    this.lessThan(0, message);
+    return this;
   }
 
   public validate(entry?: any, context?: Record<string | number, unknown>): string | undefined {
