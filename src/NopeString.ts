@@ -130,7 +130,10 @@ export class NopeString extends NopePrimitive<string> {
       return this.test(rule);
     }
 
-    return this.atLeast(startLength, atLeastMessage) && this.atMost(endLength, atMostMessage);
+    this.atLeast(startLength, atLeastMessage);
+    this.atMost(endLength, atMostMessage);
+
+    return this;
   }
 
   public exactLength(length: number, message = `Must be at exactly of length ${length}`) {
