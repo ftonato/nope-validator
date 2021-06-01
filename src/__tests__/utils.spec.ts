@@ -34,4 +34,17 @@ describe('#utils', () => {
       expect(utils.getFromPath('a.b.c[1].d', { a: { b: { c: [2, { d: 5 }] } } })).toBe(5);
     });
   });
+
+  describe('#isNill alias for (null or undefined)', () => {
+    it('should work', () => {
+      expect(utils.isNil(null)).toBe(true);
+      expect(utils.isNil(undefined)).toBe(true);
+      expect(utils.isNil(666)).toBe(false);
+      expect(utils.isNil('six')).toBe(false);
+      expect(utils.isNil(true)).toBe(false);
+      expect(utils.isNil({})).toBe(false);
+      expect(utils.isNil([])).toBe(false);
+      expect(utils.isNil(new Error())).toBe(false);
+    });
+  });
 });

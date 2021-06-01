@@ -127,3 +127,7 @@ export function runValidators(tasks: any, entry: any, context: any) {
       });
   }, Promise.resolve());
 }
+
+export function isNil(entry: any): boolean {
+  return !!(entry === undefined || entry === null);
+}
