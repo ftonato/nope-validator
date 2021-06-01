@@ -114,6 +114,28 @@ export class NopeString extends NopePrimitive<string> {
     return this.test(rule);
   }
 
+  public between(
+    startLength: number,
+    endLength: number,
+    atLeastMessage = 'Input is too short',
+    atMostMessage = 'Input is too long',
+  ) {
+    if (startLength && endLength && startLength > endLength) {
+      const rule: Rule<unknown> = () => {
+        throw Error(
+          'between must receive an initial length (startLength) smaller than the final length (endLength) parameter',
+        );
+      };
+
+      return this.test(rule);
+    }
+
+    this.atLeast(startLength, atLeastMessage);
+    this.atMost(endLength, atMostMessage);
+
+    return this;
+  }
+
   public exactLength(length: number, message = `Must be at exactly of length ${length}`) {
     const rule: Rule<string> = (entry) => {
       if (this.isEmpty(entry)) {
