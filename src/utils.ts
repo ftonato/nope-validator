@@ -128,6 +128,6 @@ export function runValidators(tasks: any, entry: any, context: any) {
   }, Promise.resolve());
 }
 
-export function isNil(entry: any): boolean {
+export function isNil(entry: any): entry is Nil {
   return !!(entry === undefined || entry === null);
 }
