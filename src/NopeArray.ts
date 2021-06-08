@@ -1,6 +1,6 @@
 import { Rule, Validatable } from './types';
 import { NopePrimitive } from './NopePrimitive';
-import { deepEquals, runValidators } from './utils';
+import { deepEquals, isNil, runValidators } from './utils';
 import { NopeObject } from './NopeObject';
 
 function ofType(entry: any, primitive: any) {
@@ -31,7 +31,7 @@ export class NopeArray<T> implements Validatable<T[]> {
 
   public required(message = 'This field is required') {
     const rule: Rule<T[]> = (entry) => {
-      if (entry === undefined || entry === null) {
+      if (isNil(entry)) {
         return message;
       }
     };
@@ -46,7 +46,7 @@ export class NopeArray<T> implements Validatable<T[]> {
     this.ofShape = primitive;
 
     const rule: Rule<T[]> = (entry) => {
-      if (entry === undefined || entry === null) {
+      if (isNil(entry)) {
         return;
       }
 
@@ -71,7 +71,7 @@ export class NopeArray<T> implements Validatable<T[]> {
     this.ofShape = primitive;
 
     const rule: Rule<T[]> = (entry) => {
-      if (entry === undefined || entry === null) {
+      if (isNil(entry)) {
         return;
       }
 
@@ -87,7 +87,7 @@ export class NopeArray<T> implements Validatable<T[]> {
 
   public minLength(length: number, message = 'Input is too short') {
     const rule: Rule<T[]> = (entry) => {
-      if (entry === undefined || entry === null) {
+      if (isNil(entry)) {
         return;
       }
 
@@ -101,7 +101,7 @@ export class NopeArray<T> implements Validatable<T[]> {
 
   public maxLength(length: number, message = 'Input is too long') {
     const rule: Rule<T[]> = (entry) => {
-      if (entry === undefined || entry === null) {
+      if (isNil(entry)) {
         return;
       }
 
@@ -115,7 +115,7 @@ export class NopeArray<T> implements Validatable<T[]> {
 
   public mustContain(value: T, message = 'Input does not contain required value') {
     const rule: Rule<T[]> = (entry) => {
-      if (entry === undefined || entry === null) {
+      if (isNil(entry)) {
         return;
       }
 
@@ -129,7 +129,7 @@ export class NopeArray<T> implements Validatable<T[]> {
 
   public hasOnly(values: T[], message = 'Input elements must correspond to value values') {
     const rule: Rule<T[]> = (entry) => {
-      if (entry === undefined || entry === null) {
+      if (isNil(entry)) {
         return;
       }
 
@@ -150,7 +150,7 @@ export class NopeArray<T> implements Validatable<T[]> {
 
   public every(callback: (value: T) => boolean, message = 'Input does not satisfy condition') {
     const rule: Rule<T[]> = (entry) => {
-      if (entry === undefined || entry === null) {
+      if (isNil(entry)) {
         return;
       }
 
@@ -164,7 +164,7 @@ export class NopeArray<T> implements Validatable<T[]> {
 
   public some(callback: (value: T) => boolean, message = 'Input does not satisfy condition') {
     const rule: Rule<T[]> = (entry) => {
-      if (entry === undefined || entry === null || entry.length === 0) {
+      if (isNil(entry) || entry.length === 0) {
         return;
       }
 
