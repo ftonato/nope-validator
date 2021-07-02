@@ -1,5 +1,5 @@
 {
-  "name": "benchmarks",
+  "name": "nope-validator_benchmark",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -7,13 +7,13 @@
     "start": "ts-node index.ts"
   },
   "dependencies": {
-    "benchmark": "^2.1.4",
     "microtime": "^3.0.0",
     "nope-validator": "^0.12.2",
     "ts-node": "^9.1.1",
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@types/benchmark": "^2.1.0"
+    "@types/benchmark": "^2.1.0",
+    "benny": "^3.6.15"
   }
 }
