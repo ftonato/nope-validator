@@ -28,10 +28,6 @@ export function resolveNopeRefsFromKeys(options: string[], context?: Record<stri
   return resolvedOptions;
 }
 
-export function every(arr: any[], predicate: (value: any) => boolean) {
-  return arr.every(predicate);
-}
-
 export function resolveNopeRef<T>(
   option: T | NopeReference | Nil,
   context?: Record<string | number, any>,
