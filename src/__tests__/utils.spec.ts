@@ -1,14 +1,6 @@
 import * as utils from '../utils';
 
 describe('#utils', () => {
-  describe('#every', () => {
-    it('should work', () => {
-      expect(utils.every([3, 4, 5], (val) => val > 1)).toBe(true);
-      expect(utils.every([true, true], (val) => val === true)).toBe(true);
-      expect(utils.every([true, false], (val) => val === true)).toBe(false);
-    });
-  });
-
   describe('#resolveNopeRefsFromKeys', () => {
     it('should work', () => {
       expect(utils.resolveNopeRefsFromKeys(['a', 'b', 'd'], { a: 2, b: 5 })).toEqual([
@@ -45,6 +37,13 @@ describe('#utils', () => {
       expect(utils.isNil({})).toBe(false);
       expect(utils.isNil([])).toBe(false);
       expect(utils.isNil(new Error())).toBe(false);
+    });
+  });
+
+  describe('#pathToArray', () => {
+    it('should work', () => {
+      expect(utils.pathToArray('a.b.c')).toEqual(['a', 'b', 'c']);
+      expect(utils.pathToArray('a.b.c[1].d')).toEqual(['a', 'b', 'c', '1', 'd']);
     });
   });
 });

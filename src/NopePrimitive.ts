@@ -1,6 +1,6 @@
-import { Validatable, Nil, Rule, AsyncRule, Context } from './types';
 import { NopeReference } from './NopeReference';
-import { resolveNopeRefsFromKeys, every, resolveNopeRef, runValidators, isNil } from './utils';
+import { AsyncRule, Context, Nil, Rule, Validatable } from './types';
+import { isNil, resolveNopeRef, resolveNopeRefsFromKeys, runValidators } from './utils';
 
 export abstract class NopePrimitive<T> implements Validatable<T> {
   protected validationRules: (Rule<T> | AsyncRule<T>)[] = [];
@@ -54,7 +54,7 @@ export abstract class NopePrimitive<T> implements Validatable<T> {
       const result =
         typeof condIs === 'function'
           ? condIs(...values)
-          : every(resolvedConditionValues, (val: any) => val === condIs);
+          : resolvedConditionValues.every((val: any) => val === condIs);
 
       return result ? conditionObject.then : conditionObject.otherwise;
     };

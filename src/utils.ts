@@ -1,5 +1,5 @@
-import { Nil } from './types';
 import { NopeReference } from './NopeReference';
+import { Nil } from './types';
 
 function resolvePathFromContext(path: string, context?: Record<string | number, any>) {
   const optionWithPath = path.split('../');
@@ -26,10 +26,6 @@ export function resolveNopeRefsFromKeys(options: string[], context?: Record<stri
   });
 
   return resolvedOptions;
-}
-
-export function every(arr: any[], predicate: (value: any) => boolean) {
-  return arr.filter((value) => !predicate(value)).length === 0;
 }
 
 export function resolveNopeRef<T>(
