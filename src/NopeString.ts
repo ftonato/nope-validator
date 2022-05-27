@@ -1,6 +1,6 @@
+import { emailRegex, urlRegex } from './consts';
 import { NopePrimitive } from './NopePrimitive';
 import { Nil, Rule } from './types';
-import { urlRegex, emailRegex } from './consts';
 import { isNil } from './utils';
 
 export class NopeString extends NopePrimitive<string> {
@@ -151,6 +151,18 @@ export class NopeString extends NopePrimitive<string> {
       if (value.length !== length) {
         return message;
       }
+    };
+
+    return this.test(rule);
+  }
+
+  public trim() {
+    const rule: Rule<string> = (entry) => {
+      if (this.isEmpty(entry)) {
+        return '';
+      }
+
+      return (entry as string).trim();
     };
 
     return this.test(rule);

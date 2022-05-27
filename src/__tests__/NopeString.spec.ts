@@ -297,4 +297,31 @@ describe('#NopeString', () => {
       await validateSyncAndAsync(Nope.string().exactLength(5, 'msg'), 'lucky', undefined);
     });
   });
+
+  describe('#trim', () => {
+    it('should return a String wihtout whitespace [email]', async () => {
+      const ERR_MSG = 'error-message';
+      const schema = Nope.string().trim().email(ERR_MSG);
+
+      for (const { value, expected } of [
+        { value: ' ftonato@example.com ', expected: 'ftonato@example.com' },
+        { value: ' ftonato@example.io', expected: 'ftonato@example.io' },
+        { value: 'ftonato@example.me ', expected: 'ftonato@example.me' },
+      ]) {
+        await validateSyncAndAsync(schema, value, expected);
+      }
+    });
+
+    it('should return a String wihtout whitespace [required]', async () => {
+      const schema = Nope.string().trim().required('requiredMessage');
+
+      for (const { value, expected } of [
+        { value: ' ftonato ', expected: 'ftonato' },
+        { value: ' ftonato', expected: 'ftonato' },
+        { value: 'ftonato ', expected: 'ftonato' },
+      ]) {
+        await validateSyncAndAsync(schema, value, expected);
+      }
+    });
+  });
 });
