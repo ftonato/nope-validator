@@ -117,6 +117,18 @@ export class NopeNumber extends NopePrimitive<number> {
     return this;
   }
 
+  public default(value: number) {
+    const rule: Rule<any> = (entry) => {
+      if (this.isEmpty(entry)) {
+        return value;
+      }
+
+      return entry;
+    };
+
+    return this.test(rule);
+  }
+
   public validate(entry?: any, context?: Record<string | number, unknown>): string | undefined {
     const value = !!entry ? Number(entry) : entry;
 

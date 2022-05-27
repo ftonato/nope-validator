@@ -324,4 +324,35 @@ describe('#NopeString', () => {
       }
     });
   });
+
+  describe('#default', () => {
+    it('should return a default value when entry is empty', async () => {
+      const ERR_MSG = 'error-message';
+
+      for (const { schema, value, expected } of [
+        {
+          schema: Nope.string().default('default-value').email(ERR_MSG),
+          value: '',
+          expected: 'default-value',
+        },
+        {
+          schema: Nope.string().default('default-value-trim').trim().email(ERR_MSG),
+          value: ' ',
+          expected: 'default-value-trim',
+        },
+        {
+          schema: Nope.string().default('_ftonato ').email(ERR_MSG),
+          value: undefined,
+          expected: '_ftonato ',
+        },
+        {
+          schema: Nope.string().trim().default('will-not-assume-this-value').email(ERR_MSG),
+          value: ' aaa ',
+          expected: 'aaa',
+        },
+      ]) {
+        await validateSyncAndAsync(schema, value, expected);
+      }
+    });
+  });
 });

@@ -236,4 +236,33 @@ describe('#NopeNumber', () => {
       await validateSyncAndAsync(Nope.number().integer('integerErrorMessage'), '12', undefined);
     });
   });
+
+  describe('#default', () => {
+    it('should return a default value when entry is empty', async () => {
+      for (const { schema, value, expected } of [
+        {
+          schema: Nope.number().default(5),
+          value: 0.1,
+          expected: 0.1,
+        },
+        {
+          schema: Nope.number().default(10),
+          value: undefined,
+          expected: 10,
+        },
+        {
+          schema: Nope.number().default(15),
+          value: null,
+          expected: 15,
+        },
+        {
+          schema: Nope.number().default(101010),
+          value: 20,
+          expected: 20,
+        },
+      ]) {
+        await validateSyncAndAsync(schema, value, expected);
+      }
+    });
+  });
 });
