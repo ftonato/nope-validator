@@ -1,12 +1,12 @@
 version: 2
 updates:
-- package-ecosystem: npm
-  directory: "/"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 20
-  reviewers:
-  - bvego
-  assignees:
-  - bvego
-  versioning-strategy: increase
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 20
+    reviewers:
+      - ftonato
+    assignees:
+      - ftonato
+    versioning-strategy: increase
