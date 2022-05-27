@@ -1,10 +1,12 @@
 # Nope 🙅
 
-[![CircleCI](https://circleci.com/gh/bvego/nope-validator.svg?style=svg)](https://circleci.com/gh/bvego/nope-validator)
+[![CircleCI](https://circleci.com/gh/ftonato/nope-validator.svg?style=svg)](https://circleci.com/gh/ftonato/nope-validator)
 [![Fast](https://badgen.now.sh/badge/speed/really%20fast/green)](https://npm.im/nope-validator)
 [![Version](https://img.shields.io/npm/v/nope-validator.svg)](https://npm.im/nope-validator)
 [![size](https://img.shields.io/bundlephobia/min/nope-validator.svg)](https://bundlephobia.com/result?p=nope-validator)
 [![gzip](https://img.shields.io/bundlephobia/minzip/nope-validator.svg)](https://bundlephobia.com/result?p=nope-validator)
+
+> <sup>This project was created by the awesome **[Bruno Vego - @bvego](https://github.com/bvego)**, and is currently maintained by @ftonato and the community.</sup>
 
 A small, simple and fast JS validator. Like, wow thats fast. 🚀
 
@@ -14,7 +16,7 @@ Nope's API is ~~heavily inspired~~ stolen from [Yup](https://github.com/jquense/
 
 Instead of throwing errors Nope simply returns the error object and if there are no errors it returns undefined.
 
-For more details on what's available in Nope, check out the [documentation](https://github.com/bvego/nope-validator/wiki).
+For more details on what's available in Nope, check out the [documentation](https://github.com/ftonato/nope-validator/wiki).
 
 Typescript definitions included. ✨
 
@@ -37,7 +39,6 @@ npm install -S nope-validator
 ```
 
 or (even), do you wanna to **[try it online](https://replit.com/@ftonato/nope-validator-with-nodeJS)**?
-
 
 ```js
 // import the dependency on your app

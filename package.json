@@ -34,8 +34,14 @@
     "name": "Bruno Vego",
     "email": "bruno.vego@gmail.com"
   },
+  "contributors": [
+    {
+      "name": "Ademílson F. Tonato",
+      "email": "ademilsonft@outlook.com"
+    }
+  ],
   "repository": {
-    "url": "git@github.com:bvego/nope-validator.git",
+    "url": "git@github.com:ftonato/nope-validator.git",
     "type": "git"
   },
   "lint-staged": {
