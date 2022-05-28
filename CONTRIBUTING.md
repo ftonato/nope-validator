@@ -11,6 +11,6 @@ Issue templates exist to help you with your report.
 
 If you wish to resolve an issue - feel free to ping me to assign you!
 
-Aand thats it! 🎉
+And thats it! 🎉
 
 Lets make validation great again 🚀

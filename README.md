@@ -6,7 +6,9 @@
 [![size](https://img.shields.io/bundlephobia/min/nope-validator.svg)](https://bundlephobia.com/result?p=nope-validator)
 [![gzip](https://img.shields.io/bundlephobia/minzip/nope-validator.svg)](https://bundlephobia.com/result?p=nope-validator)
 
-> <sup>This project was created by the awesome **[Bruno Vego - @bvego](https://github.com/bvego)**, and is currently maintained by @ftonato and the community.</sup>
+> <sup>This project was created by the awesome **[Bruno Vego - @bvego](https://github.com/bvego)**, and is currently maintained by [@ftonato](https://github.com/ftonato) and the community.</sup>
+
+---
 
 A small, simple and fast JS validator. Like, wow thats fast. 🚀
 
@@ -147,4 +149,4 @@ function Component({ onSubmit }) {
 
 ## License
 
-MIT
+[MIT](LICENSE)
