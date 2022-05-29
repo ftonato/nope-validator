@@ -299,26 +299,28 @@ describe('#NopeString', () => {
   });
 
   describe('#trim', () => {
-    it('should return a String wihtout whitespace [email]', async () => {
+    it('should remove the whitespace from the entry and return undefined [email]', async () => {
       const ERR_MSG = 'error-message';
       const schema = Nope.string().trim().email(ERR_MSG);
 
       for (const { value, expected } of [
-        { value: ' ftonato@example.com ', expected: 'ftonato@example.com' },
-        { value: ' ftonato@example.io', expected: 'ftonato@example.io' },
-        { value: 'ftonato@example.me ', expected: 'ftonato@example.me' },
+        { value: ' ftonato@example.com ', expected: undefined },
+        { value: ' ftonato@example.io', expected: undefined },
+        { value: 'ftonato@example.me ', expected: undefined },
+        { value: 'ftonato@example.me', expected: undefined },
       ]) {
         await validateSyncAndAsync(schema, value, expected);
       }
     });
 
-    it('should return a String wihtout whitespace [required]', async () => {
+    it('should remove the whitespace from the entry and return undefined [required]', async () => {
       const schema = Nope.string().trim().required('requiredMessage');
 
       for (const { value, expected } of [
-        { value: ' ftonato ', expected: 'ftonato' },
-        { value: ' ftonato', expected: 'ftonato' },
-        { value: 'ftonato ', expected: 'ftonato' },
+        { value: ' space-text-space ', expected: undefined },
+        { value: ' space-text', expected: undefined },
+        { value: 'text-space ', expected: undefined },
+        { value: 'text', expected: undefined },
       ]) {
         await validateSyncAndAsync(schema, value, expected);
       }

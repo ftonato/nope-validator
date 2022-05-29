@@ -22,7 +22,7 @@ export class NopeString extends NopePrimitive<string> {
   }
 
   protected isEmpty(value: string | Nil): boolean {
-    return isNil(value) || `${value}`.trim().length === 0;
+    return isNil(value) || value.trim().length === 0;
   }
 
   public regex(regex: RegExp, message = "Doesn't satisfy the rule"): this {
@@ -126,7 +126,7 @@ export class NopeString extends NopePrimitive<string> {
     atMostMessage = 'Input is too long',
   ) {
     if (startLength && endLength && startLength > endLength) {
-      const rule: Rule<unknown> = () => {
+      const rule: Rule<any> = () => {
         throw Error(
           'between must receive an initial length (startLength) smaller than the final length (endLength) parameter',
         );
@@ -157,12 +157,9 @@ export class NopeString extends NopePrimitive<string> {
   }
 
   public trim() {
-    const rule: Rule<string> = (entry) => {
-      if (this.isEmpty(entry)) {
-        return '';
-      }
-
-      return (entry as string).trim();
+    const rule: Rule<string> = (entry): any => {
+      this._entry = (entry as string).trim();
+      return;
     };
 
     return this.test(rule);
