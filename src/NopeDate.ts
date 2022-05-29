@@ -65,7 +65,10 @@ export class NopeDate extends NopePrimitive<T> {
     return value;
   }
 
-  public validate(entry?: any, context?: Record<string | number, unknown>): string | undefined {
+  public validate(
+    entry?: any,
+    context?: Record<string | number, unknown>,
+  ): string | undefined | any {
     let value;
 
     try {
@@ -79,7 +82,7 @@ export class NopeDate extends NopePrimitive<T> {
   public validateAsync(
     entry?: any,
     context?: Record<string | number, unknown>,
-  ): Promise<string | undefined> {
+  ): Promise<string | undefined | any> {
     let value;
 
     try {
