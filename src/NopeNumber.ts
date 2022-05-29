@@ -92,7 +92,7 @@ export class NopeNumber extends NopePrimitive<number> {
     atMostMessage = 'Input is too large',
   ) {
     if (sizeStart && sizeEnd && sizeStart > sizeEnd) {
-      const rule: Rule<unknown> = () => {
+      const rule: Rule<any> = () => {
         throw Error(
           'between must receive an initial size (sizeStart) smaller than the final size (sizeEnd) parameter',
         );

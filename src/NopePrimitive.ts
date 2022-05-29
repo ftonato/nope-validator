@@ -5,6 +5,7 @@ import { isNil, resolveNopeRef, resolveNopeRefsFromKeys, runValidators } from '.
 export abstract class NopePrimitive<T> implements Validatable<T> {
   protected validationRules: (Rule<T> | AsyncRule<T>)[] = [];
   protected _type = 'undefined';
+  protected _entry: T | undefined;
 
   public getType() {
     return this._type;
@@ -107,11 +108,13 @@ export abstract class NopePrimitive<T> implements Validatable<T> {
    * @param context - Used for internal reference resolving. Do not pass this.
    */
   public validate(entry?: T | Nil, context?: Record<string | number, unknown>): string | undefined {
+    this._entry = <T>entry;
+
     for (const rule of this.validationRules) {
-      const error = rule(entry, context);
+      const error = rule(this._entry, context);
 
       if (error instanceof NopePrimitive) {
-        return error.validate(entry, context);
+        return error.validate(this._entry, context);
       } else if (error) {
         return error as string;
       }
@@ -119,9 +122,9 @@ export abstract class NopePrimitive<T> implements Validatable<T> {
   }
 
   public validateAsync(entry?: T | Nil, context?: Context): Promise<string | undefined> {
-    return runValidators(this.validationRules, entry, context).then((error: any) => {
+    return runValidators(this.validationRules, this._entry ?? entry, context).then((error: any) => {
       if (error instanceof NopePrimitive) {
-        return error.validateAsync(entry, context);
+        return error.validateAsync(this._entry ?? entry, context);
       } else if (error) {
         return error;
       }
