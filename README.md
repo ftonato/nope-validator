@@ -12,7 +12,7 @@
 
 A small, simple and fast JS validator. Like, wow thats fast. 🚀
 
-Nope's API is ~~heavily inspired~~ stolen from [Yup](https://github.com/jquense/yup) but Nope attempts to be much smaller and much faster. To achieve this Nope only allows for synchronous data validation which should cover most of the use cases.
+Nope's API is heavily ~~~inspired~~ stolen from [Yup](https://github.com/jquense/yup) but Nope attempts to be much smaller and much faster. To achieve this Nope only allows for synchronous data validation which should cover most of the use cases.
 
 ### Note: Nope is not a plug-and-play replacement for Yup, in some cases at least.
 
