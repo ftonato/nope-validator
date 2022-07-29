@@ -147,6 +147,10 @@ function Component({ onSubmit }) {
 }
 ```
 
+## Contribute
+
+Information describing how to contribute can be found **[here](https://github.com/ftonato/nope-validator/blob/master/CONTRIBUTING.md)** 🎉
+
 ## License
 
 [MIT](LICENSE)
