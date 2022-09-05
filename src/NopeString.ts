@@ -164,4 +164,16 @@ export class NopeString extends NopePrimitive<string> {
 
     return this.test(rule);
   }
+
+  public default(value: string) {
+    const rule: Rule<string> = (entry) => {
+      if (this.isEmpty(entry)) {
+        return value;
+      }
+
+      return entry as string;
+    };
+
+    return this.test(rule);
+  }
 }
