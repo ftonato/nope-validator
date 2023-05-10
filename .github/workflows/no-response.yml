@@ -5,7 +5,7 @@ on:
     types: [created]
   schedule:
     # Schedule for five minutes after the hour, every hour
-    - cron: '5 * * * *'
+    - cron: '0 12 * * *'
 
 jobs:
   noResponse:
