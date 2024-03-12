@@ -1,4 +1,4 @@
-import { Validatable, Rule, AsyncRule, ShapeErrors, Context } from './types';
+import { Validatable, Rule, AsyncRule, ShapeErrors, Context, AnyObject } from './types';
 import { pathToArray, getFromPath, runValidators } from './utils';
 
 interface ObjectShape {
@@ -8,8 +8,6 @@ interface ObjectShape {
 type ValidateOptions = {
   abortEarly: boolean;
 };
-
-type AnyObject = Record<string | number, any>;
 
 type ErrorsResult = ShapeErrors | undefined;
 

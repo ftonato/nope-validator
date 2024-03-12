@@ -1,8 +1,14 @@
 module.exports = {
   transform: {
-    '^.+\\.ts$': ['@swc-node/jest'],
+    '^.+\\.(t|j)sx?$': [
+      '@swc-node/jest',
+      {
+        dynamicImport: true,
+      },
+    ],
   },
   testPathIgnorePatterns: ['/lib/', '/node_modules/'],
   moduleFileExtensions: ['ts', 'js'],
   collectCoverageFrom: ['src/**/*.ts', '!**/node_modules/**'],
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
 };

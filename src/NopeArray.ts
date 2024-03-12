@@ -1,4 +1,4 @@
-import { Rule, Validatable } from './types';
+import { Rule, Validatable, AnyObject } from './types';
 import { NopePrimitive } from './NopePrimitive';
 import { deepEquals, isNil, runValidators } from './utils';
 import { NopeObject } from './NopeObject';
@@ -20,7 +20,7 @@ function ofType(entry: any, primitive: any) {
   }, Promise.resolve());
 }
 
-export class NopeArray<T> implements Validatable<T[]> {
+export class NopeArray<T extends AnyObject> implements Validatable<T[]> {
   protected _type = 'object';
   public validationRules: Rule<T[]>[] = [];
   public ofShape: Validatable<T> | NopeObject | null = null;

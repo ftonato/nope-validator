@@ -5,13 +5,14 @@ import { NopeBoolean } from './NopeBoolean';
 import { NopeArray } from './NopeArray';
 import { NopeDate } from './NopeDate';
 import { NopeReference } from './NopeReference';
+import { AnyObject } from './types';
 
 const object = () => new NopeObject();
 const string = () => new NopeString();
 const number = (message?: string) => new NopeNumber(message);
 const boolean = () => new NopeBoolean();
 const date = (message?: string) => new NopeDate(message);
-const array = <T>() => new NopeArray<T>();
+const array = <T extends AnyObject>() => new NopeArray<T>();
 const ref = (key: string) => new NopeReference(key);
 
 const Nope = {
