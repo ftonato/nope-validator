@@ -74,6 +74,9 @@
     "tslib": "^2.6.2",
     "typescript": "^5.4.2"
   },
+  "resolutions": {
+    "tslib": "2.3.1"
+  },
   "keywords": [
     "nope",
     "js",
