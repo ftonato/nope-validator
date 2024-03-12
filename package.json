@@ -53,7 +53,7 @@
   "dependencies": {},
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
-    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-node-resolve": "^14.0.0",
     "@swc-node/jest": "^1.8.0",
     "@swc/core": "^1.4.6",
     "@types/jest": "^29.5.12",
@@ -71,11 +71,8 @@
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-sourcemaps": "^0.6.2",
     "rollup-plugin-typescript2": "^0.36.0",
-    "tslib": "^2.6.2",
+    "tslib": "^2.3.1",
     "typescript": "^5.4.2"
-  },
-  "resolutions": {
-    "tslib": "2.3.1"
   },
   "keywords": [
     "nope",
