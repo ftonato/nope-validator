@@ -21,7 +21,7 @@ export class NopeString extends NopePrimitive<string> {
     return super.validateAsync(value, context);
   }
 
-  protected isEmpty(value: string | Nil): boolean {
+  protected isEmpty(value: string | Nil) {
     return isNil(value) || value.trim().length === 0;
   }
 
@@ -50,12 +50,12 @@ export class NopeString extends NopePrimitive<string> {
   }
 
   public min(length: number, message?: string): this {
-    this.greaterThan(length, message);
+    this.atLeast(length, message);
     return this;
   }
 
   public max(length: number, message?: string): this {
-    this.lessThan(length, message);
+    this.atMost(length, message);
     return this;
   }
 

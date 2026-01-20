@@ -31,7 +31,7 @@ Typescript definitions included. ✨
 To start using Nope simply do
 
 ```sh
-yarn add nope-validator
+pnpm add nope-validator
 ```
 
 or

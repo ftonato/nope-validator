@@ -20,12 +20,12 @@ export class NopeNumber extends NopePrimitive<number> {
   }
 
   public min(size: number, message?: string) {
-    this.greaterThan(size, message);
+    this.atLeast(size, message);
     return this;
   }
 
   public max(size: number, message?: string) {
-    this.lessThan(size, message);
+    this.atMost(size, message);
     return this;
   }
 

@@ -1,6 +1,8 @@
 module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
   transform: {
-    '^.+\\.ts$': ['@swc-node/jest'],
+    '^.+\\.ts$': 'ts-jest',
   },
   testPathIgnorePatterns: ['/lib/', '/node_modules/'],
   moduleFileExtensions: ['ts', 'js'],

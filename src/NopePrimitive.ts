@@ -11,7 +11,7 @@ export abstract class NopePrimitive<T> implements Validatable<T> {
     return this._type;
   }
 
-  protected isEmpty(entry: T | Nil) {
+  protected isEmpty(entry: T | Nil): boolean {
     return isNil(entry);
   }
 

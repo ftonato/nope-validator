@@ -306,14 +306,14 @@ describe('#NopeArray', () => {
       const schema = Nope.array<any>()
         .ofAsync(
           Nope.string().test(async (value) => {
-            if (value.length < 3) {
+            if (value && value.length < 3) {
               return 'error';
             }
           }),
           'too low',
         )
         .test((val) => {
-          if (val.length === 0) {
+          if (val && val.length === 0) {
             return 'required';
           }
         });

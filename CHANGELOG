@@ -1,3 +1,30 @@
+1.1.0
+
+Breaking Changes ⚠️
+- String & Number
+  - `.min()` and `.max()` now use inclusive comparisons (matching Yup behavior)
+    - `Nope.string().min(8).validate("password")` now passes (8 chars)
+    - Previously required 9 characters for min(8)
+
+Added 🚀
+- New `test:imports` script to validate all import formats work correctly
+
+Fixes 🔨
+- Fixed build issues with rollup-plugin-typescript2/tslib compatibility
+- Fixed TypeScript 5.7 strict type checking issues
+
+Internal 🏡
+- Migrated from yarn to pnpm
+- Updated all dependencies to latest compatible versions:
+  - TypeScript: 4.3.5 → 5.7.2
+  - ESLint: 7.29.0 → 8.57.1
+  - Jest: 27.0.6 → 29.7.0 (switched from @swc-node/jest to ts-jest)
+  - Rollup: 2.52.7 → 4.28.1
+  - And many other dev dependencies
+- Updated LICENSE year to 2026
+- Removed yarn artifacts (yarn.lock, .yarn/, .yarnrc)
+- Updated README to use pnpm as primary package manager
+
 1.0.4
 
 Fixes 🔨
