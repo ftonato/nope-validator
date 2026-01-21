@@ -11,3 +11,5 @@ coverage/
 yarn-error.log
 
 benchmark/nopesrc
+
+.test-imports

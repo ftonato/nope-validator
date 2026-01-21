@@ -7,7 +7,7 @@ export class NopeString extends NopePrimitive<string> {
   protected _type = 'string';
 
   public validate(entry?: any, context?: Record<string, unknown>): string | undefined {
-    const value = !!entry ? String(entry) : entry;
+    const value = entry ? String(entry) : entry;
 
     return super.validate(value, context);
   }
@@ -16,12 +16,12 @@ export class NopeString extends NopePrimitive<string> {
     entry?: any,
     context?: Record<string, unknown>,
   ): Promise<string | undefined> {
-    const value = !!entry ? String(entry) : entry;
+    const value = entry ? String(entry) : entry;
 
     return super.validateAsync(value, context);
   }
 
-  protected isEmpty(value: string | Nil): boolean {
+  protected isEmpty(value: string | Nil) {
     return isNil(value) || value.trim().length === 0;
   }
 
@@ -50,12 +50,12 @@ export class NopeString extends NopePrimitive<string> {
   }
 
   public min(length: number, message?: string): this {
-    this.greaterThan(length, message);
+    this.atLeast(length, message);
     return this;
   }
 
   public max(length: number, message?: string): this {
-    this.lessThan(length, message);
+    this.atMost(length, message);
     return this;
   }
 

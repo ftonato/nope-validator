@@ -78,31 +78,31 @@ describe('#NopeString', () => {
   });
 
   describe('#min', () => {
-    it('(alias for greaterThan) should return undefined for an empty entry', async () => {
+    it('(alias for atLeast) should return undefined for an empty entry', async () => {
       const schema = Nope.string().min(5, 'minLengthErrorMessage');
 
       await validateSyncAndAsync(schema, undefined, undefined);
     });
 
-    it('(alias for greaterThan) should return an error message for an entry shorter than the the threshold', async () => {
+    it('(alias for atLeast) should return an error message for an entry shorter than the threshold', async () => {
       const schema = Nope.string().min(5);
 
       await validateSyncAndAsync(schema, 'tour', 'Input is too short');
     });
 
-    it('(alias for greaterThan) should return an error message for an entry shorter than the the threshold', async () => {
+    it('(alias for atLeast) should return an error message for an entry shorter than the threshold', async () => {
       const schema = Nope.string().min(5);
 
       await validateSyncAndAsync(schema, 6, 'Input is too short');
     });
 
-    it('(alias for greaterThan) should return an error message for an entry equal to the threshold', async () => {
+    it('(alias for atLeast) should return undefined for an entry equal to the threshold', async () => {
       const schema = Nope.string().min(4);
 
-      await validateSyncAndAsync(schema, 'tour', 'Input is too short');
+      await validateSyncAndAsync(schema, 'tour', undefined);
     });
 
-    it('(alias for greaterThan) should return undefined for an entry longer than the threshold', async () => {
+    it('(alias for atLeast) should return undefined for an entry longer than the threshold', async () => {
       const schema = Nope.string().min(5, 'minLengthErrorMessage');
 
       await validateSyncAndAsync(schema, 'magicalmystery', undefined);
@@ -110,25 +110,25 @@ describe('#NopeString', () => {
   });
 
   describe('#max', () => {
-    it('(alias for lessThan) should return undefined for an empty entry', async () => {
+    it('(alias for atMost) should return undefined for an empty entry', async () => {
       const schema = Nope.string().max(5, 'maxLengthErrorMessage');
 
       await validateSyncAndAsync(schema, undefined, undefined);
     });
 
-    it('(alias for lessThan) should return an error message for an entry longer than the the threshold', async () => {
+    it('(alias for atMost) should return an error message for an entry longer than the threshold', async () => {
       const schema = Nope.string().max(5);
 
       await validateSyncAndAsync(schema, 'magicalmystery', 'Input is too long');
     });
 
-    it('(alias for lessThan) should return an error message for an entry equal to the threshold', async () => {
+    it('(alias for atMost) should return undefined for an entry equal to the threshold', async () => {
       const schema = Nope.string().max(14);
 
-      await validateSyncAndAsync(schema, 'magicalmystery', 'Input is too long');
+      await validateSyncAndAsync(schema, 'magicalmystery', undefined);
     });
 
-    it('(alias for lessThan) should return undefined for an entry shorter than threshold', async () => {
+    it('(alias for atMost) should return undefined for an entry shorter than threshold', async () => {
       const schema = Nope.string().max(5, 'maxLengthErrorMessage');
 
       await validateSyncAndAsync(schema, 'tour', undefined);

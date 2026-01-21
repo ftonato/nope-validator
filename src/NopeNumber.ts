@@ -20,12 +20,12 @@ export class NopeNumber extends NopePrimitive<number> {
   }
 
   public min(size: number, message?: string) {
-    this.greaterThan(size, message);
+    this.atLeast(size, message);
     return this;
   }
 
   public max(size: number, message?: string) {
-    this.lessThan(size, message);
+    this.atMost(size, message);
     return this;
   }
 
@@ -118,7 +118,7 @@ export class NopeNumber extends NopePrimitive<number> {
   }
 
   public validate(entry?: any, context?: Record<string | number, unknown>): string | undefined {
-    const value = !!entry ? Number(entry) : entry;
+    const value = entry ? Number(entry) : entry;
 
     if (!this.isEmpty(value) && Number.isNaN(value)) {
       return this.message;
@@ -131,7 +131,7 @@ export class NopeNumber extends NopePrimitive<number> {
     entry?: any,
     context?: Record<string | number, unknown>,
   ): Promise<string | undefined> {
-    const value = !!entry ? Number(entry) : entry;
+    const value = entry ? Number(entry) : entry;
 
     if (!this.isEmpty(value) && Number.isNaN(value)) {
       return Promise.resolve(this.message);

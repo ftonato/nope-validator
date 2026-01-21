@@ -3,7 +3,7 @@ import { validateSyncAndAsync } from './utils';
 
 describe('#NopeNumber', () => {
   describe('#min', () => {
-    it('(alias for greaterThan) should return undefined for an empty entry', async () => {
+    it('(alias for atLeast) should return undefined for an empty entry', async () => {
       await validateSyncAndAsync(
         Nope.number().min(3, 'minLengthErrorMessage'),
         undefined,
@@ -11,21 +11,21 @@ describe('#NopeNumber', () => {
       );
     });
 
-    it('(alias for greaterThan) should return an error message for an entry smaller than the threshold', async () => {
+    it('(alias for atLeast) should return an error message for an entry smaller than the threshold', async () => {
       await validateSyncAndAsync(Nope.number().min(5, 'tooSmall'), 2, 'tooSmall');
     });
 
-    it('(alias for greaterThan) should return an error message for an entry equal to the threshold', async () => {
-      await validateSyncAndAsync(Nope.number().min(3, 'tooSmall'), 3, 'tooSmall');
+    it('(alias for atLeast) should return undefined for an entry equal to the threshold', async () => {
+      await validateSyncAndAsync(Nope.number().min(3, 'atLeastErrorMessage'), 3, undefined);
     });
 
-    it('(alias for greaterThan) should return undefined for an entry greater than the threshold', async () => {
+    it('(alias for atLeast) should return undefined for an entry greater than the threshold', async () => {
       await validateSyncAndAsync(Nope.number().min(5, 'minLengthErrorMessage'), 6, undefined);
     });
   });
 
   describe('#max', () => {
-    it('(alias for lessThan) should return undefined for an empty entry', async () => {
+    it('(alias for atMost) should return undefined for an empty entry', async () => {
       await validateSyncAndAsync(
         Nope.number().max(5, 'maxLengthErrorMessage'),
         undefined,
@@ -33,15 +33,15 @@ describe('#NopeNumber', () => {
       );
     });
 
-    it('(alias for lessThan) should return an error message for an entry greater than the threshold', async () => {
+    it('(alias for atMost) should return an error message for an entry greater than the threshold', async () => {
       await validateSyncAndAsync(Nope.number().max(5, 'tooLarge'), 7, 'tooLarge');
     });
 
-    it('(alias for lessThan) should return an error message for an entry equal to the threshold', async () => {
-      await validateSyncAndAsync(Nope.number().max(4, 'maxLength'), 4, 'maxLength');
+    it('(alias for atMost) should return undefined for an entry equal to the threshold', async () => {
+      await validateSyncAndAsync(Nope.number().max(4, 'atMostErrorMessage'), 4, undefined);
     });
 
-    it('(alias for lessThan) should return undefined for an entry smaller than the threshold', async () => {
+    it('(alias for atMost) should return undefined for an entry smaller than the threshold', async () => {
       await validateSyncAndAsync(Nope.number().max(5, 'maxLength'), 2, undefined);
     });
   });

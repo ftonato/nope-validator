@@ -1,3 +1,28 @@
+1.1.0
+
+Internal 🏡 (Modernization - 2025)
+- **Build System**: Replaced Rollup with tsup for 10-100x faster builds (~100ms vs several seconds)
+- **Linting**: Upgraded ESLint from v8.57.1 to v9.39.2 with modern flat config
+- **TypeScript**: Modernized configuration (ES2020 target, cleaned lib entries, added declarationMap)
+- **CI/CD**: Consolidated to GitHub Actions (removed CircleCI), updated all actions to v4, Node 20 LTS
+- **Dependencies**: Removed unused Rollup packages and tslib, added @eslint/js for ESLint 9
+- **Testing**: Fixed Jest watchman warnings, updated test-imports to skip UMD format (no longer built)
+- **Husky**: Updated to modern v9 syntax (removed deprecated install command)
+- **Output Formats**: Removed UMD and AMD formats (modern npm packages only need CJS + ESM)
+
+Breaking Changes ⚠️
+- String & Number
+  - `.min()` and `.max()` now use inclusive comparisons (matching Yup behavior)
+    - `Nope.string().min(8).validate("password")` now passes (8 chars)
+    - Previously required 9 characters for min(8)
+
+Added 🚀
+- New `test:imports` script to validate all import formats work correctly
+
+Fixes 🔨
+- Fixed build issues with rollup-plugin-typescript2/tslib compatibility
+- Fixed TypeScript 5.7 strict type checking issues
+
 1.0.4
 
 Fixes 🔨

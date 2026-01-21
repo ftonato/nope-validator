@@ -54,7 +54,7 @@ export class NopeArray<T> implements Validatable<T[]> {
         return message;
       }
 
-      const error = entry.find((value) => primitive.validate(value));
+      const error = entry.find((value) => primitive.validate(value as any));
 
       if (error) {
         return message;

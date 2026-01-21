@@ -364,6 +364,9 @@ describe('#NopeObject', () => {
 
       const schema = Nope.object().shape({
         num: Nope.number().test(async (val) => {
+          if (val === null || val === undefined) {
+            return;
+          }
           const res = await divideBy2(val);
 
           if (res !== 42) {
