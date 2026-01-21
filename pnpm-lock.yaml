@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.39.2
+        version: 9.39.2
       '@types/jest':
         specifier: ^29.5.14
         version: 29.5.14
