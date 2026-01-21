@@ -7,7 +7,7 @@ export class NopeString extends NopePrimitive<string> {
   protected _type = 'string';
 
   public validate(entry?: any, context?: Record<string, unknown>): string | undefined {
-    const value = !!entry ? String(entry) : entry;
+    const value = entry ? String(entry) : entry;
 
     return super.validate(value, context);
   }
@@ -16,7 +16,7 @@ export class NopeString extends NopePrimitive<string> {
     entry?: any,
     context?: Record<string, unknown>,
   ): Promise<string | undefined> {
-    const value = !!entry ? String(entry) : entry;
+    const value = entry ? String(entry) : entry;
 
     return super.validateAsync(value, context);
   }

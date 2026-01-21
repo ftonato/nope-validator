@@ -1,6 +1,6 @@
 # Nope 🙅
 
-[![CircleCI](https://circleci.com/gh/ftonato/nope-validator.svg?style=svg)](https://circleci.com/gh/ftonato/nope-validator)
+[![CI](https://github.com/ftonato/nope-validator/actions/workflows/ci.yml/badge.svg)](https://github.com/ftonato/nope-validator/actions/workflows/ci.yml)
 [![Fast](https://badgen.now.sh/badge/speed/really%20fast/green)](https://npm.im/nope-validator)
 [![Version](https://img.shields.io/npm/v/nope-validator.svg)](https://npm.im/nope-validator)
 [![size](https://img.shields.io/bundlephobia/min/nope-validator.svg)](https://bundlephobia.com/result?p=nope-validator)

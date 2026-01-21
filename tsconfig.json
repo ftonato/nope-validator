@@ -1,11 +1,16 @@
 {
   "include": ["src"],
   "compilerOptions": {
-    "lib": ["es2017", "es7", "es6", "es5", "dom"],
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020"],
+    "moduleResolution": "bundler",
     "declaration": true,
+    "declarationMap": true,
     "strict": true,
     "esModuleInterop": true,
-    "moduleResolution": "bundler"
+    "skipLibCheck": true,
+    "outDir": "./lib"
   },
   "exclude": ["node_modules", "lib", "**/__tests__/**"]
 }
