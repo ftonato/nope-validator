@@ -23,9 +23,9 @@
     "test:imports": "node test-imports.js",
     "build": "rm -rf lib && rollup -c rollup/rollup.config.js",
     "prepare": "npm run build && husky install",
-    "prepublishOnly": "pnpm test && pnpm lint",
+    "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint",
-    "version": "pnpm format && git add -A src",
+    "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
   "files": [
@@ -47,8 +47,8 @@
   },
   "lint-staged": {
     "*.ts": [
-      "pnpm format",
-      "pnpm lint"
+      "npm run format",
+      "npm run lint"
     ]
   },
   "dependencies": {},

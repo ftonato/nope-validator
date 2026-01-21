@@ -31,13 +31,7 @@ Typescript definitions included. ✨
 To start using Nope simply do
 
 ```sh
-pnpm add nope-validator
-```
-
-or
-
-```sh
-npm install -S nope-validator
+npm install nope-validator
 ```
 
 or (even), do you wanna to **[try it online](https://replit.com/@ftonato/nope-validator-with-nodeJS)**?
