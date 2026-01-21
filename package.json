@@ -22,9 +22,9 @@
     "test": "jest --env=node --colors src/**/*.spec.ts",
     "build": "rm -rf lib && rollup -c rollup/rollup.config.js",
     "prepare": "npm run build && husky install",
-    "prepublishOnly": "yarn test && yarn lint",
+    "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint",
-    "version": "yarn format && git add -A src",
+    "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
   "files": [
@@ -46,8 +46,8 @@
   },
   "lint-staged": {
     "*.ts": [
-      "yarn format",
-      "yarn lint"
+      "npm run format",
+      "npm run lint"
     ]
   },
   "dependencies": {},

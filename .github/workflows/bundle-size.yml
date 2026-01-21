@@ -12,3 +12,4 @@ jobs:
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           pattern: './lib/umd/**/*.js'
+          install-script: 'npm ci'
