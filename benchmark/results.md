@@ -1,8 +1,22 @@
-nope x 239,596 ops/sec ±1.21% (91 runs sampled)
-yup x 37,334 ops/sec ±0.64% (90 runs sampled)
+# Benchmark Results
 
-Specs:
-Macbook Pro 2017, macOS Mojave
-3.5 GHz i7
-16GB Ram
+**Date:** January 21, 2026
 
+## Results
+
+```
+nopeSync:   943 411 ops/s, ±0.60%  | fastest
+yupSync:     54 285 ops/s, ±0.69%  | 94.25% slower
+yupAsync:    48 481 ops/s, ±0.36%  | slowest, 94.86% slower
+```
+
+**Fastest:** nopeSync  
+**Slowest:** yupAsync
+
+## Specs
+
+- MacBook Pro (Mac14,9)
+- Apple M2 Pro
+- 10 cores (6 performance and 4 efficiency)
+- 32 GB RAM
+- macOS 26.2

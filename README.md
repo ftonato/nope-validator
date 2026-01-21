@@ -11,7 +11,9 @@
 
 ## Why Nope?
 
-**Nope** is a minimal validation library that prioritizes speed and simplicity. Inspired by [Yup](https://github.com/jquense/yup), Nope provides a familiar API while being significantly smaller and faster by focusing exclusively on synchronous validation—which covers the vast majority of use cases.
+**Nope** is a minimal validation library that prioritizes speed and simplicity. Inspired by [Yup](https://github.com/jquense/yup), Nope provides a familiar API while being significantly smaller and **~17x faster** than Yup by focusing exclusively on synchronous validation—which covers the vast majority of use cases.
+
+> See [benchmark results](./benchmark/results.md) for detailed performance metrics and test specifications.
 
 ### Key Features
 
