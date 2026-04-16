@@ -1,3 +1,14 @@
+1.1.1
+
+Fixes 🔨
+- Fixed TypeScript declaration resolution under package.json `exports` for `moduleResolution: "bundler"` and `"node16"`
+- ESM entrypoint now ships its own `.d.mts` declaration file (previously only CJS had declarations)
+- Added `types` condition to `exports` map so TypeScript resolves types correctly for both `import` and `require`
+
+Internal 🏡
+- Enabled `dts: true` for the ESM build in tsup config
+- Added `moduleResolution: "bundler"` regression test to `test-imports.js`
+
 1.1.0
 
 Internal 🏡 (Modernization - 2025)

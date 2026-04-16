@@ -1,23 +1,27 @@
 import { defineConfig } from 'tsup';
 
+const commonConfig = {
+  entry: ['src/index.ts'],
+  dts: true,
+  sourcemap: false,
+  splitting: false,
+  treeshake: true,
+  minify: true,
+  outExtension() {
+    return {
+      js: '.js',
+    };
+  },
+};
+
 // tsup outputs to flat structure, so we need separate configs for cjs and esm
 // to match the current lib/cjs/ and lib/esm/ structure
 export default [
   // CJS build
   defineConfig({
-    entry: ['src/index.ts'],
+    ...commonConfig,
     format: ['cjs'],
-    dts: true,
-    sourcemap: true,
-    splitting: false,
-    treeshake: true,
-    minify: false,
     outDir: 'lib/cjs',
-    outExtension() {
-      return {
-        js: '.js',
-      };
-    },
     // Suppress warning about named and default exports
     banner: {
       js: '"use strict";',
@@ -25,18 +29,8 @@ export default [
   }),
   // ESM build
   defineConfig({
-    entry: ['src/index.ts'],
+    ...commonConfig,
     format: ['esm'],
-    dts: false, // Only generate types once (from CJS build)
-    sourcemap: true,
-    splitting: false,
-    treeshake: true,
-    minify: false,
     outDir: 'lib/esm',
-    outExtension() {
-      return {
-        js: '.js',
-      };
-    },
   }),
 ];

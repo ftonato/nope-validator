@@ -360,6 +360,93 @@ results.push({
   passed: runTest(defaultDir, 'test.mjs', 'Testing default export...'),
 });
 
+// Test 7: TypeScript with moduleResolution: "bundler" (regression for #issue)
+log('\n📦 Test 7: TypeScript import (moduleResolution: bundler)', 'blue');
+const tsBundlerDir = createTestProject('ts-bundler-test', {
+  name: 'ts-bundler-test',
+  version: '1.0.0',
+  dependencies: {
+    [PACKAGE_NAME]: `file:${PACKAGE_PATH}`,
+    typescript: '^5.7.2',
+  },
+});
+
+const tsBundlerTest = `
+import Nope, { string, number, object } from '${PACKAGE_NAME}';
+
+// Verify default export is typed
+const schema = Nope.object().shape({
+  name: Nope.string().required(),
+  age: Nope.number().min(0),
+});
+
+const result = schema.validate({ name: 'test', age: 5 });
+
+if (result !== undefined) {
+  throw new Error('Expected undefined for valid object');
+}
+
+// Verify named exports are typed
+const nameSchema = string().required().min(3);
+const ageSchema = number().min(0);
+const objSchema = object().shape({ name: nameSchema, age: ageSchema });
+
+const nameResult: string | undefined = nameSchema.validate('abc');
+const ageResult: string | undefined = ageSchema.validate(10);
+
+console.log('TypeScript bundler import: All tests passed');
+`;
+
+fs.writeFileSync(path.join(tsBundlerDir, 'test.ts'), tsBundlerTest);
+fs.writeFileSync(
+  path.join(tsBundlerDir, 'tsconfig.json'),
+  JSON.stringify(
+    {
+      compilerOptions: {
+        target: 'ES2022',
+        module: 'ESNext',
+        moduleResolution: 'bundler',
+        esModuleInterop: true,
+        strict: true,
+        noEmit: true,
+        skipLibCheck: true,
+        isolatedModules: true,
+      },
+      include: ['test.ts'],
+    },
+    null,
+    2,
+  ),
+);
+
+try {
+  log('Installing TypeScript...', 'yellow');
+  execSync('npm install', {
+    cwd: tsBundlerDir,
+    stdio: 'pipe',
+  });
+
+  log('Type-checking with moduleResolution: bundler...', 'yellow');
+  execSync('npx tsc --noEmit', {
+    cwd: tsBundlerDir,
+    encoding: 'utf-8',
+    stdio: 'pipe',
+  });
+
+  log('✓ TypeScript bundler test passed!', 'green');
+  results.push({
+    name: 'TypeScript import (moduleResolution: bundler)',
+    passed: true,
+  });
+} catch (error) {
+  log('✗ TypeScript bundler test failed!', 'red');
+  console.error(error.stdout || error.stderr || error.message);
+  results.push({
+    name: 'TypeScript import (moduleResolution: bundler)',
+    passed: false,
+  });
+}
+
 // Summary
 log('\n' + '='.repeat(50), 'blue');
 log('Test Summary', 'blue');
