@@ -71,7 +71,7 @@
     "jest": "^29.7.0",
     "lint-staged": "^15.2.11",
     "prettier": "^3.4.2",
-    "ts-jest": "^29.2.5",
+    "ts-jest": "^29.4.11",
     "tsup": "^8.5.1",
     "typescript": "^5.7.2"
   },
