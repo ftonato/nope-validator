@@ -332,6 +332,305 @@ describe('#NopeObject', () => {
     });
   });
 
+  describe('#default / #getDefault', () => {
+    it('should collect defaults from child fields', () => {
+      const schema = Nope.object().shape({
+        name: Nope.string().default('Anonymous'),
+        active: Nope.boolean().default(true),
+      });
+
+      expect(schema.getDefault()).toEqual({ name: 'Anonymous', active: true });
+    });
+
+    it('should apply child defaults during validation', async () => {
+      const schema = Nope.object().shape({
+        name: Nope.string().default('Anonymous').required(),
+        active: Nope.boolean().default(true),
+      });
+
+      await validateSyncAndAsync(schema, {}, undefined);
+    });
+
+    it('should return undefined from getDefault() when no child defaults exist', () => {
+      const schema = Nope.object().shape({
+        name: Nope.string().required(),
+        active: Nope.boolean(),
+      });
+
+      expect(schema.getDefault()).toBeUndefined();
+    });
+
+    it('should return only fields that have defaults', () => {
+      const schema = Nope.object().shape({
+        name: Nope.string().default('Anonymous'),
+        email: Nope.string().email(),
+      });
+
+      expect(schema.getDefault()).toEqual({ name: 'Anonymous' });
+    });
+  });
+
+  describe('#pick', () => {
+    const userSchema = () =>
+      Nope.object().shape({
+        id: Nope.string().uuid(),
+        name: Nope.string().required(),
+        email: Nope.string().email(),
+        password: Nope.string().required().default('secret'),
+      });
+
+    it('should keep only selected fields', async () => {
+      const picked = userSchema().pick(['email', 'password']);
+      await validateSyncAndAsync(picked, { email: 'a@b.com', password: 'pw' }, undefined);
+      await validateSyncAndAsync(
+        picked,
+        { email: 'a@b.com', password: 'pw', name: 'ignored' },
+        undefined,
+      );
+    });
+
+    it('should preserve field validation', async () => {
+      const picked = userSchema().pick(['email']);
+      await validateSyncAndAsync(
+        picked,
+        { email: 'not-an-email' },
+        { email: 'Input is not a valid email' },
+      );
+    });
+
+    it('should preserve defaults', () => {
+      const picked = userSchema().pick(['password']);
+      expect(picked.getDefault()).toEqual({ password: 'secret' });
+    });
+
+    it('should not mutate the original schema', () => {
+      const original = userSchema();
+      original.pick(['email']);
+      expect(original.getDefault()).toEqual({ password: 'secret' });
+    });
+
+    it('should ignore unknown selected keys', () => {
+      const picked = userSchema().pick(['email', 'nonexistent']);
+      expect(picked.validate({ email: 'a@b.com' })).toBeUndefined();
+    });
+
+    it('should preserve stripUnknown() from the original schema', async () => {
+      const original = Nope.object()
+        .shape({ name: Nope.string().required(), email: Nope.string().email() })
+        .stripUnknown();
+
+      const picked = original.pick(['name']);
+      await validateSyncAndAsync(picked, { name: 'Lucas', extra: true }, undefined);
+    });
+  });
+
+  describe('#omit', () => {
+    const userSchema = () =>
+      Nope.object().shape({
+        id: Nope.string().uuid(),
+        name: Nope.string().required(),
+        email: Nope.string().email(),
+        password: Nope.string().required().default('secret'),
+      });
+
+    it('should remove selected fields', async () => {
+      const omitted = userSchema().omit(['password']);
+      await validateSyncAndAsync(omitted, { name: 'Lucas', email: 'a@b.com' }, undefined);
+    });
+
+    it('should preserve remaining field validation', async () => {
+      const omitted = userSchema().omit(['password']);
+      await validateSyncAndAsync(
+        omitted,
+        { name: 'Lucas', email: 'bad' },
+        { email: 'Input is not a valid email' },
+      );
+    });
+
+    it('should preserve defaults for remaining fields', () => {
+      const omitted = userSchema().omit(['name', 'email', 'id']);
+      expect(omitted.getDefault()).toEqual({ password: 'secret' });
+    });
+
+    it('should not mutate the original schema', () => {
+      const original = userSchema();
+      original.omit(['password']);
+      expect(original.getDefault()).toEqual({ password: 'secret' });
+    });
+
+    it('should ignore unknown omitted keys', () => {
+      const omitted = userSchema().omit(['nonexistent']);
+      expect(omitted.validate({ name: 'Lucas', email: 'a@b.com', password: 'pw' })).toBeUndefined();
+    });
+
+    it('should work with nested object schemas via pick()', async () => {
+      const schema = Nope.object().shape({
+        user: Nope.object().shape({
+          name: Nope.string().required(),
+          email: Nope.string().email(),
+        }),
+        token: Nope.string().required(),
+      });
+
+      const picked = schema.pick(['user']);
+      await validateSyncAndAsync(picked, { user: { name: 'Lucas', email: 'a@b.com' } }, undefined);
+    });
+
+    it('should work with nested object schemas via omit()', async () => {
+      const schema = Nope.object().shape({
+        user: Nope.object().shape({
+          name: Nope.string().required(),
+          email: Nope.string().email(),
+        }),
+        token: Nope.string().required(),
+      });
+
+      const omitted = schema.omit(['token']);
+      await validateSyncAndAsync(omitted, { user: { name: 'Lucas', email: 'a@b.com' } }, undefined);
+      await validateSyncAndAsync(
+        omitted,
+        { user: { name: 'Lucas', email: 'bad' }, token: 'ignored' },
+        { user: { email: 'Input is not a valid email' } },
+      );
+    });
+  });
+
+  describe('#stripUnknown', () => {
+    it('should remove unknown top-level keys during validation', async () => {
+      const schema = Nope.object().shape({ name: Nope.string().required() }).stripUnknown();
+
+      await validateSyncAndAsync(schema, { name: 'Lucas', admin: true }, undefined);
+    });
+
+    it('should keep known top-level keys', async () => {
+      const schema = Nope.object().shape({ name: Nope.string().required() }).stripUnknown();
+
+      await validateSyncAndAsync(schema, { name: 'Lucas' }, undefined);
+    });
+
+    it('should not mutate the original input object', async () => {
+      const schema = Nope.object().shape({ name: Nope.string().required() }).stripUnknown();
+
+      const input = { name: 'Lucas', admin: true };
+      await validateSyncAndAsync(schema, input, undefined);
+      expect(input).toEqual({ name: 'Lucas', admin: true });
+    });
+
+    it('should preserve validation errors for invalid known fields', async () => {
+      const schema = Nope.object().shape({ name: Nope.string().required() }).stripUnknown();
+
+      await validateSyncAndAsync(
+        schema,
+        { name: '', admin: true },
+        { name: 'This field is required' },
+      );
+    });
+
+    it('should work with required fields', async () => {
+      const schema = Nope.object().shape({ name: Nope.string().required() }).stripUnknown();
+
+      await validateSyncAndAsync(schema, { extra: true }, { name: 'This field is required' });
+    });
+
+    it('should work with optional fields', async () => {
+      const schema = Nope.object().shape({ name: Nope.string().optional() }).stripUnknown();
+
+      await validateSyncAndAsync(schema, { extra: true }, undefined);
+    });
+
+    it('should work with defaults', async () => {
+      const schema = Nope.object()
+        .shape({ name: Nope.string().default('Anonymous') })
+        .stripUnknown();
+
+      await validateSyncAndAsync(schema, { extra: true }, undefined);
+    });
+
+    it('should keep unknown nested keys when nested schema does not use stripUnknown()', async () => {
+      const schema = Nope.object()
+        .shape({
+          user: Nope.object().shape({ name: Nope.string().required() }),
+        })
+        .stripUnknown();
+
+      await validateSyncAndAsync(
+        schema,
+        { user: { name: 'Lucas', admin: true }, extra: true },
+        undefined,
+      );
+    });
+
+    it('should strip unknown nested keys when nested schema uses stripUnknown()', async () => {
+      const schema = Nope.object()
+        .shape({
+          user: Nope.object().shape({ name: Nope.string().required() }).stripUnknown(),
+        })
+        .stripUnknown();
+
+      await validateSyncAndAsync(
+        schema,
+        { user: { name: 'Lucas', admin: true }, extra: true },
+        undefined,
+      );
+    });
+
+    it('should work with arrays of objects using stripUnknown()', async () => {
+      const itemSchema = Nope.object().shape({ name: Nope.string().required() }).stripUnknown();
+
+      const schema = Nope.object().shape({
+        items: Nope.array().of(itemSchema),
+      });
+
+      await validateSyncAndAsync(schema, { items: [{ name: 'Lucas', extra: true }] }, undefined);
+    });
+  });
+
+  describe('#isValid / #isValidSync', () => {
+    it('should validate object schemas', async () => {
+      const schema = Nope.object().shape({
+        email: Nope.string().email(),
+      });
+
+      expect(await schema.isValid({ email: 'test@example.com' })).toBe(true);
+      expect(schema.isValidSync({ email: 'test@example.com' })).toBe(true);
+      expect(await schema.isValid({ email: 'bad' })).toBe(false);
+      expect(schema.isValidSync({ email: 'bad' })).toBe(false);
+    });
+
+    it('should validate nested object schemas', async () => {
+      const schema = Nope.object().shape({
+        user: Nope.object().shape({
+          name: Nope.string().required(),
+        }),
+      });
+
+      expect(await schema.isValid({ user: { name: 'Lucas' } })).toBe(true);
+      expect(schema.isValidSync({ user: { name: 'Lucas' } })).toBe(true);
+      expect(await schema.isValid({ user: { name: undefined } })).toBe(false);
+      expect(schema.isValidSync({ user: { name: undefined } })).toBe(false);
+    });
+
+    it('should not throw validation errors', async () => {
+      const schema = Nope.object().shape({
+        email: Nope.string().email(),
+      });
+
+      await expect(schema.isValid({ email: 'bad' })).resolves.toBe(false);
+      expect(() => schema.isValidSync({ email: 'bad' })).not.toThrow();
+    });
+
+    it('should respect defaults, nullable, optional, and defined behavior', async () => {
+      const schema = Nope.object().shape({
+        name: Nope.string().default('Anonymous').defined(),
+        nickname: Nope.string().nullable().optional(),
+      });
+
+      expect(await schema.isValid({})).toBe(true);
+      expect(await schema.isValid({ nickname: null })).toBe(true);
+      expect(await schema.isValid({ name: undefined })).toBe(true);
+    });
+  });
+
   describe('#async', () => {
     it('should work', async () => {
       const schema = Nope.object().shape({

@@ -301,6 +301,144 @@ describe('#NopeArray', () => {
     });
   });
 
+  describe('#length', () => {
+    it('should accept an array with exact expected length', async () => {
+      await validateSyncAndAsync(Nope.array<string>().length(3), ['a', 'b', 'c'], undefined);
+    });
+
+    it('should reject an array shorter than expected length', async () => {
+      await validateSyncAndAsync(
+        Nope.array<string>().length(3),
+        ['a'],
+        'Must have exactly 3 items',
+      );
+    });
+
+    it('should reject an array longer than expected length', async () => {
+      await validateSyncAndAsync(
+        Nope.array<string>().length(3),
+        ['a', 'b', 'c', 'd'],
+        'Must have exactly 3 items',
+      );
+    });
+
+    it('should accept empty array with expected length 0', async () => {
+      await validateSyncAndAsync(Nope.array<string>().length(0), [], undefined);
+    });
+
+    it('should reject empty array with expected length greater than 0', async () => {
+      await validateSyncAndAsync(Nope.array<string>().length(2), [], 'Must have exactly 2 items');
+    });
+
+    it('should reject non-array values', async () => {
+      await validateSyncAndAsync(
+        Nope.array<string>().length(2),
+        'ab' as any,
+        'Must have exactly 2 items',
+      );
+    });
+
+    it('should reject arrays with invalid child items', async () => {
+      await validateSyncAndAsync(
+        Nope.array<number>().of(Nope.number().positive()).length(2),
+        [1, -1],
+        'One or more elements are of invalid type',
+      );
+    });
+
+    it('should support custom error messages', async () => {
+      await validateSyncAndAsync(Nope.array<string>().length(2, 'need two'), ['a'], 'need two');
+    });
+  });
+
+  describe('#default / #getDefault', () => {
+    it('should apply default when input is undefined', async () => {
+      const schema = Nope.array<string>().default(['a', 'b']).length(2);
+      await validateSyncAndAsync(schema, undefined, undefined);
+    });
+
+    it('should not apply default when input is an empty array', async () => {
+      const schema = Nope.array<string>().default(['a', 'b']).length(2);
+      await validateSyncAndAsync(schema, [], 'Must have exactly 2 items');
+    });
+
+    it('should return default through getDefault()', () => {
+      const schema = Nope.array<string>().default(['a', 'b']);
+      expect(schema.getDefault()).toEqual(['a', 'b']);
+    });
+
+    it('should return undefined from getDefault() when no default exists', () => {
+      expect(Nope.array<string>().getDefault()).toBeUndefined();
+    });
+  });
+
+  describe('#nullable / #nonNullable', () => {
+    it('should accept null when nullable()', async () => {
+      await validateSyncAndAsync(Nope.array<string>().nullable(), null, undefined);
+    });
+
+    it('should reject null when nonNullable()', async () => {
+      await validateSyncAndAsync(Nope.array<string>().nonNullable('no null'), null, 'no null');
+    });
+
+    it('should work with default() when nullable()', async () => {
+      const schema = Nope.array<string>().nullable().default(['a']);
+      await validateSyncAndAsync(schema, null, undefined);
+      await validateSyncAndAsync(schema, undefined, undefined);
+    });
+  });
+
+  describe('#defined / #optional / #notRequired', () => {
+    it('should reject undefined when defined()', async () => {
+      const schema = Nope.array<string>().defined('must be defined');
+      await validateSyncAndAsync(schema, undefined, 'must be defined');
+    });
+
+    it('should accept undefined when optional()', async () => {
+      const schema = Nope.array<string>().optional().length(2);
+      await validateSyncAndAsync(schema, undefined, undefined);
+    });
+
+    it('should accept undefined when notRequired()', async () => {
+      const schema = Nope.array<string>().notRequired().length(2);
+      await validateSyncAndAsync(schema, undefined, undefined);
+    });
+  });
+
+  describe('#isValid / #isValidSync', () => {
+    it('should validate array schemas', async () => {
+      const schema = Nope.array<string>().length(2);
+      expect(await schema.isValid(['a', 'b'])).toBe(true);
+      expect(schema.isValidSync(['a', 'b'])).toBe(true);
+      expect(await schema.isValid(['a'])).toBe(false);
+      expect(schema.isValidSync(['a'])).toBe(false);
+    });
+
+    it('should not throw validation errors', async () => {
+      const schema = Nope.array<string>().required();
+      await expect(schema.isValid(undefined)).resolves.toBe(false);
+      expect(() => schema.isValidSync(undefined)).not.toThrow();
+    });
+
+    it('should respect default()', async () => {
+      const schema = Nope.array<string>().default(['a', 'b']).length(2);
+      expect(await schema.isValid(undefined)).toBe(true);
+      expect(schema.isValidSync(undefined)).toBe(true);
+    });
+
+    it('should respect nullable()', async () => {
+      const schema = Nope.array<string>().nullable().length(2);
+      expect(await schema.isValid(null)).toBe(true);
+      expect(schema.isValidSync(null)).toBe(true);
+    });
+
+    it('should respect optional()', async () => {
+      const schema = Nope.array<string>().optional().length(2);
+      expect(await schema.isValid(undefined)).toBe(true);
+      expect(schema.isValidSync(undefined)).toBe(true);
+    });
+  });
+
   describe('#async', () => {
     it('should resolve properly', async () => {
       const schema = Nope.array<any>()
