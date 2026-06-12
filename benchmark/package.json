@@ -4,16 +4,18 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node index.ts"
+    "start": "ts-node index.ts",
+    "average": "node run-average.js"
   },
   "dependencies": {
     "microtime": "^3.0.0",
-    "nope-validator": "^0.12.2",
-    "ts-node": "^9.1.1",
-    "yup": "^0.32.9"
+    "nope-validator": "file:..",
+    "ts-node": "^10.9.2",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@types/benchmark": "^2.1.0",
-    "benny": "^3.6.15"
+    "benny": "^3.6.15",
+    "typescript": "^5.7.2"
   }
 }

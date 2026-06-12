@@ -1,13 +1,19 @@
 # Benchmark Results
 
-**Date:** January 21, 2026
+**Date:** June 12, 2026  
+**Runs:** 10 (averaged)
+
+## Versions
+
+- **nope-validator:** 1.2.1 (local build)
+- **yup:** 1.7.1
 
 ## Results
 
 ```
-nopeSync:   943 411 ops/s, ±0.60%  | fastest
-yupSync:     54 285 ops/s, ±0.69%  | 94.25% slower
-yupAsync:    48 481 ops/s, ±0.36%  | slowest, 94.86% slower
+nopeSync:   361 260 ops/s, ±2.64%  | fastest
+yupSync:     36 500 ops/s, ±3.24%  | 89.90% slower
+yupAsync:    33 880 ops/s, ±2.22%  | slowest, 90.62% slower
 ```
 
 **Fastest:** nopeSync  
@@ -19,4 +25,4 @@ yupAsync:    48 481 ops/s, ±0.36%  | slowest, 94.86% slower
 - Apple M2 Pro
 - 10 cores (6 performance and 4 efficiency)
 - 32 GB RAM
-- macOS 26.2
+- macOS 26.5

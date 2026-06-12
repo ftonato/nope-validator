@@ -1,3 +1,11 @@
+1.2.1
+
+Internal 🏡
+- Resolved all dev dependency security vulnerabilities (handlebars, rollup, minimatch, flatted, picomatch, and others)
+- Bumped devDependencies and added pnpm/npm overrides to keep transitive deps patched
+- Added `pnpm audit --audit-level=high` to CI and `packageManager` field to package.json
+- Updated benchmark to yup 1.7.1 with v1.2.0 schema parity and refreshed averaged results
+
 1.2.0
 
 Added 🚀
