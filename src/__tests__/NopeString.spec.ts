@@ -298,6 +298,120 @@ describe('#NopeString', () => {
     });
   });
 
+  describe('#uuid', () => {
+    const v1 = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
+    const v4 = '550e8400-e29b-41d4-a716-446655440000';
+    const v5 = '886313e1-3b8a-5372-9b0d-44c7165d2345';
+
+    it('should accept valid UUID v1', async () => {
+      await validateSyncAndAsync(Nope.string().uuid(), v1, undefined);
+    });
+
+    it('should accept valid UUID v4', async () => {
+      await validateSyncAndAsync(Nope.string().uuid(), v4, undefined);
+    });
+
+    it('should accept valid UUID v5', async () => {
+      await validateSyncAndAsync(Nope.string().uuid(), v5, undefined);
+    });
+
+    it('should reject invalid UUID with wrong length', async () => {
+      await validateSyncAndAsync(
+        Nope.string().uuid(),
+        '550e8400-e29b-41d4-a716-44665544000',
+        'Input is not a valid UUID',
+      );
+      await validateSyncAndAsync(
+        Nope.string().uuid(),
+        '550e8400-e29b-41d4-a716-446655440000-extra',
+        'Input is not a valid UUID',
+      );
+    });
+
+    it('should reject invalid UUID with wrong characters', async () => {
+      await validateSyncAndAsync(
+        Nope.string().uuid(),
+        '550e8400-e29b-41d4-zzzz-446655440000',
+        'Input is not a valid UUID',
+      );
+    });
+
+    it('should reject invalid UUID with missing hyphens', async () => {
+      await validateSyncAndAsync(
+        Nope.string().uuid(),
+        '550e8400e29b41d4a716446655440000',
+        'Input is not a valid UUID',
+      );
+    });
+
+    it('should reject empty string when required', async () => {
+      await validateSyncAndAsync(Nope.string().uuid().required(), '', 'This field is required');
+    });
+
+    it('should reject non-string values', async () => {
+      await validateSyncAndAsync(Nope.string().uuid(), 12345, 'Input is not a valid UUID');
+    });
+
+    it('should support custom error messages', async () => {
+      await validateSyncAndAsync(Nope.string().uuid('bad id'), 'not-a-uuid', 'bad id');
+    });
+
+    it('should allow optional UUID fields', async () => {
+      await validateSyncAndAsync(Nope.string().uuid().optional(), undefined, undefined);
+    });
+
+    it('should require UUID fields when required()', async () => {
+      await validateSyncAndAsync(
+        Nope.string().uuid().required(),
+        undefined,
+        'This field is required',
+      );
+    });
+  });
+
+  describe('#length', () => {
+    it('should accept a string with exact expected length', async () => {
+      await validateSyncAndAsync(Nope.string().length(5), 'hello', undefined);
+    });
+
+    it('should reject a string shorter than expected length', async () => {
+      await validateSyncAndAsync(Nope.string().length(5), 'hi', 'Must be at exactly of length 5');
+    });
+
+    it('should reject a string longer than expected length', async () => {
+      await validateSyncAndAsync(
+        Nope.string().length(5),
+        'hello!',
+        'Must be at exactly of length 5',
+      );
+    });
+
+    it('should accept empty string with expected length 0', async () => {
+      await validateSyncAndAsync(Nope.string().length(0), '', undefined);
+    });
+
+    it('should reject empty string with expected length greater than 0', async () => {
+      await validateSyncAndAsync(Nope.string().length(3), '', 'Must be at exactly of length 3');
+    });
+
+    it('should coerce non-string values before checking length', async () => {
+      await validateSyncAndAsync(Nope.string().length(3), 123, undefined);
+    });
+
+    it('should support custom error messages', async () => {
+      await validateSyncAndAsync(Nope.string().length(5, 'wrong size'), 'hi', 'wrong size');
+    });
+
+    it('should behave the same as exactLength()', async () => {
+      const lengthSchema = Nope.string().length(5, 'msg');
+      const exactLengthSchema = Nope.string().exactLength(5, 'msg');
+
+      for (const value of [undefined, 'hello', 'hi', 'hello!']) {
+        expect(lengthSchema.validate(value)).toEqual(exactLengthSchema.validate(value));
+      }
+    });
+  });
+
   describe('#trim', () => {
     it('should remove the whitespace from the entry and return undefined [email]', async () => {
       const ERR_MSG = 'error-message';

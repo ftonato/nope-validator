@@ -1,3 +1,23 @@
+1.2.0
+
+Added 🚀
+- Shared (Primitive, Array)
+  - `default(value)` / `getDefault()` — set and retrieve fallback values for undefined inputs
+  - `nullable()` / `nonNullable(message?)` — control whether null is accepted
+  - `defined(message?)` / `optional()` / `notRequired()` — control whether undefined is accepted
+  - `isValid(value)` / `isValidSync(value)` — boolean validation helpers (Promise<boolean> and boolean)
+- String
+  - `uuid(message?)` — UUID format validation (v1, v4, v5)
+  - `length(size, message?)` — exact string length validation (alias for `exactLength()`)
+- Array
+  - `length(size, message?)` — exact array length validation
+- Object
+  - `pick(keys)` — create a new schema with only the selected fields
+  - `omit(keys)` — create a new schema excluding the selected fields
+  - `stripUnknown()` — remove unknown keys during validation instead of failing
+  - `getDefault()` — collect defaults from child field schemas
+  - `isValid(value)` / `isValidSync(value)` — boolean validation helpers
+
 1.1.1
 
 Fixes 🔨

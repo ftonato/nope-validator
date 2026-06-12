@@ -1,4 +1,4 @@
-import { Rule, Validatable } from './types';
+import { Rule, Context, Validatable } from './types';
 import { NopePrimitive } from './NopePrimitive';
 import { deepEquals, isNil, runValidators } from './utils';
 import { NopeObject } from './NopeObject';
@@ -24,9 +24,59 @@ export class NopeArray<T> implements Validatable<T[]> {
   protected _type = 'object';
   public validationRules: Rule<T[]>[] = [];
   public ofShape: Validatable<T> | NopeObject | null = null;
+  private _defaultValue: T[] | undefined;
+  private _hasDefault = false;
+  private _isNullable = false;
 
   public getType() {
     return this._type;
+  }
+
+  public default(value: T[]) {
+    this._defaultValue = value;
+    this._hasDefault = true;
+    return this;
+  }
+
+  public getDefault(): T[] | undefined {
+    return this._hasDefault ? this._defaultValue : undefined;
+  }
+
+  public nullable() {
+    this._isNullable = true;
+    return this;
+  }
+
+  public nonNullable(message = 'This field must not be null') {
+    this._isNullable = false;
+
+    const rule: Rule<T[]> = (entry) => {
+      if (entry === null) {
+        return message;
+      }
+    };
+
+    this.validationRules.push(rule);
+    return this;
+  }
+
+  public defined(message = 'This field must be defined') {
+    const rule: Rule<T[]> = (entry) => {
+      if (entry === undefined) {
+        return message;
+      }
+    };
+
+    this.validationRules.push(rule);
+    return this;
+  }
+
+  public optional() {
+    return this;
+  }
+
+  public notRequired() {
+    return this.optional();
   }
 
   public required(message = 'This field is required') {
@@ -176,21 +226,60 @@ export class NopeArray<T> implements Validatable<T[]> {
     return this.test(rule);
   }
 
+  public length(size: number, message = `Must have exactly ${size} items`) {
+    const rule: Rule<T[]> = (entry) => {
+      if (isNil(entry)) {
+        return;
+      }
+
+      if (!Array.isArray(entry)) {
+        return message;
+      }
+
+      if (entry.length !== size) {
+        return message;
+      }
+    };
+
+    return this.test(rule);
+  }
+
   public test(rule: Rule<T[]>) {
     this.validationRules.push(rule);
 
     return this;
   }
 
+  private _applyDefault(entry?: T[] | null): T[] | null | undefined {
+    if (entry === undefined && this._hasDefault) {
+      return this._defaultValue;
+    }
+    return entry;
+  }
+
+  public isValid(entry?: T[] | null, context?: Context): Promise<boolean> {
+    return this.validateAsync(entry, context).then((error) => !error);
+  }
+
+  public isValidSync(entry?: T[] | null, context?: Record<string | number, unknown>): boolean {
+    return !this.validate(entry, context);
+  }
+
   public validate(
     entry?: T[] | null,
     context?: Record<string | number, unknown>,
   ): string | undefined {
+    const resolved = this._applyDefault(entry);
+
+    if (resolved === null && this._isNullable) {
+      return undefined;
+    }
+
     for (const rule of this.validationRules) {
-      const error = rule(entry, context);
+      const error = rule(resolved, context);
 
       if (error instanceof NopePrimitive) {
-        return error.validate(entry, context);
+        return error.validate(resolved, context);
       } else if (error) {
         return `${error}`;
       }
@@ -201,10 +290,16 @@ export class NopeArray<T> implements Validatable<T[]> {
     entry?: T[] | null,
     context?: Record<string | number, unknown>,
   ): Promise<string | undefined> {
-    return runValidators(this.validationRules, entry, context).then(
+    const resolved = this._applyDefault(entry);
+
+    if (resolved === null && this._isNullable) {
+      return Promise.resolve(undefined);
+    }
+
+    return runValidators(this.validationRules, resolved, context).then(
       (error: NopePrimitive<T[]> | string | undefined) => {
         if (error instanceof NopePrimitive) {
-          return error.validateAsync(entry, context);
+          return error.validateAsync(resolved, context);
         } else if (error) {
           return error;
         }

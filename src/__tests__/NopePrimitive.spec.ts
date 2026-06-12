@@ -446,4 +446,192 @@ describe('#NopePrimitive', () => {
       );
     });
   });
+
+  describe('#default / #getDefault', () => {
+    it('should return the default value through getDefault()', () => {
+      const schema = Nope.string().default('Anonymous');
+      expect(schema.getDefault()).toBe('Anonymous');
+    });
+
+    it('should return undefined when no default exists', () => {
+      expect(Nope.string().getDefault()).toBeUndefined();
+    });
+
+    it('should apply the default when the input is undefined', async () => {
+      const schema = Nope.string().default('Anonymous').required();
+      await validateSyncAndAsync(schema, undefined, undefined);
+    });
+
+    it('should not apply the default when the input is null', async () => {
+      const schema = Nope.string().default('Anonymous').required();
+      await validateSyncAndAsync(schema, null, 'This field is required');
+    });
+
+    it('should not apply the default when the input is an empty string', async () => {
+      const schema = Nope.string().default('Anonymous').required();
+      await validateSyncAndAsync(schema, '', 'This field is required');
+    });
+
+    it('should not apply the default when the input is false', async () => {
+      const schema = Nope.boolean().default(true).false('must be false');
+      await validateSyncAndAsync(schema, false, undefined);
+    });
+
+    it('should not apply the default when the input is 0', async () => {
+      const schema = Nope.number().default(42).atLeast(0);
+      await validateSyncAndAsync(schema, 0, undefined);
+    });
+
+    it('should fail validation for invalid provided values even when a default exists', async () => {
+      const schema = Nope.string().default('test@example.com').email('invalid email');
+      await validateSyncAndAsync(schema, 'not-an-email', 'invalid email');
+    });
+
+    it('should expose defaults from child fields on object schemas', () => {
+      const schema = Nope.object().shape({
+        name: Nope.string().default('Anonymous'),
+        active: Nope.boolean().default(true),
+      });
+
+      expect(schema.getDefault()).toEqual({ name: 'Anonymous', active: true });
+    });
+  });
+
+  describe('#nullable / #nonNullable', () => {
+    it('should accept null when nullable()', async () => {
+      const schema = Nope.string().nullable();
+      await validateSyncAndAsync(schema, null, undefined);
+    });
+
+    it('should reject null when nonNullable()', async () => {
+      const schema = Nope.string().nonNullable('no null');
+      await validateSyncAndAsync(schema, null, 'no null');
+    });
+
+    it('should not automatically accept undefined when nullable()', async () => {
+      const schema = Nope.string().nullable().defined('must be defined');
+      await validateSyncAndAsync(schema, undefined, 'must be defined');
+    });
+
+    it('should work with required() when nullable()', async () => {
+      const schema = Nope.string().nullable().required();
+      await validateSyncAndAsync(schema, null, undefined);
+      await validateSyncAndAsync(schema, undefined, 'This field is required');
+    });
+
+    it('should work with default() when nullable()', async () => {
+      const schema = Nope.string().nullable().default('fallback');
+      await validateSyncAndAsync(schema, null, undefined);
+      await validateSyncAndAsync(schema, undefined, undefined);
+    });
+
+    it('should still pass valid non-null values when nullable()', async () => {
+      const schema = Nope.string().nullable().email('invalid');
+      await validateSyncAndAsync(schema, 'test@example.com', undefined);
+    });
+
+    it('should still fail invalid non-null values when nullable()', async () => {
+      const schema = Nope.string().nullable().email('invalid');
+      await validateSyncAndAsync(schema, 'not-an-email', 'invalid');
+    });
+  });
+
+  describe('#defined / #optional / #notRequired', () => {
+    it('should reject undefined when defined()', async () => {
+      const schema = Nope.string().defined('must be defined');
+      await validateSyncAndAsync(schema, undefined, 'must be defined');
+    });
+
+    it('should accept undefined when optional()', async () => {
+      const schema = Nope.string().optional().email('invalid');
+      await validateSyncAndAsync(schema, undefined, undefined);
+    });
+
+    it('should accept undefined when notRequired()', async () => {
+      const schema = Nope.string().notRequired().email('invalid');
+      await validateSyncAndAsync(schema, undefined, undefined);
+    });
+
+    it('should not reject valid values when defined()', async () => {
+      const schema = Nope.string().defined();
+      await validateSyncAndAsync(schema, 'hello', undefined);
+    });
+
+    it('should not accept invalid non-undefined values when optional()', async () => {
+      const schema = Nope.string().optional().email('invalid');
+      await validateSyncAndAsync(schema, 'not-an-email', 'invalid');
+    });
+
+    it('should match optional() behavior when notRequired()', async () => {
+      const optionalSchema = Nope.string().optional().email('invalid');
+      const notRequiredSchema = Nope.string().notRequired().email('invalid');
+
+      for (const value of [undefined, 'test@example.com', 'bad']) {
+        expect(optionalSchema.validate(value)).toEqual(notRequiredSchema.validate(value));
+      }
+    });
+
+    it('should compose with nullable()', async () => {
+      const schema = Nope.string().nullable().defined('must be defined');
+      await validateSyncAndAsync(schema, null, undefined);
+      await validateSyncAndAsync(schema, undefined, 'must be defined');
+    });
+
+    it('should compose with required() — last explicit presence rule wins', async () => {
+      const schema = Nope.string().optional().required('required');
+      await validateSyncAndAsync(schema, undefined, 'required');
+    });
+  });
+
+  describe('#isValid / #isValidSync', () => {
+    it('should return true from isValid() for valid values', async () => {
+      const schema = Nope.string().email();
+      expect(await schema.isValid('test@example.com')).toBe(true);
+    });
+
+    it('should return false from isValid() for invalid values', async () => {
+      const schema = Nope.string().email();
+      expect(await schema.isValid('invalid')).toBe(false);
+    });
+
+    it('should return true from isValidSync() for valid values', () => {
+      const schema = Nope.string().email();
+      expect(schema.isValidSync('test@example.com')).toBe(true);
+    });
+
+    it('should return false from isValidSync() for invalid values', () => {
+      const schema = Nope.string().email();
+      expect(schema.isValidSync('invalid')).toBe(false);
+    });
+
+    it('should not throw validation errors', async () => {
+      const schema = Nope.string().required();
+      await expect(schema.isValid(undefined)).resolves.toBe(false);
+      expect(() => schema.isValidSync(undefined)).not.toThrow();
+    });
+
+    it('should respect default()', async () => {
+      const schema = Nope.string().default('test@example.com').email();
+      expect(await schema.isValid(undefined)).toBe(true);
+      expect(schema.isValidSync(undefined)).toBe(true);
+    });
+
+    it('should respect nullable()', async () => {
+      const schema = Nope.string().nullable().email();
+      expect(await schema.isValid(null)).toBe(true);
+      expect(schema.isValidSync(null)).toBe(true);
+    });
+
+    it('should respect optional()', async () => {
+      const schema = Nope.string().optional().email();
+      expect(await schema.isValid(undefined)).toBe(true);
+      expect(schema.isValidSync(undefined)).toBe(true);
+    });
+
+    it('should respect defined()', async () => {
+      const schema = Nope.string().defined().email();
+      expect(await schema.isValid(undefined)).toBe(false);
+      expect(schema.isValidSync(undefined)).toBe(false);
+    });
+  });
 });

@@ -1,7 +1,7 @@
 // shared types
 import { NopePrimitive } from './NopePrimitive';
 
-type RuleResult<T> = string | undefined | NopePrimitive<T>;
+export type RuleResult<T> = string | undefined | NopePrimitive<T>;
 
 export type Context = Record<string | number, any>;
 

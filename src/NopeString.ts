@@ -1,4 +1,4 @@
-import { emailRegex, urlRegex } from './consts';
+import { emailRegex, urlRegex, uuidRegex } from './consts';
 import { NopePrimitive } from './NopePrimitive';
 import { Nil, Rule } from './types';
 import { isNil } from './utils';
@@ -143,7 +143,7 @@ export class NopeString extends NopePrimitive<string> {
 
   public exactLength(length: number, message = `Must be at exactly of length ${length}`) {
     const rule: Rule<string> = (entry) => {
-      if (this.isEmpty(entry)) {
+      if (isNil(entry)) {
         return;
       }
 
@@ -154,6 +154,15 @@ export class NopeString extends NopePrimitive<string> {
     };
 
     return this.test(rule);
+  }
+
+  public uuid(message = 'Input is not a valid UUID'): this {
+    this.regex(uuidRegex, message);
+    return this;
+  }
+
+  public length(size: number, message?: string): this {
+    return this.exactLength(size, message);
   }
 
   public trim() {
