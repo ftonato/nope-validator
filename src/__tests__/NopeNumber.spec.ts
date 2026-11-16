@@ -173,7 +173,7 @@ describe('#NopeNumber', () => {
 
       expect(() => {
         schema.validate(0);
-      }).toThrowError();
+      }).toThrow();
     });
   });
 
