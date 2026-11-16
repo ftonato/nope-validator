@@ -1,9 +1,21 @@
 import { NopePrimitive } from './NopePrimitive';
-import { Rule } from './types';
+import { Nil, Rule } from './types';
+import { isNil } from './utils';
+
+const isBlankString = (value: unknown): value is string =>
+  typeof value === 'string' && value.trim().length === 0;
+
+// Blank strings (e.g. an untouched <input type="number">) stay as-is so `isEmpty` can
+// treat them as empty, instead of being coerced to `0` by `Number('  ')`.
+const toNumber = (entry: any) => (entry && !isBlankString(entry) ? Number(entry) : entry);
 
 export class NopeNumber extends NopePrimitive<number> {
   private message = 'The field is not a number';
   protected _type = 'number';
+
+  protected isEmpty(entry: number | Nil): boolean {
+    return isNil(entry) || isBlankString(entry);
+  }
 
   public integer(message = 'Input must be an integer') {
     const rule: Rule<number> = (entry) => {
@@ -118,7 +130,7 @@ export class NopeNumber extends NopePrimitive<number> {
   }
 
   public validate(entry?: any, context?: Record<string | number, unknown>): string | undefined {
-    const value = entry ? Number(entry) : entry;
+    const value = toNumber(entry);
 
     if (!this.isEmpty(value) && Number.isNaN(value)) {
       return this.message;
@@ -131,7 +143,7 @@ export class NopeNumber extends NopePrimitive<number> {
     entry?: any,
     context?: Record<string | number, unknown>,
   ): Promise<string | undefined> {
-    const value = entry ? Number(entry) : entry;
+    const value = toNumber(entry);
 
     if (!this.isEmpty(value) && Number.isNaN(value)) {
       return Promise.resolve(this.message);

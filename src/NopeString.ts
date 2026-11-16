@@ -7,7 +7,7 @@ export class NopeString extends NopePrimitive<string> {
   protected _type = 'string';
 
   public validate(entry?: any, context?: Record<string, unknown>): string | undefined {
-    const value = entry ? String(entry) : entry;
+    const value = isNil(entry) ? entry : String(entry);
 
     return super.validate(value, context);
   }
@@ -16,7 +16,7 @@ export class NopeString extends NopePrimitive<string> {
     entry?: any,
     context?: Record<string, unknown>,
   ): Promise<string | undefined> {
-    const value = entry ? String(entry) : entry;
+    const value = isNil(entry) ? entry : String(entry);
 
     return super.validateAsync(value, context);
   }
@@ -30,6 +30,9 @@ export class NopeString extends NopePrimitive<string> {
       if (this.isEmpty(entry)) {
         return;
       }
+
+      // `test()` on a /g or /y RegExp advances `lastIndex`, so reset it to keep results stable
+      regex.lastIndex = 0;
 
       if (!regex.test(entry as string)) {
         return message;

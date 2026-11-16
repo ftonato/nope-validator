@@ -236,4 +236,34 @@ describe('#NopeNumber', () => {
       await validateSyncAndAsync(Nope.number().integer('integerErrorMessage'), '12', undefined);
     });
   });
+  describe('#blank strings (issue #1225)', () => {
+    it.each(['', '  ', '\t\n'])('required() should reject blank string %j', async (value) => {
+      await validateSyncAndAsync(Nope.number().required(), value, 'This field is required');
+    });
+
+    it.each(['', '  '])('optional rules should treat blank string %j as empty', async (value) => {
+      await validateSyncAndAsync(Nope.number().min(1), value, undefined);
+      await validateSyncAndAsync(Nope.number().max(-1), value, undefined);
+      await validateSyncAndAsync(Nope.number().positive(), value, undefined);
+      await validateSyncAndAsync(Nope.number().integer(), value, undefined);
+    });
+
+    it('required() should still accept 0', async () => {
+      await validateSyncAndAsync(Nope.number().required(), 0, undefined);
+      await validateSyncAndAsync(Nope.number().required(), '0', undefined);
+    });
+
+    it('should still coerce numeric strings with surrounding spaces', async () => {
+      await validateSyncAndAsync(Nope.number().min(5), ' 3 ', 'Input is too small');
+      await validateSyncAndAsync(Nope.number().min(1), ' 3 ', undefined);
+    });
+
+    it('should still reject non numeric strings', async () => {
+      await validateSyncAndAsync(
+        Nope.number().required(),
+        'abc',
+        'The field is not a valid number',
+      );
+    });
+  });
 });
