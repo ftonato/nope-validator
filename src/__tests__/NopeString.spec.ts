@@ -440,4 +440,34 @@ describe('#NopeString', () => {
       }
     });
   });
+  describe('#regex with stateful flags (issue #1225)', () => {
+    it.each([/^\d+$/g, /^\d+$/y, /^\d+$/gy])(
+      'should return the same result on repeated calls with %s',
+      async (regex) => {
+        const schema = Nope.string().regex(regex, 'digits only');
+        for (let i = 0; i < 4; i++) {
+          await validateSyncAndAsync(schema, '1', undefined);
+          await validateSyncAndAsync(schema, 'a', 'digits only');
+        }
+      },
+    );
+  });
+
+  describe('#falsy non-string entries (issue #1225)', () => {
+    it.each([0, false])('required() should not throw on %j', async (value) => {
+      await validateSyncAndAsync(Nope.string().required(), value, undefined);
+    });
+
+    it('should coerce falsy non-nil values the same way as truthy ones', async () => {
+      await validateSyncAndAsync(Nope.string().min(2), 0, 'Input is too short');
+      await validateSyncAndAsync(Nope.string().exactLength(5), false, undefined);
+      await validateSyncAndAsync(Nope.string().regex(/^\d+$/), 0, undefined);
+    });
+
+    it('should keep null and undefined untouched', async () => {
+      await validateSyncAndAsync(Nope.string().required(), undefined, 'This field is required');
+      await validateSyncAndAsync(Nope.string().required(), null, 'This field is required');
+      await validateSyncAndAsync(Nope.string().min(2), undefined, undefined);
+    });
+  });
 });
