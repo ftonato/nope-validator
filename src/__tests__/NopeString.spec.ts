@@ -263,7 +263,7 @@ describe('#NopeString', () => {
 
       expect(() => {
         schema.validate('John Doe');
-      }).toThrowError();
+      }).toThrow();
     });
   });
 

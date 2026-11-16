@@ -145,7 +145,7 @@ describe('#NopeObject', () => {
 
       expect(() => {
         schema.validate({ a: 42 });
-      }).toThrowError();
+      }).toThrow();
     });
   });
 
