@@ -1,3 +1,16 @@
+1.2.3
+
+Fixes 🔨
+- Number
+  - `required()` now rejects empty and whitespace-only strings (e.g. an untouched `<input type="number">`) with `This field is required`
+  - Optional rules (`min`, `max`, `positive`, `integer`, ...) treat blank strings as empty instead of coercing them to `0`
+- String
+  - `regex()` (and `url()`, `email()`, `uuid()`) now returns stable results with global (`/g`) and sticky (`/y`) regular expressions
+  - `required()` and other rules no longer throw `TypeError: value.trim is not a function` on `0` or `false`; non-nil values are now always coerced with `String()`
+
+Internal 🏡
+- Bumped pnpm/npm overrides to patch new dev dependency advisories (handlebars, brace-expansion, js-yaml, browserslist)
+
 1.2.2
 
 Internal 🏡
